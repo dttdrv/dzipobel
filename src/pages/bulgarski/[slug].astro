@@ -1,0 +1,98 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+type GrammarSection = {
+  title: string;
+  items: string[];
+};
+
+export async function getStaticPaths() {
+  const entries = await getCollection("grammar");
+  return entries.map((entry: CollectionEntry<"grammar">) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<"grammar"> };
+const sections: GrammarSection[] = entry.data.sections;
+const bullets: string[] = entry.data.bullets;
+const tags: string[] = entry.data.tags;
+---
+
+<BaseLayout
+  title={`${entry.data.title} • ДЗИ библиотека`}
+  description={entry.data.excerpt}
+  pathname={Astro.url.pathname}
+>
+  <section class="band">
+    <div class="detail-intro reveal">
+      <a href="/bulgarski/" class="back-link">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Обратно към модулите
+      </a>
+
+      <div class="meta-row">
+        <span class="pill pill--secondary">{entry.data.module}</span>
+        <span>{entry.data.sections.length} подтеми</span>
+      </div>
+
+      <h1 class="detail-title">{entry.data.title}</h1>
+      <p class="lede">{entry.data.excerpt}</p>
+
+      <div class="cta-row">
+        <a class="ghost-link ghost-link--secondary" href="/bulgarski/">
+          Всички модули
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-frame reveal">
+    <div class="detail-grid">
+      <div class="detail-stack">
+        {
+          sections.map((section) => (
+            <article class="section-card">
+              <header>
+                <span class="section-kicker">Подтема</span>
+                <h2 class="section-heading">{section.title}</h2>
+              </header>
+              <ul class="section-list">
+                {section.items.map((item: string) => <li>{item}</li>)}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+
+      <aside class="detail-rail">
+        <section class="summary-card">
+          <h2 class="summary-title">Кратък преговор</h2>
+          <ul class="summary-list">
+            {bullets.map((bullet: string) => <li>{bullet}</li>)}
+          </ul>
+        </section>
+
+        <section class="summary-card">
+          <h2 class="summary-title">Ключови думи</h2>
+          <div class="tag-row">
+            {tags.map((tag: string) => <span class="tag">{tag}</span>)}
+          </div>
+        </section>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

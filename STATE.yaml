@@ -1,0 +1,16 @@
+status: verified
+project: dzipobel
+current_focus: ui_redesign_complete
+stack:
+  - astro
+  - json_content_collections
+  - css_first_motion
+  - astro_client_router
+  - google_fonts
+constraints:
+  - system_dark_light_only
+  - cloudflare_pages_asset_limit
+  - mobile_edge_to_edge
+  - full_bg_ui_only
+pending_verification:
+  - none

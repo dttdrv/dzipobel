@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dzipobel Redesign v4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600;7..72,700&family=Manrope:wght@400;500;600;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Manrope',system-ui,sans-serif; background:#ebebeb; color:#111; -webkit-font-smoothing:antialiased }
+
+  .tab-bar { position:sticky;top:0;z-index:100;display:flex;justify-content:center;gap:4px;padding:12px 16px;background:rgba(235,235,235,0.8);backdrop-filter:blur(20px) }
+  .tab { padding:8px 20px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#666;transition:all 200ms;font-family:inherit }
+  .tab.active { background:#111;color:#fff }
+  .tab:hover:not(.active) { background:rgba(0,0,0,0.06) }
+
+  .mockup-page { display:none;max-width:840px;margin:24px auto;padding:0 16px }
+  .mockup-page.active { display:block }
+  .phone-frame { background:#fafafa;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.05) }
+  .page-label { text-align:center;padding:16px;font-size:12px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.1em }
+
+  .nav { display:flex;align-items:center;gap:20px;padding:10px 20px;background:rgba(255,255,255,0.6);backdrop-filter:blur(20px);border-radius:999px;border:1px solid rgba(0,0,0,0.05);width:fit-content;margin:16px auto 0;box-shadow:0 2px 16px rgba(0,0,0,0.03) }
+  .nav-brand { font-family:'Literata',Georgia,serif;font-weight:700;font-size:15px;color:#111;letter-spacing:-0.02em;cursor:pointer }
+  .nav-sep { width:1px;height:16px;background:rgba(0,0,0,0.1) }
+  .nav-link { font-size:13px;color:#666;padding:5px 14px;border-radius:999px;transition:all 180ms;cursor:pointer }
+  .nav-link:hover { background:rgba(0,0,0,0.04) }
+  .nav-link.active { background:rgba(0,0,0,0.06);color:#333 }
+
+  .hero { padding:56px 48px 28px;position:relative;overflow:hidden }
+  .hero-orb { position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none }
+  .hero-orb-1 { width:240px;height:240px;top:-40px;right:10%;background:radial-gradient(circle,rgba(0,0,0,0.03),transparent 70%) }
+  .hero-orb-2 { width:180px;height:180px;bottom:-20px;left:5%;background:radial-gradient(circle,rgba(0,0,0,0.025),transparent 70%) }
+  .hero-headline { font-family:'Literata',Georgia,serif;font-size:48px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;color:#111;margin-bottom:12px }
+  .hero-sub { font-size:15px;color:#888;line-height:1.6;max-width:420px }
+
+  .switcher-bar { display:flex;align-items:center;justify-content:space-between;padding:0 48px;margin:28px 0 0 }
+  .switcher { display:flex;background:rgba(0,0,0,0.04);border-radius:999px;padding:3px }
+  .switcher-btn { padding:8px 22px;border-radius:999px;font-size:13px;font-weight:500;border:none;cursor:pointer;background:transparent;color:#888;transition:all 200ms;font-family:inherit }
+  .switcher-btn.active { background:#111;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1) }
+  .search-btn { width:36px;height:36px;border-radius:999px;border:1px solid rgba(0,0,0,0.08);background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 300ms;font-size:14px;color:#999 }
+  .search-btn:hover { background:rgba(0,0,0,0.04) }
+  .search-expanded { display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(14px);border-radius:999px;border:1px solid rgba(0,0,0,0.08);flex:1;margin-left:16px;max-width:320px }
+  .search-expanded input { border:none;background:none;outline:none;font-size:13px;font-family:inherit;color:#111;width:100% }
+  .search-expanded input::placeholder { color:#bbb }
+  .search-close { cursor:pointer;color:#bbb;font-size:12px;padding:2px 6px;border-radius:999px }
+  .search-close:hover { background:rgba(0,0,0,0.06);color:#666 }
+
+  .filter-bar { display:flex;gap:6px;padding:16px 48px 0;flex-wrap:wrap }
+  .filter-chip { padding:5px 14px;border-radius:999px;font-size:11px;font-weight:500;color:#888;background:transparent;border:1px solid rgba(0,0,0,0.08);cursor:pointer;transition:all 180ms }
+  .filter-chip:hover { border-color:rgba(0,0,0,0.15);color:#555 }
+  .filter-chip.active { background:#111;color:#fff;border-color:#111 }
+
+  .section { padding:20px 48px 36px }
+  .card-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(0,0,0,0.06);border-radius:16px;overflow:hidden }
+  .card-item { background:#fafafa;padding:24px 22px;transition:background 250ms ease;cursor:pointer }
+  .card-item:hover { background:#f0f0f0 }
+  .card-genre { font-size:10px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px }
+  .card-title { font-family:'Literata',Georgia,serif;font-size:17px;font-weight:600;color:#111;letter-spacing:-0.02em;line-height:1.2;margin-bottom:4px }
+  .card-author { font-size:12px;color:#999 }
+
+  .grammar-list { display:flex;flex-direction:column;gap:1px;background:rgba(0,0,0,0.06);border-radius:16px;overflow:hidden }
+  .grammar-item { background:#fafafa;padding:24px;display:flex;justify-content:space-between;align-items:center;transition:background 250ms;cursor:pointer }
+  .grammar-item:hover { background:#f0f0f0 }
+  .grammar-title { font-family:'Literata',Georgia,serif;font-size:17px;font-weight:600;color:#111 }
+  .grammar-desc { font-size:12px;color:#999;margin-top:4px }
+  .grammar-arrow { font-size:14px;color:#ccc;transition:transform 200ms }
+  .grammar-item:hover .grammar-arrow { transform:translateX(3px);color:#999 }
+
+  .footer { padding:28px 48px;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center }
+  .footer-brand { font-family:'Literata',Georgia,serif;font-weight:700;font-size:14px;color:#111 }
+  .footer-text { font-size:11px;color:#bbb }
+
+  .detail-header { padding:48px 48px 28px }
+  .back-link { font-size:12px;color:#999;margin-bottom:24px;display:flex;align-items:center;gap:6px;cursor:pointer }
+  .back-link:hover { color:#555 }
+  .back-link:hover .back-arrow { transform:translateX(-3px) }
+  .back-arrow { transition:transform 200ms;display:inline-block }
+  .detail-kicker { font-size:10px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px }
+  .detail-title { font-family:'Literata',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:#111;margin-bottom:6px }
+  .detail-author { font-size:14px;color:#888 }
+  .detail-cta { margin:0 48px;padding:20px 0;display:flex;gap:10px }
+  .btn { padding:10px 22px;border-radius:999px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:inherit;transition:all 200ms }
+  .btn-primary { background:#111;color:#fff }
+  .btn-primary:hover { background:#333 }
+  .btn-ghost { background:transparent;color:#666;border:1px solid rgba(0,0,0,0.12) }
+  .btn-ghost:hover { border-color:rgba(0,0,0,0.25) }
+  .detail-body { display:grid;grid-template-columns:1.5fr 0.5fr;gap:32px;padding:0 48px 48px }
+  .detail-main { display:flex;flex-direction:column;gap:28px }
+  .detail-section { padding-top:20px;border-top:1px solid rgba(0,0,0,0.06) }
+  .detail-section:first-child { border-top:none;padding-top:0 }
+  .detail-section h4 { font-family:'Literata',Georgia,serif;font-size:15px;font-weight:600;color:#111;margin-bottom:10px }
+  .detail-section p { font-size:13px;color:#555;line-height:1.75 }
+  .detail-rail { display:flex;flex-direction:column;gap:16px }
+  .rail-card { padding:20px;background:rgba(0,0,0,0.025);border-radius:14px }
+  .rail-label { font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px }
+  .rail-tags { display:flex;flex-wrap:wrap;gap:5px;margin-top:6px }
+  .rail-tag { padding:4px 10px;background:rgba(0,0,0,0.04);border-radius:999px;font-size:10px;color:#777 }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showPage('landing-lit')">Landing — Литература</button>
+  <button class="tab" onclick="showPage('landing-bg')">Landing — Български</button>
+  <button class="tab" onclick="showPage('landing-search')">Search Expanded</button>
+  <button class="tab" onclick="showPage('detail')">Detail</button>
+</div>
+
+<!-- ═══════════ LANDING — LITERATURE ═══════════ -->
+<div class="mockup-page active" id="page-landing-lit">
+  <div class="page-label">Landing — Literature Selected</div>
+  <div class="phone-frame">
+    <div class="nav">
+      <a class="nav-brand">дзі</a>
+      <span class="nav-sep"></span>
+      <span class="nav-link active">Литература</span>
+      <span class="nav-link">Български</span>
+    </div>
+
+    <div class="hero">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-headline">Подготви се<br>за матурата.</div>
+      <div class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ, 12 клас.</div>
+    </div>
+
+    <div class="switcher-bar">
+      <div class="switcher">
+        <button class="switcher-btn active">Литература</button>
+        <button class="switcher-btn" onclick="showPage('landing-bg')">Български език</button>
+      </div>
+      <div class="search-btn" onclick="showPage('landing-search')">⌕</div>
+    </div>
+
+    <div class="filter-bar">
+      <span class="filter-chip active">Всички</span>
+      <span class="filter-chip">Любов</span>
+      <span class="filter-chip">Вяра и надеждата</span>
+      <span class="filter-chip">Трудът и творчеството</span>
+      <span class="filter-chip">Изборът и раздвоението</span>
+    </div>
+
+    <div class="section">
+      <div class="card-grid">
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Молитва</div>
+          <div class="card-author">Пенчо Славейков</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Проза</div>
+          <div class="card-title">Вяра</div>
+          <div class="card-author">Йордан Йовков</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Две души</div>
+          <div class="card-author">Пейо Яворов</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Проза</div>
+          <div class="card-title">Честен кръст</div>
+          <div class="card-author">Елин Пелин</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Посвещение</div>
+          <div class="card-author">Никола Вапцаров</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Драма</div>
+          <div class="card-title">Вятърната мелница</div>
+          <div class="card-author">Елин Пелин</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Колко си хубава!</div>
+          <div class="card-author">Пейо Яворов</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Аз искам да те помня</div>
+          <div class="card-author">Димчо Дебелянов</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Балада</div>
+          <div class="card-title">Балада за Георг Хених</div>
+          <div class="card-author">Виктор Пасков</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поема</div>
+          <div class="card-title">Песента на колелетата</div>
+          <div class="card-author">Христо Смирненски</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Повест</div>
+          <div class="card-title">Спасова могила</div>
+          <div class="card-author">Емилиян Станев</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Разказ</div>
+          <div class="card-title">Потомка</div>
+          <div class="card-author">Николай Хайтов</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-brand">дзі</span>
+      <span class="footer-text">Безплатно завинаги</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LANDING — BULGARIAN ═══════════ -->
+<div class="mockup-page" id="page-landing-bg">
+  <div class="page-label">Landing — Bulgarian Selected</div>
+  <div class="phone-frame">
+    <div class="nav">
+      <a class="nav-brand">дзі</a>
+      <span class="nav-sep"></span>
+      <span class="nav-link">Литература</span>
+      <span class="nav-link active">Български</span>
+    </div>
+
+    <div class="hero">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-headline">Подготви се<br>за матурата.</div>
+      <div class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ, 12 клас.</div>
+    </div>
+
+    <div class="switcher-bar">
+      <div class="switcher">
+        <button class="switcher-btn" onclick="showPage('landing-lit')">Литература</button>
+        <button class="switcher-btn active">Български език</button>
+      </div>
+      <div class="search-btn" onclick="showPage('landing-search')">⌕</div>
+    </div>
+
+    <div class="section">
+      <div class="grammar-list">
+        <div class="grammar-item">
+          <div>
+            <div class="grammar-title">Морфология</div>
+            <div class="grammar-desc">Частите на речта и тяхното правилно използване</div>
+          </div>
+          <span class="grammar-arrow">→</span>
+        </div>
+        <div class="grammar-item">
+          <div>
+            <div class="grammar-title">Синтаксис</div>
+            <div class="grammar-desc">Структурата на изречението и пунктуация</div>
+          </div>
+          <span class="grammar-arrow">→</span>
+        </div>
+        <div class="grammar-item">
+          <div>
+            <div class="grammar-title">Правопис</div>
+            <div class="grammar-desc">Правилно писане и правописни норми</div>
+          </div>
+          <span class="grammar-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-brand">дзі</span>
+      <span class="footer-text">Безплатно завинаги</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SEARCH EXPANDED ═══════════ -->
+<div class="mockup-page" id="page-landing-search">
+  <div class="page-label">Landing — Search Expanded</div>
+  <div class="phone-frame">
+    <div class="nav">
+      <a class="nav-brand">дзі</a>
+      <span class="nav-sep"></span>
+      <span class="nav-link active">Литература</span>
+      <span class="nav-link">Български</span>
+    </div>
+
+    <div class="hero">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-headline">Подготви се<br>за матурата.</div>
+      <div class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ, 12 клас.</div>
+    </div>
+
+    <div class="switcher-bar">
+      <div class="switcher">
+        <button class="switcher-btn active">Литература</button>
+        <button class="switcher-btn">Български език</button>
+      </div>
+      <div class="search-expanded">
+        <span style="color:#ccc;font-size:14px">⌕</span>
+        <input type="text" placeholder="Търси произведение, автор, мотив..." autofocus>
+        <span class="search-close" onclick="showPage('landing-lit')">✕</span>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <span class="filter-chip active">Всички</span>
+      <span class="filter-chip">Любов</span>
+      <span class="filter-chip">Вяра и надеждата</span>
+      <span class="filter-chip">Трудът и творчеството</span>
+      <span class="filter-chip">Изборът и раздвоението</span>
+    </div>
+
+    <div class="section">
+      <div class="card-grid">
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Молитва</div>
+          <div class="card-author">Пенчо Славейков</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Проза</div>
+          <div class="card-title">Вяра</div>
+          <div class="card-author">Йордан Йовков</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Две души</div>
+          <div class="card-author">Пейо Яворов</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Проза</div>
+          <div class="card-title">Честен кръст</div>
+          <div class="card-author">Елин Пелин</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Поезия</div>
+          <div class="card-title">Посвещение</div>
+          <div class="card-author">Никола Вапцаров</div>
+        </div>
+        <div class="card-item">
+          <div class="card-genre">Драма</div>
+          <div class="card-title">Вятърната мелница</div>
+          <div class="card-author">Елин Пелин</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-brand">дзі</span>
+      <span class="footer-text">Безплатно завинаги</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DETAIL ═══════════ -->
+<div class="mockup-page" id="page-detail">
+  <div class="page-label">Literature Detail — No "Накратко"</div>
+  <div class="phone-frame">
+    <div class="nav">
+      <a class="nav-brand">дзі</a>
+      <span class="nav-sep"></span>
+      <span class="nav-link active">Литература</span>
+      <span class="nav-link">Български</span>
+    </div>
+
+    <div class="detail-header">
+      <div class="back-link"><span class="back-arrow">←</span> Литература</div>
+      <div class="detail-kicker">Поезия · Философска лирика</div>
+      <div class="detail-title">Молитва</div>
+      <div class="detail-author">Пенчо Славейков</div>
+    </div>
+
+    <div class="detail-cta">
+      <button class="btn btn-primary">Прочети пълния текст ↗</button>
+      <button class="btn btn-ghost">Chitanka.info</button>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-main">
+        <div class="detail-section">
+          <h4>За автора</h4>
+          <p>Пенчо Славейков е един от най-значимите български поети. Син на Петко Славейков, той е представител на кръга „Мисъл" и модернизма в българската литература. Творчеството му е философски ориентирано, търсещо универсални човешки истини.</p>
+        </div>
+        <div class="detail-section">
+          <h4>За произведението</h4>
+          <p>„Молитва" е стихотворение, което разкрива философското търсене на смисъла на живота. Лирическият герой не моли за лесен път, а за сила да понесе трудностите. Молитвата е насочена не към бог, а към самия живот.</p>
+        </div>
+        <div class="detail-section">
+          <h4>Послание</h4>
+          <p>Истинската молитва не е за избавление от страданието, а за сила и мъдрост да се живее пълноценно въпреки него.</p>
+        </div>
+      </div>
+
+      <div class="detail-rail">
+        <div class="rail-card">
+          <div class="rail-label">Мотиви</div>
+          <div class="rail-tags">
+            <span class="rail-tag">живот и смърт</span>
+            <span class="rail-tag">духовна сила</span>
+            <span class="rail-tag">страдание</span>
+            <span class="rail-tag">мъдрост</span>
+          </div>
+        </div>
+        <div class="rail-card">
+          <div class="rail-label">Конфликти</div>
+          <div class="rail-tags">
+            <span class="rail-tag">дух vs тяло</span>
+            <span class="rail-tag">човек vs съдба</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-brand">дзі</span>
+      <span class="footer-text">Безплатно завинаги</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.mockup-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  const map = {'landing-lit':0,'landing-bg':1,'landing-search':2,'detail':3};
+  if(map[id] !== undefined) tabs[map[id]].classList.add('active');
+}
+</script>
+</body>
+</html>

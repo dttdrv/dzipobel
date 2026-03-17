@@ -1,0 +1,79 @@
+<h2>What design direction feels right for dzipobel?</h2>
+<p class="subtitle">You mentioned serious, minimalistic, with blur and animations. Let's narrow down the visual mood.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;padding:32px;min-height:220px;display:flex;flex-direction:column;gap:16px;font-family:system-ui">
+      <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08)"></div>
+      <div style="color:#fff;font-size:28px;font-weight:600;letter-spacing:-0.02em">Dark Glass</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.5">Like Linear, Vercel, or Raycast. Dark backgrounds, frosted glass panels, subtle glows, monochrome with one accent color.</div>
+      <div style="display:flex;gap:8px;margin-top:auto">
+        <div style="width:32px;height:32px;border-radius:8px;background:#111;border:1px solid rgba(255,255,255,0.1)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.06)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#3b82f6"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dark Glass</h3>
+      <p>Dark UI with frosted glass surfaces, neon-subtle accents, deep shadows. Premium tech feel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f5f3ef;padding:32px;min-height:220px;display:flex;flex-direction:column;gap:16px;font-family:system-ui">
+      <div style="width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,0.7);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.04)"></div>
+      <div style="color:#1a1a1a;font-size:28px;font-weight:600;letter-spacing:-0.02em">Light Frost</div>
+      <div style="color:rgba(0,0,0,0.45);font-size:13px;line-height:1.5">Like Apple, Notion, or Arc. Light backgrounds, white frosted panels, clean type, warm neutrals with a refined accent.</div>
+      <div style="display:flex;gap:8px;margin-top:auto">
+        <div style="width:32px;height:32px;border-radius:8px;background:#fafaf8;border:1px solid rgba(0,0,0,0.08)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#f0ece4;border:1px solid rgba(0,0,0,0.05)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.06)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#8d5839"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Light Frost</h3>
+      <p>Bright, airy UI with frosted white panels, soft shadows, warm tones. Elegant and approachable.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:linear-gradient(160deg,#0d0d0d 0%,#1a1a2e 100%);padding:32px;min-height:220px;display:flex;flex-direction:column;gap:16px;font-family:system-ui;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);filter:blur(30px)"></div>
+      <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.1));border:1px solid rgba(139,92,246,0.2)"></div>
+      <div style="color:#fff;font-size:28px;font-weight:600;letter-spacing:-0.02em">Dark Aurora</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.5">Like Framer, Stripe, or GitHub. Dark base with colorful gradient glows, animated backgrounds, bold contrasts.</div>
+      <div style="display:flex;gap:8px;margin-top:auto">
+        <div style="width:32px;height:32px;border-radius:8px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.08)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#1a1a2e;border:1px solid rgba(255,255,255,0.06)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,rgba(139,92,246,0.3),rgba(59,130,246,0.2))"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#3b82f6)"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Dark Aurora</h3>
+      <p>Dark base with colorful gradient glows and ambient light. Dramatic, modern, immersive.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="d" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:linear-gradient(160deg,#faf9f6 0%,#f0ece4 100%);padding:32px;min-height:220px;display:flex;flex-direction:column;gap:16px;font-family:system-ui;position:relative;overflow:hidden">
+      <div style="position:absolute;bottom:-30px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(141,88,57,0.12),transparent 70%);filter:blur(25px)"></div>
+      <div style="position:absolute;top:-20px;right:40px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(40,85,106,0.1),transparent 70%);filter:blur(20px)"></div>
+      <div style="width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.03)"></div>
+      <div style="color:#1a1a1a;font-size:28px;font-weight:600;letter-spacing:-0.02em">Warm Aura</div>
+      <div style="color:rgba(0,0,0,0.45);font-size:13px;line-height:1.5">Evolution of current design. Keep the warm palette but push harder on blur, motion, and modern spacing. Refined, not reinvented.</div>
+      <div style="display:flex;gap:8px;margin-top:auto">
+        <div style="width:32px;height:32px;border-radius:8px;background:#ede7db;border:1px solid rgba(0,0,0,0.06)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,251,244,0.86);border:1px solid rgba(0,0,0,0.04)"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#8d5839"></div>
+        <div style="width:32px;height:32px;border-radius:8px;background:#28556a"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D — Warm Aura</h3>
+      <p>Evolve the current palette — more blur, more motion, tighter spacing. Familiar but elevated.</p>
+    </div>
+  </div>
+</div>
