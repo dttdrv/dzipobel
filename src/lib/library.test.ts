@@ -67,9 +67,20 @@ describe("sortLibraryItems", () => {
 });
 
 describe("buildLibraryIndex", () => {
-  it("creates searchable index entries for both collections", () => {
+  it("preserves insertion order (literature first, then grammar)", () => {
     const index = buildLibraryIndex({
       literature: [
+        {
+          slug: "chesten-krast",
+          data: {
+            title: "Честен кръст",
+            author: "Елин Пелин",
+            theme: "Човекът и обществото",
+            genre: "Разказ",
+            excerpt: "Разказ за честта.",
+            tags: ["чест"],
+          },
+        },
         {
           slug: "viara",
           data: {
@@ -96,8 +107,11 @@ describe("buildLibraryIndex", () => {
       ],
     });
 
-    expect(index).toHaveLength(2);
-    expect(index[0]?.searchText).toContain("никола вапцаров");
-    expect(index[1]?.searchText).toContain("части на речта");
+    expect(index).toHaveLength(3);
+    expect(index.map((item) => item.title)).toEqual([
+      "Честен кръст",
+      "Вяра",
+      "Морфология",
+    ]);
   });
 });

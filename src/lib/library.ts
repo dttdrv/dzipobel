@@ -118,5 +118,5 @@ export function buildLibraryIndex(input: {
     type: "grammar",
   }));
 
-  return sortLibraryItems([...literature, ...grammar]);
+  return [...literature, ...grammar];
 }
