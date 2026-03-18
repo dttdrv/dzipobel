@@ -46,7 +46,7 @@ test("literature detail page", async ({ page }) => {
     page.getByRole("link", { name: /Литература/ }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /Чети произведението/ }),
+    page.getByRole("link", { name: /Прочети в/ }),
   ).toBeVisible();
 });
 

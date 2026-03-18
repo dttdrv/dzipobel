@@ -80,7 +80,7 @@ function setupSearchToggle(): void {
     nav.classList.add("nav-expanded");
 
     nav.innerHTML = `
-      <a href="/" class="nav-brand" aria-label="ДЗИ библиотека">дзі</a>
+      <a href="/" class="nav-brand" aria-label="ДЗИ библиотека">ДЗИ по БЕЛ</a>
       <input type="text" placeholder="Търсене…" aria-label="Търсене" />
       <button class="nav-close" aria-label="Затвори">✕</button>
     `;

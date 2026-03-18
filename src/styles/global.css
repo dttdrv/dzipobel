@@ -138,6 +138,10 @@ svg {
   background: rgba(0, 0, 0, 0.07);
 }
 
+.nav-search:active {
+  transform: scale(0.9);
+}
+
 @media (prefers-color-scheme: dark) {
   .nav-search {
     background: rgba(255, 255, 255, 0.08);
@@ -199,6 +203,7 @@ svg {
   padding: 52px var(--page-padding) 28px;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
 
 .hero-headline {
@@ -217,7 +222,7 @@ svg {
   color: var(--muted);
   line-height: 1.6;
   max-width: 420px;
-  margin: 12px 0 0;
+  margin: 12px auto 0;
 }
 
 .hero-orb {
@@ -249,6 +254,7 @@ svg {
 .switcher-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 var(--page-padding);
   margin: 24px 0 0;
 }
@@ -276,6 +282,11 @@ svg {
   border: none;
   cursor: pointer;
   transition: all var(--transition);
+  font-family: inherit;
+}
+
+.switcher-btn:active {
+  transform: scale(0.95);
 }
 
 .switcher-btn.active {
@@ -298,6 +309,7 @@ svg {
   gap: 6px;
   padding: 16px var(--page-padding) 0;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .filter-chip {
@@ -311,6 +323,11 @@ svg {
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
+  font-family: inherit;
+}
+
+.filter-chip:active {
+  transform: scale(0.93);
 }
 
 .filter-chip:hover {
@@ -349,12 +366,16 @@ svg {
   display: grid;
   gap: 8px;
   align-content: start;
-  transition: background 250ms ease;
+  transition: background 250ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: pointer;
 }
 
 .card-item:hover {
   background: rgba(0, 0, 0, 0.03);
+}
+
+.card-item:active {
+  transform: scale(0.97);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -407,8 +428,12 @@ svg {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  transition: background 250ms ease;
+  transition: background 250ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: pointer;
+}
+
+.grammar-item:active {
+  transform: scale(0.98);
 }
 
 .grammar-item:hover {
@@ -455,6 +480,7 @@ svg {
 
 .detail-header {
   padding: 48px var(--page-padding) 24px;
+  text-align: center;
 }
 
 .back-link {
@@ -466,6 +492,7 @@ svg {
   cursor: pointer;
   transition: color var(--transition);
   margin-bottom: 16px;
+  justify-content: center;
 }
 
 .back-link:hover {
@@ -510,11 +537,13 @@ svg {
   padding: 16px 0;
   display: flex;
   gap: 10px;
+  justify-content: center;
 }
 
 .detail-content {
   padding: 0 var(--page-padding) 48px;
   max-width: 680px;
+  margin: 0 auto;
 }
 
 .detail-section {
@@ -590,7 +619,11 @@ svg {
   font-weight: 500;
   border: none;
   cursor: pointer;
-  transition: all 200ms ease;
+  transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn:active {
+  transform: scale(0.95);
 }
 
 .btn-primary {
@@ -629,31 +662,24 @@ svg {
   padding: 28px var(--page-padding);
   border-top: 1px solid var(--line);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 16px;
-}
-
-.footer-brand {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
 }
 
 .footer-credit {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--soft);
 }
 
 .footer-credit a {
-  color: var(--muted);
+  color: var(--text);
+  font-weight: 600;
   text-decoration: none;
   transition: color var(--transition);
 }
 
 .footer-credit a:hover {
-  color: var(--text);
+  color: var(--muted);
 }
 
 /* --- Animations --- */
