@@ -1,4 +1,5 @@
 // ─── Module A: Scroll Reveal ───────────────────────────────────────
+// Staggered fade-in with blur, Apple-style entrance
 function setupScrollReveal(): void {
   const elements = document.querySelectorAll<HTMLElement>(".reveal");
   if (elements.length === 0) return;
@@ -12,7 +13,7 @@ function setupScrollReveal(): void {
         }
       }
     },
-    { threshold: 0.1 },
+    { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
   );
 
   for (const el of elements) {
@@ -20,42 +21,93 @@ function setupScrollReveal(): void {
   }
 }
 
-// ─── Module B: 3D Card Tilt ────────────────────────────────────────
+// ─── Module B: Card Tilt (Liquid Glass) ───────────────────────────
+// Smooth perspective tilt with spring-like interpolation
 function setupCardTilt(): void {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   const cards = document.querySelectorAll<HTMLElement>(".card-item");
+  const state = new WeakMap<
+    HTMLElement,
+    { targetX: number; targetY: number; currentX: number; currentY: number; raf: number }
+  >();
 
   for (const card of cards) {
+    state.set(card, { targetX: 0, targetY: 0, currentX: 0, currentY: 0, raf: 0 });
+
     card.addEventListener("mousemove", (e: MouseEvent) => {
+      const s = state.get(card);
+      if (!s) return;
       const rect = card.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const offsetX = (e.clientX - centerX) / (rect.width / 2);
-      const offsetY = (e.clientY - centerY) / (rect.height / 2);
+      const offsetX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+      const offsetY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      s.targetX = -offsetY * 3;
+      s.targetY = offsetX * 3;
 
-      const rotateY = offsetX * 4;
-      const rotateX = -offsetY * 4;
+      if (!s.raf) {
+        const animate = () => {
+          // Spring-like lerp factor
+          s.currentX += (s.targetX - s.currentX) * 0.12;
+          s.currentY += (s.targetY - s.currentY) * 0.12;
 
-      card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          card.style.transform = `perspective(800px) rotateX(${s.currentX}deg) rotateY(${s.currentY}deg) scale3d(1.01, 1.01, 1.01)`;
+
+          if (
+            Math.abs(s.targetX - s.currentX) > 0.01 ||
+            Math.abs(s.targetY - s.currentY) > 0.01
+          ) {
+            s.raf = requestAnimationFrame(animate);
+          } else {
+            s.raf = 0;
+          }
+        };
+        s.raf = requestAnimationFrame(animate);
+      }
     });
 
     card.addEventListener("mouseleave", () => {
-      card.style.transition = "transform 0.3s ease";
-      card.style.transform = "none";
-      // Remove the transition after it completes so it doesn't interfere with mousemove
-      card.addEventListener(
-        "transitionend",
-        () => {
-          card.style.transition = "";
-        },
-        { once: true },
-      );
+      const s = state.get(card);
+      if (!s) return;
+      s.targetX = 0;
+      s.targetY = 0;
+
+      // Smooth spring-back animation
+      const springBack = () => {
+        s.currentX += (0 - s.currentX) * 0.08;
+        s.currentY += (0 - s.currentY) * 0.08;
+
+        if (Math.abs(s.currentX) > 0.01 || Math.abs(s.currentY) > 0.01) {
+          card.style.transform = `perspective(800px) rotateX(${s.currentX}deg) rotateY(${s.currentY}deg)`;
+          s.raf = requestAnimationFrame(springBack);
+        } else {
+          card.style.transform = "";
+          s.raf = 0;
+        }
+      };
+      if (s.raf) cancelAnimationFrame(s.raf);
+      s.raf = requestAnimationFrame(springBack);
     });
   }
 }
 
-// ─── Module C: Search Expansion ────────────────────────────────────
+// ─── Module C: Grammar Card Tilt ──────────────────────────────────
+function setupGrammarCardTilt(): void {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const cards = document.querySelectorAll<HTMLElement>(".grammar-card");
+  for (const card of cards) {
+    card.addEventListener("mouseenter", () => {
+      card.style.transition =
+        "transform 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 500ms ease, background 350ms ease";
+    });
+    card.addEventListener("mouseleave", () => {
+      card.style.transition =
+        "transform 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 500ms ease, background 350ms ease";
+    });
+  }
+}
+
+// ─── Module D: Search Expansion ───────────────────────────────────
 function setupSearchToggle(): void {
   const toggle = document.querySelector<HTMLButtonElement>(
     "[data-search-toggle]",
@@ -71,11 +123,9 @@ function setupSearchToggle(): void {
     const nav = document.getElementById("site-nav");
     if (!nav) return;
 
-    // Save original content so we can restore it
     const originalHTML = nav.innerHTML;
     const hadNavClass = nav.classList.contains("nav");
 
-    // Replace nav content with expanded search form
     nav.classList.remove("nav");
     nav.classList.add("nav-expanded");
 
@@ -90,7 +140,6 @@ function setupSearchToggle(): void {
 
     if (input) {
       input.focus();
-
       input.addEventListener("input", () => {
         document.dispatchEvent(
           new CustomEvent("search-input", { detail: input.value }),
@@ -108,7 +157,6 @@ function setupSearchToggle(): void {
           new CustomEvent("search-input", { detail: "" }),
         );
 
-        // Re-attach the search toggle listener to the restored button
         setupSearchToggle();
       });
     }
@@ -123,12 +171,12 @@ function init(): void {
 
   setupScrollReveal();
   setupCardTilt();
+  setupGrammarCardTilt();
   setupSearchToggle();
 }
 
 document.addEventListener("DOMContentLoaded", init);
 document.addEventListener("astro:page-load", () => {
-  // Reset the guard so interactions re-bind after a page transition
   delete document.documentElement.dataset.interactionsInit;
   init();
 });

@@ -65,16 +65,15 @@ const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
     <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
 
-  <!-- GRAMMAR LIST -->
+  <!-- GRAMMAR CARDS -->
   <section class="section" data-section="grammar" hidden>
-    <div class="grammar-list">
+    <div class="grammar-grid">
       {grammarEntries.map((entry) => (
-        <a href={`/bulgarski/${entry.id}/`} class="grammar-item" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
-          <div>
-            <span class="grammar-title">{entry.data.title}</span>
-            <span class="grammar-desc">{entry.data.excerpt}</span>
-          </div>
-          <span class="grammar-arrow" aria-hidden="true">&rarr;</span>
+        <a href={`/bulgarski/${entry.id}/`} class="grammar-card" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
+          <span class="grammar-card-icon" aria-hidden="true">{entry.data.module === "Морфология" ? "Аа" : entry.data.module === "Синтаксис" ? "{ }" : "✓"}</span>
+          <span class="grammar-card-title">{entry.data.title}</span>
+          <span class="grammar-card-desc">{entry.data.excerpt}</span>
+          <span class="grammar-card-arrow" aria-hidden="true">→</span>
         </a>
       ))}
     </div>
