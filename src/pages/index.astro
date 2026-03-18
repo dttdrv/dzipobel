@@ -4,11 +4,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const literatureEntries: CollectionEntry<"literature">[] = (
   await getCollection("literature")
-).sort((a, b) => a.data.order - b.data.order);
+).sort(
+  (a: CollectionEntry<"literature">, b: CollectionEntry<"literature">) =>
+    a.data.order - b.data.order,
+);
 
 const grammarEntries: CollectionEntry<"grammar">[] = (
   await getCollection("grammar")
-).sort((a, b) => a.data.order - b.data.order);
+).sort(
+  (a: CollectionEntry<"grammar">, b: CollectionEntry<"grammar">) =>
+    a.data.order - b.data.order,
+);
 
 const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
 ---
