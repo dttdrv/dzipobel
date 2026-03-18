@@ -18,143 +18,69 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props as { entry: CollectionEntry<"literature"> };
 const sections: LiteratureSection[] = entry.data.sections;
-const motifs: string[] = entry.data.motifs;
-const conflicts: string[] = entry.data.conflicts;
 ---
 
 <BaseLayout
   title={`${entry.data.title} • ДЗИ библиотека`}
   description={entry.data.excerpt}
-  pathname={Astro.url.pathname}
 >
-  <section class="band">
-    <div class="detail-intro reveal">
-      <a href="/literatura/" class="back-link">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          aria-hidden="true"
-        >
-          <path d="M19 12H5M12 19l-7-7 7-7"></path>
-        </svg>
-        Обратно към каталога
-      </a>
-
-      <div class="meta-row">
-        <span class="pill">{entry.data.theme}</span>
-        <span>{entry.data.author}</span>
-        <span>•</span>
-        <span>{entry.data.genre}</span>
-      </div>
-
-      <h1 class="detail-title">{entry.data.title}</h1>
-      <p class="lede">{entry.data.excerpt}</p>
-
-      <div class="cta-row">
-        <a
-          class="button"
-          href={entry.data.readUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Чети произведението в {entry.data.readSource}
-        </a>
-        <a class="ghost-link" href="/literatura/">Всички произведения</a>
-      </div>
-    </div>
+  <section class="detail-header">
+    <a href="/" class="back-link">← Литература</a>
+    <span class="detail-kicker">{entry.data.genre} · {entry.data.theme}</span>
+    <h1 class="detail-title">{entry.data.title}</h1>
+    <span class="detail-author">{entry.data.author}</span>
   </section>
 
-  <section class="detail-frame reveal">
-    <div class="detail-grid">
-      <div class="detail-stack">
-        <article class="section-card">
-          <header>
-            <span class="section-kicker">Контекст</span>
-            <h2 class="section-heading">За автора</h2>
-          </header>
-          <p class="detail-copy">{entry.data.aboutAuthor}</p>
-        </article>
+  <div class="detail-cta">
+    <a
+      class="btn btn-primary"
+      href={entry.data.readUrl}
+      target="_blank"
+      rel="noreferrer"
+    >
+      Чети произведението в {entry.data.readSource} ↗
+    </a>
+    <a
+      class="btn btn-ghost"
+      href={entry.data.readUrl}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {entry.data.readSource}
+    </a>
+  </div>
 
-        <article class="section-card">
-          <header>
-            <span class="section-kicker">Преговор</span>
-            <h2 class="section-heading">За произведението</h2>
-          </header>
-          <p class="detail-copy">{entry.data.aboutWork}</p>
-        </article>
-
-        {
-          sections.map((section) => (
-            <article class="section-card">
-              <header>
-                <span class="section-kicker">Структура</span>
-                <h2 class="section-heading">{section.title}</h2>
-              </header>
-
-              {section.items.length > 1 ? (
-                <ul class="section-list">
-                  {section.items.map((item: string) => <li>{item}</li>)}
-                </ul>
-              ) : (
-                <p class="detail-copy">{section.items[0]}</p>
-              )}
-            </article>
-          ))
-        }
-
-        <article class="section-card">
-          <header>
-            <span class="section-kicker">Смисъл</span>
-            <h2 class="section-heading">Послание</h2>
-          </header>
-          <p class="detail-copy">{entry.data.message}</p>
-        </article>
-      </div>
-
-      <aside class="detail-rail">
-        <section class="summary-card">
-          <h2 class="summary-title">За 30 секунди</h2>
-          <div class="summary-meta">
-            <span>Тема: {entry.data.theme}</span>
-            <span>Автор: {entry.data.author}</span>
-            <span>Жанр: {entry.data.genre}</span>
-          </div>
-        </section>
-
-        <section class="summary-card">
-          <h2 class="summary-title">Мотиви</h2>
-          <ul class="summary-list">
-            {motifs.map((motif: string) => <li>{motif}</li>)}
-          </ul>
-        </section>
-
-        <section class="summary-card">
-          <h2 class="summary-title">Конфликти</h2>
-          <ul class="summary-list">
-            {conflicts.map((conflict: string) => <li>{conflict}</li>)}
-          </ul>
-        </section>
-
-        <section class="summary-card summary-card--accent">
-          <h2 class="summary-title">Пълен текст</h2>
-          <p class="summary-copy">
-            Отвори произведението в {entry.data.readSource}, ако искаш да прегледаш
-            текста ред по ред преди изпита.
-          </p>
-          <a
-            class="button"
-            href={entry.data.readUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Чети произведението в {entry.data.readSource}
-          </a>
-        </section>
-      </aside>
+  <div class="detail-content">
+    <div class="detail-section">
+      <h4>За автора</h4>
+      <p>{entry.data.aboutAuthor}</p>
     </div>
-  </section>
+
+    <div class="detail-section">
+      <h4>За произведението</h4>
+      <p>{entry.data.aboutWork}</p>
+    </div>
+
+    {
+      sections.map((section) => (
+        <div class="detail-section">
+          <h4>{section.title}</h4>
+          {section.items.length > 1 ? (
+            <ul>
+              {section.items.map((item: string) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>{section.items[0]}</p>
+          )}
+        </div>
+      ))
+    }
+
+    <div class="detail-section">
+      <h4>Послание</h4>
+      <p>{entry.data.message}</p>
+    </div>
+  </div>
 </BaseLayout>
