@@ -1,309 +1,207 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
-
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { buildLibraryIndex } from "../lib/library";
 
 const literatureEntries: CollectionEntry<"literature">[] = (
   await getCollection("literature")
-).sort(
-  (left: CollectionEntry<"literature">, right: CollectionEntry<"literature">) =>
-    left.data.order - right.data.order,
-);
+).sort((a, b) => a.data.order - b.data.order);
+
 const grammarEntries: CollectionEntry<"grammar">[] = (
   await getCollection("grammar")
-).sort(
-  (left: CollectionEntry<"grammar">, right: CollectionEntry<"grammar">) =>
-    left.data.order - right.data.order,
-);
+).sort((a, b) => a.data.order - b.data.order);
 
-const libraryItems = buildLibraryIndex({
-  literature: literatureEntries,
-  grammar: grammarEntries,
-});
-
-const themeCounts = new Map<string, number>();
-for (const entry of literatureEntries) {
-  themeCounts.set(entry.data.theme, (themeCounts.get(entry.data.theme) ?? 0) + 1);
-}
-const topThemes = [...themeCounts.entries()].sort((left, right) => right[1] - left[1]);
+const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
 ---
 
-<BaseLayout
-  title="ДЗИ библиотека"
-  description="Свободна библиотека за литература и български език преди ДЗИ."
-  pathname={Astro.url.pathname}
->
-  <section class="band band--home">
-    <div class="hero-grid">
-      <article class="hero-column reveal">
-        <p class="kicker">Безплатна подготовка за ДЗИ</p>
-        <h1 class="display-title">
-          Подреди материала. Намери правилния текст. Влез по-спокоен в изпита.
-        </h1>
-        <p class="lede">
-          Дигитална читалня за 12. клас с произведения, теми, мотиви, граматика и
-          директни линкове към пълните текстове. Всичко е подредено за бързо търсене,
-          а не за хаотично скролване преди матурата.
-        </p>
+<BaseLayout title="ДЗИ библиотека" description="Безплатна библиотека с литература и български език преди ДЗИ.">
 
-        <div class="cta-row">
-          <a class="button" href="/literatura/">Отвори литературата</a>
-          <a class="ghost-link ghost-link--secondary" href="/bulgarski/">
-            Отвори българския език
-          </a>
-        </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb hero-orb--1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb--2" aria-hidden="true"></div>
+    <h1 class="hero-headline">Подготви се<br>за матурата.</h1>
+    <p class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ, 12 клас.</p>
+  </section>
 
-        <div class="metric-board stagger">
-          <div class="metric">
-            <strong class="metric-value">{literatureEntries.length}</strong>
-            <span class="metric-label">произведения с подредени теми, мотиви и контекст</span>
-          </div>
-          <div class="metric">
-            <strong class="metric-value">{grammarEntries.length}</strong>
-            <span class="metric-label">модула по български език за последен преговор</span>
-          </div>
-          <div class="metric">
-            <strong class="metric-value">{libraryItems.length}</strong>
-            <span class="metric-label">общо записа в библиотеката</span>
-          </div>
-          <div class="metric">
-            <strong class="metric-value">0 лв.</strong>
-            <span class="metric-label">свободен достъп без регистрация</span>
-          </div>
-        </div>
-      </article>
+  <!-- SWITCHER -->
+  <div class="switcher-bar">
+    <div class="switcher" data-switcher>
+      <button class="switcher-btn active" data-switch="literature">Литература</button>
+      <button class="switcher-btn" data-switch="grammar">Български език</button>
+    </div>
+  </div>
 
-      <aside class="hero-column reveal reveal-delay-1">
-        <div class="hero-rail">
-          <p class="kicker">Какво има вътре</p>
-          <h2 class="rail-title">Една спокойна дигитална читалня, а не още един шумен сайт.</h2>
-          <ul class="rail-list">
-            <li>Литература с автор, тема, жанр, мотиви, конфликти и бутон към пълния текст.</li>
-            <li>Български език в кратки модули, които се сканират лесно и на телефон.</li>
-            <li>Автоматичен светъл и тъмен режим според устройството, без тежки ефекти.</li>
-          </ul>
-        </div>
+  <!-- FILTER CHIPS (literature only) -->
+  <div class="filter-bar" data-filters>
+    <button class="filter-chip active" data-theme="">Всички</button>
+    {themes.map((theme) => (
+      <button class="filter-chip" data-theme={theme}>{theme}</button>
+    ))}
+  </div>
 
-        <div class="block">
-          <p class="kicker">Бърз маршрут</p>
-          <h3 class="block-title">Започни от това, което ти гори най-много.</h3>
-          <div class="stack-row">
-            <span class="pill">търсене</span>
-            <span class="pill pill--secondary">филтри</span>
-            <span class="pill">четене</span>
+  <!-- LITERATURE CARDS -->
+  <section class="section" data-section="literature">
+    <div class="card-grid" data-card-grid>
+      {literatureEntries.map((entry) => (
+        <a
+          href={`/literatura/${entry.id}/`}
+          class="card-item"
+          data-card
+          data-theme={entry.data.theme}
+          data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
+        >
+          <span class="card-genre">{entry.data.genre}</span>
+          <h2 class="card-title">{entry.data.title}</h2>
+          <span class="card-author">{entry.data.author}</span>
+        </a>
+      ))}
+    </div>
+    <p class="empty-state" data-empty hidden>Няма резултати.</p>
+  </section>
+
+  <!-- GRAMMAR LIST -->
+  <section class="section" data-section="grammar" hidden>
+    <div class="grammar-list">
+      {grammarEntries.map((entry) => (
+        <a href={`/bulgarski/${entry.id}/`} class="grammar-item" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
+          <div>
+            <span class="grammar-title">{entry.data.title}</span>
+            <span class="grammar-desc">{entry.data.excerpt}</span>
           </div>
-          <p class="body-copy">
-            Ако помниш автора, темата или само едно правило, ще стигнеш до правилната
-            страница за секунди.
-          </p>
-        </div>
-      </aside>
+          <span class="grammar-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      ))}
     </div>
   </section>
 
-  <section class="surface reveal" data-search-root>
-    <div class="surface-header">
-      <div class="surface-header-copy">
-        <p class="kicker">Глобално търсене</p>
-        <h2 class="section-title">Потърси произведение, автор, тема или правило.</h2>
-      </div>
-      <p class="result-summary" data-result-summary>{libraryItems.length} резултата</p>
-    </div>
-
-    <div class="catalog-toolbar">
-      <div class="toolbar-row">
-        <label class="toolbar-field">
-          <span class="toolbar-label">Търси в библиотеката</span>
-          <input
-            class="toolbar-input"
-            type="search"
-            placeholder="Например: Вапцаров, любов, запетая"
-            data-search-input
-          />
-        </label>
-
-        <label class="toolbar-field toolbar-field--compact">
-          <span class="toolbar-label">Раздел</span>
-          <select class="toolbar-select" data-type-filter>
-            <option value="all">Всички</option>
-            <option value="literature">Литература</option>
-            <option value="grammar">Български език</option>
-          </select>
-        </label>
-      </div>
-    </div>
-
-    <div class="catalog-grid stagger">
-      {
-        libraryItems.map((item, index) => (
-          <a
-            href={item.href}
-            class="card"
-            data-card
-            data-type={item.type}
-            data-search-text={item.searchText}
-          >
-            <div class="card-shell">
-              <div class="card-topline">
-                <span class:list={["pill", item.type === "grammar" && "pill--secondary"]}>
-                  {item.category}
-                </span>
-                <span class="card-index">{String(index + 1).padStart(2, "0")}</span>
-              </div>
-              <h3 class="card-title" data-card-title>{item.title}</h3>
-              <p class="card-meta">{item.meta}</p>
-              <p class="card-copy">{item.description}</p>
-            </div>
-          </a>
-        ))
-      }
-    </div>
-
-    <p class="empty-state" data-empty-state hidden>
-      Няма съвпадения. Пробвай с друго име, тема или термин.
-    </p>
-  </section>
-
-  <section class="surface reveal">
-    <div class="surface-header">
-      <div class="surface-header-copy">
-        <p class="kicker">Двата основни рафта</p>
-        <h2 class="section-title">Започни от правилната посока, вместо от случайна страница.</h2>
-      </div>
-    </div>
-
-    <div class="split-band">
-      <article class="block">
-        <p class="kicker">Литература</p>
-        <h3 class="block-title">Произведенията са подредени по теми, автори и мотиви.</h3>
-        <p class="block-copy">
-          Всеки текст има собствена страница с акцент върху най-важното за матурата и
-          ясен бутон към пълното произведение.
-        </p>
-        <div class="cta-row">
-          <a class="button" href="/literatura/">Към произведенията</a>
-        </div>
-      </article>
-
-      <article class="block">
-        <p class="kicker">Български език</p>
-        <h3 class="block-title">Морфология, синтаксис и правопис в кратък преговорен формат.</h3>
-        <p class="block-copy">
-          Модулите са замислени за последните дни преди изпита, когато ти трябва структура,
-          а не още хаос.
-        </p>
-        <div class="cta-row">
-          <a class="ghost-link ghost-link--secondary" href="/bulgarski/">
-            Към българския език
-          </a>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="duo-grid">
-    <article class="surface reveal">
-      <div class="surface-header">
-        <div class="surface-header-copy">
-          <p class="kicker">Литература</p>
-          <h2 class="section-title">Най-важните теми в програмата.</h2>
-        </div>
-      </div>
-
-      <div class="catalog-grid stagger">
-        {
-          topThemes.map(([theme, count], index) => (
-            <a href="/literatura/" class="card">
-              <div class="card-shell">
-                <div class="card-topline">
-                  <span class="pill">Тема</span>
-                  <span class="card-index">{String(index + 1).padStart(2, "0")}</span>
-                </div>
-                <h3 class="card-title">{theme}</h3>
-                <p class="card-copy">{count} произведения</p>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </article>
-
-    <article class="surface reveal reveal-delay-1">
-      <div class="surface-header">
-        <div class="surface-header-copy">
-          <p class="kicker">Български език</p>
-          <h2 class="section-title">Модулите за бърз финален преговор.</h2>
-        </div>
-      </div>
-
-      <div class="catalog-grid stagger">
-        {
-          grammarEntries.map((entry, index) => (
-            <a href={`/bulgarski/${entry.id}/`} class="card" data-module={entry.data.module}>
-              <div class="card-shell">
-                <div class="card-topline">
-                  <span class="pill pill--secondary">{entry.data.module}</span>
-                  <span class="card-index">{String(index + 1).padStart(2, "0")}</span>
-                </div>
-                <h3 class="card-title">{entry.data.title}</h3>
-                <p class="card-copy">{entry.data.excerpt}</p>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </article>
-  </section>
 </BaseLayout>
 
 <script is:inline>
   (() => {
-    const initSearch = () => {
-      const root = document.querySelector("[data-search-root]");
-      if (!(root instanceof HTMLElement) || root.dataset.enhanced === "true") return;
+    const initLanding = () => {
+      const switcher = document.querySelector("[data-switcher]");
+      if (!(switcher instanceof HTMLElement) || switcher.dataset.enhanced === "true") return;
+      switcher.dataset.enhanced = "true";
 
-      root.dataset.enhanced = "true";
+      const switcherBtns = Array.from(switcher.querySelectorAll("[data-switch]"));
+      const litSection = document.querySelector('[data-section="literature"]');
+      const gramSection = document.querySelector('[data-section="grammar"]');
+      const filterBar = document.querySelector("[data-filters]");
+      const emptyState = document.querySelector("[data-empty]");
 
-      const searchInput = root.querySelector("[data-search-input]");
-      const typeFilter = root.querySelector("[data-type-filter]");
-      const cards = Array.from(root.querySelectorAll("[data-card]"));
-      const summary = root.querySelector("[data-result-summary]");
-      const emptyState = root.querySelector("[data-empty-state]");
-
-      if (!(searchInput instanceof HTMLInputElement)) return;
-      if (!(typeFilter instanceof HTMLSelectElement)) return;
-      if (!(summary instanceof HTMLElement)) return;
+      if (!(litSection instanceof HTMLElement)) return;
+      if (!(gramSection instanceof HTMLElement)) return;
+      if (!(filterBar instanceof HTMLElement)) return;
       if (!(emptyState instanceof HTMLElement)) return;
 
-      const label = (count) => `${count} ${count === 1 ? "резултат" : "резултата"}`;
+      const filterChips = Array.from(filterBar.querySelectorAll("[data-theme]"));
+      const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
+      const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
+
+      let activeTab = "literature";
+      let activeTheme = "";
+      let searchQuery = "";
 
       const applyFilters = () => {
-        const query = searchInput.value.trim().toLocaleLowerCase("bg-BG");
-        const type = typeFilter.value;
+        const cards = activeTab === "literature" ? litCards : gramCards;
         let visible = 0;
 
         for (const card of cards) {
           if (!(card instanceof HTMLElement)) continue;
 
-          const matchesQuery = !query || card.dataset.searchText?.includes(query);
-          const matchesType = type === "all" || card.dataset.type === type;
-          const show = Boolean(matchesQuery && matchesType);
+          const matchesTheme =
+            activeTab !== "literature" ||
+            !activeTheme ||
+            card.dataset.theme === activeTheme;
 
+          const matchesSearch =
+            !searchQuery ||
+            (card.dataset.searchText || "").includes(searchQuery);
+
+          const show = matchesTheme && matchesSearch;
           card.hidden = !show;
           if (show) visible += 1;
         }
 
-        summary.textContent = label(visible);
         emptyState.hidden = visible !== 0;
       };
 
-      searchInput.addEventListener("input", applyFilters);
-      typeFilter.addEventListener("change", applyFilters);
+      // Switcher
+      for (const btn of switcherBtns) {
+        if (!(btn instanceof HTMLElement)) continue;
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.switch || "literature";
+          if (tab === activeTab) return;
+
+          activeTab = tab;
+
+          for (const b of switcherBtns) {
+            if (b instanceof HTMLElement) {
+              b.classList.toggle("active", b.dataset.switch === tab);
+            }
+          }
+
+          if (tab === "literature") {
+            litSection.hidden = false;
+            gramSection.hidden = true;
+            filterBar.hidden = false;
+          } else {
+            litSection.hidden = true;
+            gramSection.hidden = false;
+            filterBar.hidden = true;
+          }
+
+          // Reset filter to "Всички" on tab switch
+          activeTheme = "";
+          for (const chip of filterChips) {
+            if (chip instanceof HTMLElement) {
+              chip.classList.toggle("active", chip.dataset.theme === "");
+            }
+          }
+
+          applyFilters();
+        });
+      }
+
+      // Filter chips
+      for (const chip of filterChips) {
+        if (!(chip instanceof HTMLElement)) continue;
+        chip.addEventListener("click", () => {
+          activeTheme = chip.dataset.theme || "";
+
+          for (const c of filterChips) {
+            if (c instanceof HTMLElement) {
+              c.classList.toggle("active", c.dataset.theme === activeTheme);
+            }
+          }
+
+          applyFilters();
+        });
+      }
+
+      // Search — support custom event from nav (Task 7) and inline input
+      const handleSearch = (query) => {
+        searchQuery = (query || "").trim().toLocaleLowerCase("bg-BG");
+        applyFilters();
+      };
+
+      document.addEventListener("search-input", (e) => {
+        if (e instanceof CustomEvent) {
+          handleSearch(e.detail);
+        }
+      });
+
+      const searchInput = document.querySelector("[data-search-input]");
+      if (searchInput instanceof HTMLInputElement) {
+        searchInput.addEventListener("input", () => {
+          handleSearch(searchInput.value);
+        });
+      }
+
       applyFilters();
     };
 
-    initSearch();
-    document.addEventListener("astro:page-load", initSearch, { once: true });
+    initLanding();
+    document.addEventListener("astro:page-load", initLanding);
   })();
 </script>
