@@ -169,6 +169,19 @@ function init(): void {
   if (marker.dataset.interactionsInit) return;
   marker.dataset.interactionsInit = "1";
 
+  // Mark nav as loaded after first animation completes — prevents
+  // the entrance animation from replaying on Astro page transitions
+  const nav = document.getElementById("site-nav");
+  if (nav && !marker.dataset.navLoaded) {
+    nav.addEventListener(
+      "animationend",
+      () => {
+        marker.dataset.navLoaded = "1";
+      },
+      { once: true },
+    );
+  }
+
   setupScrollReveal();
   setupCardTilt();
   setupGrammarCardTilt();

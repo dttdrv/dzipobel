@@ -87,13 +87,15 @@ svg {
 .site-shell {
   position: relative;
   z-index: 1;
-  width: var(--page-width);
+  width: 100%;
   max-width: var(--page-width);
   margin: 0 auto;
   padding:
     max(10px, env(safe-area-inset-top))
-    0
-    max(24px, env(safe-area-inset-bottom));
+    env(safe-area-inset-right, 0px)
+    max(24px, env(safe-area-inset-bottom))
+    env(safe-area-inset-left, 0px);
+  overflow-x: clip;
 }
 
 /* --- Nav (floating pill) --- */
@@ -101,7 +103,7 @@ svg {
 .nav,
 .nav-expanded {
   position: fixed;
-  top: 16px;
+  top: max(16px, env(safe-area-inset-top, 16px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -117,6 +119,11 @@ svg {
   align-items: center;
   gap: 14px;
   padding: 8px 8px 8px 18px;
+  max-width: calc(100vw - 32px);
+}
+
+/* Only animate nav on first page load, not on Astro transitions */
+html:not([data-nav-loaded]) .nav {
   animation: navIn 700ms var(--ease-out) both;
 }
 
@@ -855,26 +862,53 @@ svg {
 /* --- Responsive --- */
 
 @media (max-width: 720px) {
+  :root {
+    --page-padding: 16px;
+  }
+
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-left: var(--page-padding);
+    margin-right: var(--page-padding);
+    border-radius: 14px;
+  }
+
+  .card-item {
+    padding: 18px 16px;
+  }
+
+  .card-title {
+    font-size: 15px;
   }
 
   .grammar-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
+    margin-left: var(--page-padding);
+    margin-right: var(--page-padding);
   }
 
   .grammar-card {
     flex-direction: row;
     align-items: center;
     text-align: left;
-    padding: 20px;
-    gap: 16px;
+    padding: 18px 16px;
+    gap: 14px;
+    border-radius: 14px;
   }
 
   .grammar-card-icon {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .grammar-card-title {
+    font-size: 16px;
+  }
+
+  .grammar-card-desc {
+    font-size: 12px;
   }
 
   .grammar-card-arrow {
@@ -884,7 +918,7 @@ svg {
   }
 
   .switcher-bar {
-    width: 100%;
+    padding: 0 var(--page-padding);
   }
 
   .switcher {
@@ -894,6 +928,8 @@ svg {
   .switcher-btn {
     flex: 1;
     text-align: center;
+    padding: 9px 12px;
+    font-size: 13px;
   }
 
   .filter-bar {
@@ -901,16 +937,33 @@ svg {
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    padding-left: var(--page-padding);
+    padding-right: var(--page-padding);
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .filter-bar::-webkit-scrollbar {
     display: none;
   }
 
-  .footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  /* fade edges to hint scrollability */
+  .filter-bar::after {
+    content: "";
+    flex-shrink: 0;
+    width: 1px;
+  }
+
+  .hero {
+    padding: 40px var(--page-padding) 24px;
+  }
+
+  .hero-headline {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+
+  .hero-sub {
+    font-size: 14px;
   }
 
   .nav {
@@ -918,12 +971,55 @@ svg {
     gap: 10px;
   }
 
-  .hero-headline {
-    font-size: clamp(2rem, 8vw, 2.5rem);
+  .nav-expanded {
+    padding: 6px 6px 6px 14px;
+    gap: 8px;
+  }
+
+  .nav-expanded input {
+    min-width: 120px;
+    font-size: 14px;
+  }
+
+  .nav-spacer {
+    height: 56px;
+  }
+
+  .detail-header {
+    padding: 32px var(--page-padding) 20px;
+  }
+
+  .detail-title {
+    font-size: clamp(1.5rem, 6vw, 1.85rem);
+  }
+
+  .detail-cta {
+    margin: 0 var(--page-padding);
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .detail-content {
     max-width: none;
+    padding: 0 var(--page-padding) 40px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px var(--page-padding);
+  }
+
+  .back-link {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .empty-state {
+    padding: 32px var(--page-padding);
   }
 }
 
