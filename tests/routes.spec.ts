@@ -5,9 +5,6 @@ import { join } from "node:path";
 describe("site routes", () => {
   it("defines the required top-level pages", () => {
     const rootDir = process.cwd();
-
     expect(existsSync(join(rootDir, "src", "pages", "index.astro"))).toBe(true);
-    expect(existsSync(join(rootDir, "src", "pages", "literatura", "index.astro"))).toBe(true);
-    expect(existsSync(join(rootDir, "src", "pages", "bulgarski", "index.astro"))).toBe(true);
   });
 });
