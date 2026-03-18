@@ -24,7 +24,7 @@ test("literature theme filter works", async ({ page }) => {
 
   await page.getByRole("button", { name: "Любов" }).click();
 
-  await expect(page.locator("[data-card]:not([hidden])")).toHaveCount(3);
+  await expect(page.locator('[data-section="literature"] [data-card]:not([hidden])')).toHaveCount(3);
 });
 
 test("grammar section works", async ({ page }) => {
