@@ -43,7 +43,7 @@ test("literature detail page", async ({ page }) => {
     page.getByRole("heading", { name: "Вяра" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /Литература/ }),
+    page.getByRole("link", { name: "Обратно" }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: /Прочети в/ }),
@@ -57,6 +57,6 @@ test("grammar detail page", async ({ page }) => {
     page.getByRole("heading", { name: "Морфология" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /Български/ }),
+    page.getByRole("link", { name: "Обратно" }),
   ).toBeVisible();
 });
