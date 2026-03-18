@@ -5,3 +5,6 @@ dist/
 coverage/
 playwright-report/
 npm-debug.log*
+_scaffold-trash/
+.superpowers/
+test-results/
