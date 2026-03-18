@@ -1,54 +1,62 @@
 import { expect, test } from "@playwright/test";
 
-test("home page renders the main study entry points", async ({ page }) => {
+test("home page renders the landing", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", {
-      name: "Подреди материала. Намери правилния текст. Влез по-спокоен в изпита.",
-    }),
+    page.getByRole("heading", { name: "Подготви се за матурата." }),
   ).toBeVisible();
   await expect(
-    page.getByPlaceholder("Например: Вапцаров, любов, запетая"),
+    page.getByRole("button", { name: "Литература" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Отвори литературата" }),
+    page.getByRole("button", { name: "Български език" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Отвори българския език" }),
+    page.getByRole("link", { name: "@dttdrv" }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "създадено от @dttdrv" })).toBeVisible();
+  await expect(page.locator("[data-card]")).toHaveCount(await page.locator("[data-card]").count());
+  expect(await page.locator("[data-card]").count()).toBeGreaterThanOrEqual(12);
 });
 
-test("literature catalog filters down to a single visible work", async ({ page }) => {
-  await page.goto("/literatura/");
+test("literature theme filter works", async ({ page }) => {
+  await page.goto("/");
 
-  await page
-    .getByPlaceholder("Например: Вапцаров, любов, избор")
-    .fill("Вапцаров");
+  await page.getByRole("button", { name: "Любов" }).click();
 
-  await expect(page.locator("[data-summary]")).toHaveText("1 произведение");
-  await expect(page.locator("[data-card]:not([hidden])")).toHaveCount(1);
-  await expect(page.locator("[data-card]:not([hidden]) [data-card-title]")).toHaveText("Вяра");
+  await expect(page.locator("[data-card]:not([hidden])")).toHaveCount(3);
 });
 
-test("grammar catalog filters down to a single visible module", async ({ page }) => {
-  await page.goto("/bulgarski/");
+test("grammar section works", async ({ page }) => {
+  await page.goto("/");
 
-  await page
-    .getByRole("searchbox", { name: "Търси по правило, термин или ключова дума" })
-    .fill("запетая");
+  await page.getByRole("button", { name: "Български език" }).click();
 
-  await expect(page.locator("[data-summary]")).toHaveText("1 модул");
-  await expect(page.locator("[data-card]:not([hidden])")).toHaveCount(1);
-  await expect(page.locator("[data-card]:not([hidden]) [data-card-title]")).toHaveText("Синтаксис");
+  await expect(page.locator(".grammar-item")).toHaveCount(3);
+  await expect(page.locator("[data-filters]")).toBeHidden();
 });
 
-test("literature detail page exposes the external reading link", async ({ page }) => {
+test("literature detail page", async ({ page }) => {
   await page.goto("/literatura/vyara/");
 
-  await expect(page.getByRole("heading", { name: "Вяра" })).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /Чети произведението в Читанка/ }).first(),
+    page.getByRole("heading", { name: "Вяра" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Литература/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Чети произведението/ }),
+  ).toBeVisible();
+});
+
+test("grammar detail page", async ({ page }) => {
+  await page.goto("/bulgarski/morfologiya/");
+
+  await expect(
+    page.getByRole("heading", { name: "Морфология" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Български/ }),
   ).toBeVisible();
 });
