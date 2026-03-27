@@ -2,7 +2,7 @@
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
-const { title, description } = Astro.props;
+const { title, description, hideNav = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,12 +28,14 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <div class="site-shell">
-      <header class="nav" id="site-nav">
-        <a href="/" class="nav-brand" aria-label="ДЗИ библиотека">ДЗИ по БЕЛ</a>
-        <button class="nav-search" aria-label="Търсене" data-search-toggle>⌕</button>
-      </header>
+      {!hideNav && (
+        <header class="nav" id="site-nav">
+          <a href="/" class="nav-brand" aria-label="ДЗИ библиотека">ДЗИ по БЕЛ</a>
+          <button class="nav-search" aria-label="Търсене" data-search-toggle>⌕</button>
+        </header>
+      )}
 
-      <div class="nav-spacer" aria-hidden="true"></div>
+      {!hideNav && <div class="nav-spacer" aria-hidden="true"></div>}
 
       <main>
         <slot />

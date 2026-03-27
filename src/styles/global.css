@@ -959,7 +959,7 @@ html:not([data-nav-loaded]) .nav {
 /* --- Footer --- */
 
 .footer {
-  padding: 16px var(--page-padding);
+  padding: 8px var(--page-padding);
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: center;
@@ -967,13 +967,13 @@ html:not([data-nav-loaded]) .nav {
 }
 
 .footer-credit {
-  font-size: 11px;
-  color: var(--soft);
+  font-size: 15px;
+  color: var(--muted);
 }
 
 .footer-credit a {
   color: var(--text);
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
   text-decoration: none;
   transition: opacity var(--ease-smooth);
