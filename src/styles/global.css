@@ -956,6 +956,219 @@ html:not([data-nav-loaded]) .nav {
   background: rgba(0, 0, 0, 0.02);
 }
 
+/* --- Literature detail page --- */
+
+.lit-hero {
+  padding: 48px var(--page-padding) 28px;
+  text-align: center;
+  animation: heroTextIn 700ms var(--ease-out) both;
+}
+
+.lit-hero-meta {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.lit-hero-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+}
+
+.lit-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.lit-hero-author {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+/* --- Lit body --- */
+
+.lit-body {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 var(--page-padding) 48px;
+  animation: heroTextIn 600ms var(--ease-out) 150ms both;
+}
+
+.lit-excerpt {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* --- Quick-scan pills --- */
+
+.lit-scan {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.lit-scan-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--soft);
+  margin: 0 0 8px;
+}
+
+.lit-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lit-pill {
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.lit-pill--motif {
+  background: rgba(59, 130, 246, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.lit-pill--conflict {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .lit-pill--motif {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.2);
+  }
+  .lit-pill--conflict {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.18);
+  }
+}
+
+/* --- Prose accordion section --- */
+
+.lit-prose-section {
+  margin-bottom: 28px;
+}
+
+/* --- Literary devices grid --- */
+
+.lit-devices {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.lit-devices-title {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--soft);
+  margin: 0 0 12px;
+}
+
+.lit-devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
+}
+
+.lit-device {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+}
+
+.lit-device-name {
+  display: block;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.lit-device-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lit-device {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.18);
+  }
+}
+
+/* --- Message highlight --- */
+
+.lit-message {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.lit-message-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(180, 120, 20, 0.8);
+  margin: 0 0 8px;
+}
+
+.lit-message-text {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lit-message {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+  .lit-message-label {
+    color: rgba(245, 178, 50, 0.8);
+  }
+}
+
 /* --- Footer --- */
 
 .footer {
@@ -1181,8 +1394,24 @@ html:not([data-nav-loaded]) .nav {
     padding: 0 var(--page-padding) 40px;
   }
 
+  .lit-hero {
+    padding: 32px var(--page-padding) 20px;
+  }
+
+  .lit-hero-title {
+    font-size: clamp(1.4rem, 7vw, 1.85rem);
+  }
+
+  .lit-excerpt {
+    font-size: 15px;
+  }
+
+  .lit-devices-grid {
+    grid-template-columns: 1fr;
+  }
+
   .footer {
-    padding: 12px var(--page-padding);
+    padding: 8px var(--page-padding);
   }
 
   .back-link {

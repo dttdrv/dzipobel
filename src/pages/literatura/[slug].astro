@@ -18,6 +18,18 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props as { entry: CollectionEntry<"literature"> };
 const sections: LiteratureSection[] = entry.data.sections;
+
+/* Split sections into types for different rendering */
+const proseAccordions = sections.filter(
+  (s) => s.title === "Композиция" || s.title === "Основни образи",
+);
+const deviceSection = sections.find((s) => s.title === "Изразни средства");
+const otherSections = sections.filter(
+  (s) =>
+    s.title !== "Композиция" &&
+    s.title !== "Основни образи" &&
+    s.title !== "Изразни средства",
+);
 ---
 
 <BaseLayout
@@ -25,14 +37,15 @@ const sections: LiteratureSection[] = entry.data.sections;
   description={entry.data.excerpt}
   hideNav={true}
 >
-  <section class="detail-header">
+  <!-- HERO -->
+  <section class="lit-hero">
     <a href="/" class="back-link" aria-label="Обратно">←</a>
-    <span class="detail-kicker">{entry.data.genre} · {entry.data.theme}</span>
-    <h1 class="detail-title">{entry.data.title}</h1>
-    <span class="detail-author">{entry.data.author}</span>
-  </section>
-
-  <div class="detail-cta">
+    <div class="lit-hero-meta">
+      <span class="lit-hero-badge">{entry.data.genre}</span>
+      <span class="lit-hero-badge">{entry.data.theme}</span>
+    </div>
+    <h1 class="lit-hero-title">{entry.data.title}</h1>
+    <p class="lit-hero-author">{entry.data.author}</p>
     <a
       class="btn btn-primary"
       href={entry.data.readUrl}
@@ -41,110 +54,131 @@ const sections: LiteratureSection[] = entry.data.sections;
     >
       Прочети в {entry.data.readSource} ↗
     </a>
-  </div>
+  </section>
 
-  <div class="detail-content">
-    <div class="acc-toolbar">
-      <button class="acc-toggle-all" data-expand-all>Отвори всички</button>
+  <div class="lit-body">
+
+    <!-- EXCERPT — always visible -->
+    <p class="lit-excerpt">{entry.data.excerpt}</p>
+
+    <!-- QUICK-SCAN: Motifs + Conflicts as pills -->
+    <div class="lit-scan">
+      <div class="lit-scan-group">
+        <h3 class="lit-scan-label">Мотиви</h3>
+        <div class="lit-pills">
+          {entry.data.motifs.map((m: string) => (
+            <span class="lit-pill lit-pill--motif">{m}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="lit-scan-group">
+        <h3 class="lit-scan-label">Конфликти</h3>
+        <div class="lit-pills">
+          {entry.data.conflicts.map((c: string) => (
+            <span class="lit-pill lit-pill--conflict">{c}</span>
+          ))}
+        </div>
+      </div>
     </div>
 
-    <details class="acc" data-accordion>
-      <summary class="acc-head">
-        <span class="acc-title">За автора</span>
-        <span class="acc-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="acc-body">
-        <p class="acc-text">{entry.data.aboutAuthor}</p>
-      </div>
-    </details>
+    <!-- PROSE SECTIONS — accordions for long text -->
+    <div class="lit-prose-section">
+      <details class="acc" data-accordion>
+        <summary class="acc-head">
+          <span class="acc-title">За автора</span>
+          <span class="acc-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="acc-body">
+          <p class="acc-text">{entry.data.aboutAuthor}</p>
+        </div>
+      </details>
 
-    <details class="acc" data-accordion>
-      <summary class="acc-head">
-        <span class="acc-title">За произведението</span>
-        <span class="acc-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="acc-body">
-        <p class="acc-text">{entry.data.aboutWork}</p>
-      </div>
-    </details>
+      <details class="acc" data-accordion>
+        <summary class="acc-head">
+          <span class="acc-title">За произведението</span>
+          <span class="acc-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="acc-body">
+          <p class="acc-text">{entry.data.aboutWork}</p>
+        </div>
+      </details>
 
-    <details class="acc" data-accordion>
-      <summary class="acc-head">
-        <span class="acc-title">Мотиви</span>
-        <span class="acc-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="acc-body">
-        <ul>
-          {entry.data.motifs.map((m: string) => <li>{m}</li>)}
-        </ul>
-      </div>
-    </details>
-
-    <details class="acc" data-accordion>
-      <summary class="acc-head">
-        <span class="acc-title">Конфликти</span>
-        <span class="acc-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="acc-body">
-        <ul>
-          {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
-        </ul>
-      </div>
-    </details>
-
-    {
-      sections.map((section) => (
+      {proseAccordions.map((section) => (
         <details class="acc" data-accordion>
           <summary class="acc-head">
             <span class="acc-title">{section.title}</span>
             <span class="acc-chevron" aria-hidden="true"></span>
           </summary>
           <div class="acc-body">
-            {section.items.length > 1 ? (
-              <ul>
-                {section.items.map((item: string) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            ) : (
-              <p class="acc-text">{section.items[0]}</p>
-            )}
+            <ul>
+              {section.items.map((item: string) => (
+                <li>{item}</li>
+              ))}
+            </ul>
           </div>
         </details>
-      ))
-    }
+      ))}
+    </div>
 
-    <details class="acc" data-accordion>
-      <summary class="acc-head">
-        <span class="acc-title">Послание</span>
-        <span class="acc-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="acc-body">
-        <p class="acc-text">{entry.data.message}</p>
+    <!-- LITERARY DEVICES — always visible, callout boxes -->
+    {deviceSection && (
+      <div class="lit-devices">
+        <h3 class="lit-devices-title">Изразни средства</h3>
+        <div class="lit-devices-grid">
+          {deviceSection.items.map((item: string) => {
+            const dashIdx = item.indexOf(" \u2013 ");
+            const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
+            const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
+            return (
+              <div class="lit-device">
+                <span class="lit-device-name">{name}</span>
+                {desc && <span class="lit-device-desc">{desc}</span>}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </details>
+    )}
+
+    <!-- OTHER SECTIONS -->
+    {otherSections.length > 0 && otherSections.map((section) => (
+      <details class="acc" data-accordion>
+        <summary class="acc-head">
+          <span class="acc-title">{section.title}</span>
+          <span class="acc-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="acc-body">
+          {section.items.length > 1 ? (
+            <ul>
+              {section.items.map((item: string) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          ) : (
+            <p class="acc-text">{section.items[0]}</p>
+          )}
+        </div>
+      </details>
+    ))}
+
+    <!-- MESSAGE — highlight box -->
+    <div class="lit-message">
+      <h3 class="lit-message-label">Послание</h3>
+      <p class="lit-message-text">{entry.data.message}</p>
+    </div>
+
   </div>
 </BaseLayout>
 
 <script is:inline>
   (() => {
     const initAccordion = () => {
-      const toggleBtn = document.querySelector("[data-expand-all]");
-      if (!(toggleBtn instanceof HTMLElement) || toggleBtn.dataset.enhanced === "true") return;
-      toggleBtn.dataset.enhanced = "true";
-
-      const allDetails = Array.from(document.querySelectorAll("[data-accordion]"));
-      let allOpen = false;
-
-      toggleBtn.addEventListener("click", () => {
-        allOpen = !allOpen;
-        for (const d of allDetails) {
-          if (d instanceof HTMLDetailsElement) {
-            d.open = allOpen;
-          }
-        }
-        toggleBtn.textContent = allOpen ? "Затвори всички" : "Отвори всички";
-      });
+      const details = document.querySelectorAll("[data-accordion]");
+      if (!details.length) return;
+      const first = details[0];
+      if (first instanceof HTMLElement && first.dataset.enhanced === "true") return;
+      if (first instanceof HTMLElement) first.dataset.enhanced = "true";
     };
 
     initAccordion();
