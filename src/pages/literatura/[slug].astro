@@ -16,10 +16,11 @@ export async function getStaticPaths() {
   }));
 }
 
+export const prerender = true;
+
 const { entry } = Astro.props as { entry: CollectionEntry<"literature"> };
 const sections: LiteratureSection[] = entry.data.sections;
 
-/* Split sections into types for different rendering */
 const proseAccordions = sections.filter(
   (s) => s.title === "Композиция" || s.title === "Основни образи",
 );
@@ -37,151 +38,116 @@ const otherSections = sections.filter(
   description={entry.data.excerpt}
   hideNav={true}
 >
-  <!-- HERO -->
-  <section class="lit-hero">
-    <a href="/" class="back-link" aria-label="Обратно">←</a>
-    <div class="lit-hero-meta">
-      <span class="lit-hero-badge">{entry.data.genre}</span>
-      <span class="lit-hero-badge">{entry.data.theme}</span>
+  <!-- FULL-WIDTH HERO BAR -->
+  <div class="lit-topbar">
+    <a href="/" class="lit-topbar-back">← Назад</a>
+    <div class="lit-topbar-center">
+      <span class="lit-topbar-title">{entry.data.title}</span>
+      <span class="lit-topbar-author">{entry.data.author}</span>
     </div>
-    <h1 class="lit-hero-title">{entry.data.title}</h1>
-    <p class="lit-hero-author">{entry.data.author}</p>
     <a
-      class="btn btn-primary"
+      class="lit-topbar-cta"
       href={entry.data.readUrl}
       target="_blank"
       rel="noreferrer"
     >
-      Прочети в {entry.data.readSource} ↗
+      Прочети ↗
     </a>
-  </section>
+  </div>
 
-  <div class="lit-body">
+  <!-- TWO-COLUMN LAYOUT -->
+  <div class="lit-page">
 
-    <!-- EXCERPT — always visible -->
-    <p class="lit-excerpt">{entry.data.excerpt}</p>
-
-    <!-- QUICK-SCAN: Motifs + Conflicts as pills -->
-    <div class="lit-scan">
-      <div class="lit-scan-group">
-        <h3 class="lit-scan-label">Мотиви</h3>
-        <div class="lit-pills">
-          {entry.data.motifs.map((m: string) => (
-            <span class="lit-pill lit-pill--motif">{m}</span>
-          ))}
-        </div>
+    <!-- SIDEBAR: quick-scan info -->
+    <aside class="lit-sidebar">
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Жанр</h3>
+        <p class="lit-sidebar-value">{entry.data.genre}</p>
       </div>
 
-      <div class="lit-scan-group">
-        <h3 class="lit-scan-label">Конфликти</h3>
-        <div class="lit-pills">
-          {entry.data.conflicts.map((c: string) => (
-            <span class="lit-pill lit-pill--conflict">{c}</span>
-          ))}
-        </div>
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Тема</h3>
+        <p class="lit-sidebar-value">{entry.data.theme}</p>
       </div>
-    </div>
 
-    <!-- PROSE SECTIONS — accordions for long text -->
-    <div class="lit-prose-section">
-      <details class="acc" data-accordion>
-        <summary class="acc-head">
-          <span class="acc-title">За автора</span>
-          <span class="acc-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="acc-body">
-          <p class="acc-text">{entry.data.aboutAuthor}</p>
-        </div>
-      </details>
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Мотиви</h3>
+        <ul class="lit-sidebar-list lit-sidebar-list--motif">
+          {entry.data.motifs.map((m: string) => <li>{m}</li>)}
+        </ul>
+      </div>
 
-      <details class="acc" data-accordion>
-        <summary class="acc-head">
-          <span class="acc-title">За произведението</span>
-          <span class="acc-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="acc-body">
-          <p class="acc-text">{entry.data.aboutWork}</p>
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Конфликти</h3>
+        <ul class="lit-sidebar-list lit-sidebar-list--conflict">
+          {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
+        </ul>
+      </div>
+
+      {deviceSection && (
+        <div class="lit-sidebar-block">
+          <h3 class="lit-sidebar-label">Изразни средства</h3>
+          <div class="lit-device-stack">
+            {deviceSection.items.map((item: string) => {
+              const dashIdx = item.indexOf(" \u2013 ");
+              const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
+              const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
+              return (
+                <div class="lit-device-card">
+                  <span class="lit-device-card-name">{name}</span>
+                  {desc && <span class="lit-device-card-desc">{desc}</span>}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </details>
+      )}
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="lit-main">
+      <p class="lit-main-excerpt">{entry.data.excerpt}</p>
+
+      <section class="lit-section">
+        <h2 class="lit-section-title">За автора</h2>
+        <p class="lit-section-text">{entry.data.aboutAuthor}</p>
+      </section>
+
+      <section class="lit-section">
+        <h2 class="lit-section-title">За произведението</h2>
+        <p class="lit-section-text">{entry.data.aboutWork}</p>
+      </section>
 
       {proseAccordions.map((section) => (
-        <details class="acc" data-accordion>
-          <summary class="acc-head">
-            <span class="acc-title">{section.title}</span>
-            <span class="acc-chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="acc-body">
-            <ul>
-              {section.items.map((item: string) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </details>
+        <section class="lit-section">
+          <h2 class="lit-section-title">{section.title}</h2>
+          <ul class="lit-section-list">
+            {section.items.map((item: string) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
       ))}
-    </div>
 
-    <!-- LITERARY DEVICES — always visible, callout boxes -->
-    {deviceSection && (
-      <div class="lit-devices">
-        <h3 class="lit-devices-title">Изразни средства</h3>
-        <div class="lit-devices-grid">
-          {deviceSection.items.map((item: string) => {
-            const dashIdx = item.indexOf(" \u2013 ");
-            const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
-            const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
-            return (
-              <div class="lit-device">
-                <span class="lit-device-name">{name}</span>
-                {desc && <span class="lit-device-desc">{desc}</span>}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    )}
-
-    <!-- OTHER SECTIONS -->
-    {otherSections.length > 0 && otherSections.map((section) => (
-      <details class="acc" data-accordion>
-        <summary class="acc-head">
-          <span class="acc-title">{section.title}</span>
-          <span class="acc-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="acc-body">
+      {otherSections.map((section) => (
+        <section class="lit-section">
+          <h2 class="lit-section-title">{section.title}</h2>
           {section.items.length > 1 ? (
-            <ul>
+            <ul class="lit-section-list">
               {section.items.map((item: string) => (
                 <li>{item}</li>
               ))}
             </ul>
           ) : (
-            <p class="acc-text">{section.items[0]}</p>
+            <p class="lit-section-text">{section.items[0]}</p>
           )}
-        </div>
-      </details>
-    ))}
+        </section>
+      ))}
 
-    <!-- MESSAGE — highlight box -->
-    <div class="lit-message">
-      <h3 class="lit-message-label">Послание</h3>
-      <p class="lit-message-text">{entry.data.message}</p>
-    </div>
-
+      <div class="lit-message">
+        <h3 class="lit-message-label">Послание</h3>
+        <p class="lit-message-text">{entry.data.message}</p>
+      </div>
+    </main>
   </div>
 </BaseLayout>
-
-<script is:inline>
-  (() => {
-    const initAccordion = () => {
-      const details = document.querySelectorAll("[data-accordion]");
-      if (!details.length) return;
-      const first = details[0];
-      if (first instanceof HTMLElement && first.dataset.enhanced === "true") return;
-      if (first instanceof HTMLElement) first.dataset.enhanced = "true";
-    };
-
-    initAccordion();
-    document.addEventListener("astro:page-load", initAccordion);
-  })();
-</script>
