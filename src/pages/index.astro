@@ -18,17 +18,51 @@ const grammarEntries: CollectionEntry<"grammar">[] = (
 
 const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
 
-const grammarIcons: Record<string, string> = {
-  "Морфология": "Аа",
-  "Фонетика": "/а/",
-  "Синтаксис": "{ }",
-  "Правопис": "✓",
-  "Лексикология": "≡",
-  "Словообразуване": "◎",
-  "Стилистика": "✦",
-  "Текстолингвистика": "¶",
-  "Създаване на текст": "✎",
+/* Grouped grammar modules with human-friendly descriptions */
+type GrammarGroup = {
+  label: string;
+  hint: string;
+  modules: string[]; // module field values
 };
+
+const grammarGroups: GrammarGroup[] = [
+  {
+    label: "Звук и дума",
+    hint: "Как звучат и се образуват думите",
+    modules: ["Фонетика", "Морфология", "Словообразуване"],
+  },
+  {
+    label: "Изречение и текст",
+    hint: "Как се свързват думите в смислен текст",
+    modules: ["Синтаксис", "Стилистика", "Текстолингвистика"],
+  },
+  {
+    label: "Правила за писане",
+    hint: "Как се пише правилно",
+    modules: ["Правопис", "Лексикология"],
+  },
+  {
+    label: "Подготовка за изпита",
+    hint: "Как да се справиш на матурата",
+    modules: ["Създаване на текст"],
+  },
+];
+
+const humanNames: Record<string, string> = {
+  "Фонетика": "Звукове, срички и ударения",
+  "Морфология": "Частите на речта и формите им",
+  "Словообразуване": "Как се образуват нови думи",
+  "Синтаксис": "Видове изречения и препинателни знаци",
+  "Стилистика": "Стилове, тропи и фигури",
+  "Текстолингвистика": "Видове текстове и как се изграждат",
+  "Правопис": "Правилно изписване на думите",
+  "Лексикология": "Значение на думите, синоними, пароними",
+  "Създаване на текст": "Как се пише есе и съчинение за ДЗИ",
+};
+
+function findEntry(module: string) {
+  return grammarEntries.find((e) => e.data.module === module);
+}
 ---
 
 <BaseLayout title="ДЗИ библиотека" description="Безплатна библиотека с литература и български език преди ДЗИ.">
@@ -77,20 +111,36 @@ const grammarIcons: Record<string, string> = {
     <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
 
-  <!-- GRAMMAR NAV -->
+  <!-- GRAMMAR: GROUPED NAV -->
   <section class="section" data-section="grammar" hidden>
-    <nav class="grammar-nav">
-      {grammarEntries.map((entry) => (
-        <a href={`/bulgarski/${entry.id}/`} class="grammar-link" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
-          <span class="grammar-link-icon" aria-hidden="true">{grammarIcons[entry.data.module] || "•"}</span>
-          <span class="grammar-link-body">
-            <span class="grammar-link-title">{entry.data.title}</span>
-            <span class="grammar-link-desc">{entry.data.excerpt}</span>
-          </span>
-          <span class="grammar-link-arrow" aria-hidden="true">→</span>
-        </a>
+    <div class="gram-groups">
+      {grammarGroups.map((group) => (
+        <div class="gram-group">
+          <div class="gram-group-head">
+            <span class="gram-group-label">{group.label}</span>
+            <span class="gram-group-hint">{group.hint}</span>
+          </div>
+          <div class="gram-group-items">
+            {group.modules.map((mod) => {
+              const entry = findEntry(mod);
+              if (!entry) return null;
+              return (
+                <a
+                  href={`/bulgarski/${entry.id}/`}
+                  class="gram-item"
+                  data-card
+                  data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")} ${humanNames[mod] || ""}`.toLocaleLowerCase("bg-BG")}
+                >
+                  <span class="gram-item-title">{entry.data.title}</span>
+                  <span class="gram-item-sub">{humanNames[mod] || entry.data.excerpt}</span>
+                  <span class="gram-item-count">{entry.data.sections.length} раздела</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
       ))}
-    </nav>
+    </div>
     <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
 
@@ -171,7 +221,7 @@ const grammarIcons: Record<string, string> = {
             filterBar.hidden = true;
           }
 
-          // Reset filter to "Всички" on tab switch
+          // Reset filter on tab switch
           activeTheme = "";
           for (const chip of filterChips) {
             if (chip instanceof HTMLElement) {
@@ -199,7 +249,7 @@ const grammarIcons: Record<string, string> = {
         });
       }
 
-      // Search — support custom event from nav (Task 7) and inline input
+      // Search
       const handleSearch = (query) => {
         searchQuery = (query || "").trim().toLocaleLowerCase("bg-BG");
         applyFilters();

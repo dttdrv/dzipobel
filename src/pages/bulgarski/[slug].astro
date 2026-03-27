@@ -22,13 +22,15 @@ const sections: GrammarSection[] = entry.data.sections;
 function classifyItem(text: string): string {
   if (/^═══/.test(text)) return "is-separator";
   if (/^(Пример[иа]?:|ПРИМЕР|Напр\.)/.test(text)) return "is-example";
-  if (/^(ВАЖНО|ПРАВИЛО|ЗАПОМНИ|Правило):/i.test(text)) return "is-rule";
+  if (/^(ВАЖНО|ПРАВИЛО|ЗАПОМНИ|Правило|Внимание|Тук е важно|Забележете):/i.test(text)) return "is-rule";
   return "";
 }
 
 function isSeparatorSection(title: string): boolean {
   return /^═══/.test(title);
 }
+
+const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
 ---
 
 <BaseLayout
@@ -39,21 +41,69 @@ function isSeparatorSection(title: string): boolean {
     <a href="/" class="back-link" aria-label="Обратно">←</a>
     <span class="detail-kicker">{entry.data.module}</span>
     <h1 class="detail-title">{entry.data.title}</h1>
+    <p class="detail-meta">{visibleSections.length} раздела</p>
   </section>
 
   <div class="detail-content">
+    <div class="acc-toolbar">
+      <button class="acc-toggle-all" data-expand-all>Отвори всички</button>
+    </div>
+
     {
-      sections.map((section) => (
-        <div class={`detail-section${isSeparatorSection(section.title) ? " detail-section--separator" : ""}`}>
-          <h4>{section.title}</h4>
-          <ul>
-            {section.items.map((item: string) => {
-              const cls = classifyItem(item);
-              return <li class={cls || undefined}>{item}</li>;
-            })}
-          </ul>
-        </div>
-      ))
+      sections.map((section) => {
+        const isSep = isSeparatorSection(section.title);
+
+        if (isSep) {
+          return (
+            <div class="acc-divider" role="separator">
+              <span>{section.title.replace(/═/g, "").trim()}</span>
+            </div>
+          );
+        }
+
+        return (
+          <details class="acc" data-accordion>
+            <summary class="acc-head">
+              <span class="acc-title">{section.title}</span>
+              <span class="acc-chevron" aria-hidden="true"></span>
+            </summary>
+            <div class="acc-body">
+              <ul>
+                {section.items.map((item: string) => {
+                  const cls = classifyItem(item);
+                  return <li class={cls || undefined}>{item}</li>;
+                })}
+              </ul>
+            </div>
+          </details>
+        );
+      })
     }
   </div>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const initAccordion = () => {
+      const toggleBtn = document.querySelector("[data-expand-all]");
+      if (!(toggleBtn instanceof HTMLElement) || toggleBtn.dataset.enhanced === "true") return;
+      toggleBtn.dataset.enhanced = "true";
+
+      const allDetails = Array.from(document.querySelectorAll("[data-accordion]"));
+      let allOpen = false;
+
+      toggleBtn.addEventListener("click", () => {
+        allOpen = !allOpen;
+        for (const d of allDetails) {
+          if (d instanceof HTMLDetailsElement) {
+            d.open = allOpen;
+          }
+        }
+        toggleBtn.textContent = allOpen ? "Затвори всички" : "Отвори всички";
+      });
+    };
+
+    initAccordion();
+    document.addEventListener("astro:page-load", initAccordion);
+  })();
+</script>
