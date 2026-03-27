@@ -43,36 +43,110 @@ const sections: LiteratureSection[] = entry.data.sections;
   </div>
 
   <div class="detail-content">
-    <div class="detail-section">
-      <h4>За автора</h4>
-      <p>{entry.data.aboutAuthor}</p>
+    <div class="acc-toolbar">
+      <button class="acc-toggle-all" data-expand-all>Отвори всички</button>
     </div>
 
-    <div class="detail-section">
-      <h4>За произведението</h4>
-      <p>{entry.data.aboutWork}</p>
-    </div>
+    <details class="acc" data-accordion>
+      <summary class="acc-head">
+        <span class="acc-title">За автора</span>
+        <span class="acc-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="acc-body">
+        <p class="acc-text">{entry.data.aboutAuthor}</p>
+      </div>
+    </details>
+
+    <details class="acc" data-accordion>
+      <summary class="acc-head">
+        <span class="acc-title">За произведението</span>
+        <span class="acc-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="acc-body">
+        <p class="acc-text">{entry.data.aboutWork}</p>
+      </div>
+    </details>
+
+    <details class="acc" data-accordion>
+      <summary class="acc-head">
+        <span class="acc-title">Мотиви</span>
+        <span class="acc-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="acc-body">
+        <ul>
+          {entry.data.motifs.map((m: string) => <li>{m}</li>)}
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc" data-accordion>
+      <summary class="acc-head">
+        <span class="acc-title">Конфликти</span>
+        <span class="acc-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="acc-body">
+        <ul>
+          {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </details>
 
     {
       sections.map((section) => (
-        <div class="detail-section">
-          <h4>{section.title}</h4>
-          {section.items.length > 1 ? (
-            <ul>
-              {section.items.map((item: string) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>{section.items[0]}</p>
-          )}
-        </div>
+        <details class="acc" data-accordion>
+          <summary class="acc-head">
+            <span class="acc-title">{section.title}</span>
+            <span class="acc-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-body">
+            {section.items.length > 1 ? (
+              <ul>
+                {section.items.map((item: string) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p class="acc-text">{section.items[0]}</p>
+            )}
+          </div>
+        </details>
       ))
     }
 
-    <div class="detail-section">
-      <h4>Послание</h4>
-      <p>{entry.data.message}</p>
-    </div>
+    <details class="acc" data-accordion>
+      <summary class="acc-head">
+        <span class="acc-title">Послание</span>
+        <span class="acc-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="acc-body">
+        <p class="acc-text">{entry.data.message}</p>
+      </div>
+    </details>
   </div>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const initAccordion = () => {
+      const toggleBtn = document.querySelector("[data-expand-all]");
+      if (!(toggleBtn instanceof HTMLElement) || toggleBtn.dataset.enhanced === "true") return;
+      toggleBtn.dataset.enhanced = "true";
+
+      const allDetails = Array.from(document.querySelectorAll("[data-accordion]"));
+      let allOpen = false;
+
+      toggleBtn.addEventListener("click", () => {
+        allOpen = !allOpen;
+        for (const d of allDetails) {
+          if (d instanceof HTMLDetailsElement) {
+            d.open = allOpen;
+          }
+        }
+        toggleBtn.textContent = allOpen ? "Затвори всички" : "Отвори всички";
+      });
+    };
+
+    initAccordion();
+    document.addEventListener("astro:page-load", initAccordion);
+  })();
+</script>

@@ -788,6 +788,13 @@ html:not([data-nav-loaded]) .nav {
   padding: 0 18px 16px;
 }
 
+.acc-text {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
 .acc-body ul {
   list-style: none;
   padding: 0;
@@ -952,7 +959,7 @@ html:not([data-nav-loaded]) .nav {
 /* --- Footer --- */
 
 .footer {
-  padding: 28px var(--page-padding);
+  padding: 16px var(--page-padding);
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: center;
@@ -960,13 +967,14 @@ html:not([data-nav-loaded]) .nav {
 }
 
 .footer-credit {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--soft);
 }
 
 .footer-credit a {
   color: var(--text);
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
   transition: opacity var(--ease-smooth);
 }
@@ -1174,10 +1182,7 @@ html:not([data-nav-loaded]) .nav {
   }
 
   .footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px var(--page-padding);
+    padding: 12px var(--page-padding);
   }
 
   .back-link {
