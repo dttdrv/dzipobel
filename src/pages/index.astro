@@ -17,6 +17,18 @@ const grammarEntries: CollectionEntry<"grammar">[] = (
 );
 
 const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
+
+const grammarIcons: Record<string, string> = {
+  "Морфология": "Аа",
+  "Фонетика": "/а/",
+  "Синтаксис": "{ }",
+  "Правопис": "✓",
+  "Лексикология": "≡",
+  "Словообразуване": "◎",
+  "Стилистика": "✦",
+  "Текстолингвистика": "¶",
+  "Създаване на текст": "✎",
+};
 ---
 
 <BaseLayout title="ДЗИ библиотека" description="Безплатна библиотека с литература и български език преди ДЗИ.">
@@ -65,18 +77,21 @@ const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
     <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
 
-  <!-- GRAMMAR CARDS -->
+  <!-- GRAMMAR NAV -->
   <section class="section" data-section="grammar" hidden>
-    <div class="grammar-grid">
+    <nav class="grammar-nav">
       {grammarEntries.map((entry) => (
-        <a href={`/bulgarski/${entry.id}/`} class="grammar-card" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
-          <span class="grammar-card-icon" aria-hidden="true">{entry.data.module === "Морфология" ? "Аа" : entry.data.module === "Синтаксис" ? "{ }" : "✓"}</span>
-          <span class="grammar-card-title">{entry.data.title}</span>
-          <span class="grammar-card-desc">{entry.data.excerpt}</span>
-          <span class="grammar-card-arrow" aria-hidden="true">→</span>
+        <a href={`/bulgarski/${entry.id}/`} class="grammar-link" data-card data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}>
+          <span class="grammar-link-icon" aria-hidden="true">{grammarIcons[entry.data.module] || "•"}</span>
+          <span class="grammar-link-body">
+            <span class="grammar-link-title">{entry.data.title}</span>
+            <span class="grammar-link-desc">{entry.data.excerpt}</span>
+          </span>
+          <span class="grammar-link-arrow" aria-hidden="true">→</span>
         </a>
       ))}
-    </div>
+    </nav>
+    <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
 
 </BaseLayout>

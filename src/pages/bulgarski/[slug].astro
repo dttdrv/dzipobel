@@ -18,6 +18,17 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props as { entry: CollectionEntry<"grammar"> };
 const sections: GrammarSection[] = entry.data.sections;
+
+function classifyItem(text: string): string {
+  if (/^═══/.test(text)) return "is-separator";
+  if (/^(Пример[иа]?:|ПРИМЕР|Напр\.)/.test(text)) return "is-example";
+  if (/^(ВАЖНО|ПРАВИЛО|ЗАПОМНИ|Правило):/i.test(text)) return "is-rule";
+  return "";
+}
+
+function isSeparatorSection(title: string): boolean {
+  return /^═══/.test(title);
+}
 ---
 
 <BaseLayout
@@ -33,12 +44,13 @@ const sections: GrammarSection[] = entry.data.sections;
   <div class="detail-content">
     {
       sections.map((section) => (
-        <div class="detail-section">
+        <div class={`detail-section${isSeparatorSection(section.title) ? " detail-section--separator" : ""}`}>
           <h4>{section.title}</h4>
           <ul>
-            {section.items.map((item: string) => (
-              <li>{item}</li>
-            ))}
+            {section.items.map((item: string) => {
+              const cls = classifyItem(item);
+              return <li class={cls || undefined}>{item}</li>;
+            })}
           </ul>
         </div>
       ))

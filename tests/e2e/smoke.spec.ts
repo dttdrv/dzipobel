@@ -32,7 +32,7 @@ test("grammar section works", async ({ page }) => {
 
   await page.getByRole("button", { name: "Български език" }).click();
 
-  await expect(page.locator(".grammar-card")).toHaveCount(3);
+  await expect(page.locator(".grammar-link")).toHaveCount(9);
   await expect(page.locator("[data-filters]")).toBeHidden();
 });
 

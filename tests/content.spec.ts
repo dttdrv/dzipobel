@@ -43,15 +43,25 @@ describe("literature content", () => {
 });
 
 describe("grammar content", () => {
-  it("ships the three core grammar modules", () => {
+  it("ships all grammar modules", () => {
     expect(existsSync(grammarDir)).toBe(true);
 
     const entries = readJsonFiles(grammarDir);
     const modules = entries.map((entry) => entry.value.module);
 
-    expect(entries).toHaveLength(3);
+    expect(entries).toHaveLength(9);
     expect(modules).toEqual(
-      expect.arrayContaining(["Морфология", "Синтаксис", "Правопис"]),
+      expect.arrayContaining([
+        "Морфология",
+        "Синтаксис",
+        "Правопис",
+        "Фонетика",
+        "Лексикология",
+        "Словообразуване",
+        "Стилистика",
+        "Текстолингвистика",
+        "Създаване на текст",
+      ]),
     );
   });
 });
