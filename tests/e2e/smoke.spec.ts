@@ -39,8 +39,8 @@ test("grammar section works", async ({ page }) => {
 test("literature detail page", async ({ page }) => {
   await page.goto("/literatura/vyara/");
 
-  await expect(page.locator(".lit-topbar-title")).toBeVisible();
-  await expect(page.locator(".lit-topbar-back")).toBeVisible();
+  await expect(page.locator(".lit-hero-title")).toBeVisible();
+  await expect(page.locator(".back-link")).toBeVisible();
   await expect(
     page.getByRole("link", { name: /Прочети/ }),
   ).toBeVisible();

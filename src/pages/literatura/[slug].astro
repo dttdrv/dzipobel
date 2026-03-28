@@ -38,42 +38,47 @@ const otherSections = sections.filter(
   description={entry.data.excerpt}
   hideNav={true}
 >
-  <!-- FULL-WIDTH HERO BAR -->
-  <div class="lit-topbar">
+  <!-- STICKY HEADER — hidden until hero scrolls away -->
+  <div class="lit-topbar" id="lit-topbar" hidden>
     <a href="/" class="lit-topbar-back">← Назад</a>
     <div class="lit-topbar-center">
       <span class="lit-topbar-title">{entry.data.title}</span>
       <span class="lit-topbar-author">{entry.data.author}</span>
     </div>
-    <a
-      class="lit-topbar-cta"
-      href={entry.data.readUrl}
-      target="_blank"
-      rel="noreferrer"
-    >
-      Прочети ↗
-    </a>
+    <a class="lit-topbar-cta" href={entry.data.readUrl} target="_blank" rel="noreferrer">Прочети ↗</a>
   </div>
+
+  <!-- HERO — big title, author, button -->
+  <section class="lit-hero" id="lit-hero">
+    <a href="/" class="back-link" aria-label="Обратно">←</a>
+    <div class="lit-hero-badges lit-reveal">
+      <span class="lit-hero-badge">{entry.data.genre}</span>
+      <span class="lit-hero-badge">{entry.data.theme}</span>
+    </div>
+    <h1 class="lit-hero-title lit-reveal">{entry.data.title}</h1>
+    <p class="lit-hero-author lit-reveal">{entry.data.author}</p>
+    <a class="btn btn-primary lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
+      Прочети в {entry.data.readSource} ↗
+    </a>
+  </section>
 
   <!-- TWO-COLUMN LAYOUT -->
   <div class="lit-page">
-
-    <!-- MAIN CONTENT (first in DOM for reading order) -->
     <main class="lit-main">
-      <p class="lit-main-excerpt">{entry.data.excerpt}</p>
+      <p class="lit-main-excerpt lit-reveal">{entry.data.excerpt}</p>
 
-      <section class="lit-section">
+      <section class="lit-section lit-reveal">
         <h2 class="lit-section-title">За автора</h2>
         <p class="lit-section-text">{entry.data.aboutAuthor}</p>
       </section>
 
-      <section class="lit-section">
+      <section class="lit-section lit-reveal">
         <h2 class="lit-section-title">За произведението</h2>
         <p class="lit-section-text">{entry.data.aboutWork}</p>
       </section>
 
       {proseAccordions.map((section) => (
-        <section class="lit-section">
+        <section class="lit-section lit-reveal">
           <h2 class="lit-section-title">{section.title}</h2>
           <ul class="lit-section-list">
             {section.items.map((item: string) => (
@@ -84,7 +89,7 @@ const otherSections = sections.filter(
       ))}
 
       {otherSections.map((section) => (
-        <section class="lit-section">
+        <section class="lit-section lit-reveal">
           <h2 class="lit-section-title">{section.title}</h2>
           {section.items.length > 1 ? (
             <ul class="lit-section-list">
@@ -98,14 +103,14 @@ const otherSections = sections.filter(
         </section>
       ))}
 
-      <div class="lit-message">
+      <div class="lit-message lit-reveal">
         <h3 class="lit-message-label">Послание</h3>
         <p class="lit-message-text">{entry.data.message}</p>
       </div>
     </main>
 
-    <!-- SIDEBAR: quick-scan info (right side) -->
-    <aside class="lit-sidebar">
+    <!-- SIDEBAR -->
+    <aside class="lit-sidebar lit-reveal">
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Жанр</h3>
         <p class="lit-sidebar-value">{entry.data.genre}</p>
@@ -118,14 +123,14 @@ const otherSections = sections.filter(
 
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Мотиви</h3>
-        <ul class="lit-sidebar-list lit-sidebar-list--motif">
+        <ul class="lit-sidebar-list">
           {entry.data.motifs.map((m: string) => <li>{m}</li>)}
         </ul>
       </div>
 
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Конфликти</h3>
-        <ul class="lit-sidebar-list lit-sidebar-list--conflict">
+        <ul class="lit-sidebar-list">
           {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
         </ul>
       </div>
@@ -133,22 +138,70 @@ const otherSections = sections.filter(
       {deviceSection && (
         <div class="lit-sidebar-block">
           <h3 class="lit-sidebar-label">Изразни средства</h3>
-          <div class="lit-device-stack">
+          <ul class="lit-sidebar-list">
             {deviceSection.items.map((item: string) => {
               const dashIdx = item.indexOf(" \u2013 ");
               const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
               const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
               return (
-                <div class="lit-device-card">
-                  <span class="lit-device-card-name">{name}</span>
-                  {desc && <span class="lit-device-card-desc">{desc}</span>}
-                </div>
+                <li>
+                  <strong>{name}</strong>
+                  {desc && <span class="lit-sidebar-subdesc"> {desc}</span>}
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       )}
     </aside>
-
   </div>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const init = () => {
+      const hero = document.getElementById("lit-hero");
+      const topbar = document.getElementById("lit-topbar");
+      if (!hero || !topbar) return;
+      if (hero.dataset.enhanced === "true") return;
+      hero.dataset.enhanced = "true";
+
+      /* Show topbar when hero scrolls out of view */
+      const obs = new IntersectionObserver(
+        ([e]) => {
+          topbar.hidden = e.isIntersecting;
+        },
+        { threshold: 0, rootMargin: "-1px 0px 0px 0px" },
+      );
+      obs.observe(hero);
+
+      /* Reveal animations on scroll */
+      const reveals = document.querySelectorAll(".lit-reveal");
+      let delay = 0;
+      const revealObs = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              if (el instanceof HTMLElement) {
+                el.style.animationDelay = delay + "ms";
+                delay += 60;
+                el.classList.add("lit-revealed");
+              }
+              revealObs.unobserve(el);
+            }
+          }
+        },
+        { threshold: 0.05, rootMargin: "0px 0px -30px 0px" },
+      );
+      for (const el of reveals) revealObs.observe(el);
+    };
+
+    init();
+    document.addEventListener("astro:page-load", () => {
+      const hero = document.getElementById("lit-hero");
+      if (hero) delete hero.dataset.enhanced;
+      init();
+    });
+  })();
+</script>

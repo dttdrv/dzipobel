@@ -956,18 +956,65 @@ html:not([data-nav-loaded]) .nav {
   background: rgba(0, 0, 0, 0.02);
 }
 
-/* --- Literature detail: top bar --- */
+/* --- Literature detail: hero --- */
+
+.lit-hero {
+  padding: 48px var(--page-padding) 36px;
+  text-align: center;
+  animation: heroTextIn 600ms var(--ease-out) both;
+}
+
+.lit-hero-badges {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.lit-hero-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+}
+
+.lit-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.lit-hero-author {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+
+/* --- Literature: sticky topbar (appears on scroll) --- */
 
 .lit-topbar {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px var(--page-padding);
+  padding: 10px var(--page-padding);
   border-bottom: 1px solid var(--line);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  left: 0;
+  right: 0;
+  z-index: 20;
   background: var(--bg);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  animation: navIn 300ms var(--ease-out) both;
 }
 
 .lit-topbar-back {
@@ -1031,10 +1078,8 @@ html:not([data-nav-loaded]) .nav {
 /* --- Sidebar --- */
 
 .lit-sidebar {
-  order: 2;
   padding: 28px 24px 40px;
   border-left: 1px solid var(--line);
-  animation: heroTextIn 600ms var(--ease-out) 100ms both;
   position: sticky;
   top: 50px;
   height: calc(100vh - 50px);
@@ -1085,39 +1130,9 @@ html:not([data-nav-loaded]) .nav {
   color: var(--text);
 }
 
-.lit-sidebar-list--motif li,
-.lit-sidebar-list--conflict li {
-  background: var(--surface);
-  border-left: 2px solid var(--line-strong);
-}
-
-/* Sidebar device cards */
-
-.lit-device-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.lit-device-card {
-  padding: 8px 10px;
-  border-radius: 6px;
-  background: var(--surface);
-  border-left: 2px solid var(--line-strong);
-}
-
-.lit-device-card-name {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.lit-device-card-desc {
-  font-size: 12px;
+.lit-sidebar-subdesc {
+  font-weight: 400;
   color: var(--muted);
-  line-height: 1.5;
-  margin-top: 2px;
 }
 
 /* --- Main content area --- */
@@ -1125,7 +1140,6 @@ html:not([data-nav-loaded]) .nav {
 .lit-main {
   padding: 32px clamp(24px, 4vw, 56px) 48px;
   max-width: 780px;
-  animation: heroTextIn 600ms var(--ease-out) 200ms both;
 }
 
 .lit-main-excerpt {
@@ -1140,14 +1154,19 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-section {
   margin-bottom: 32px;
-  animation: heroTextIn 500ms var(--ease-out) both;
 }
 
-.lit-section:nth-child(2) { animation-delay: 250ms; }
-.lit-section:nth-child(3) { animation-delay: 300ms; }
-.lit-section:nth-child(4) { animation-delay: 350ms; }
-.lit-section:nth-child(5) { animation-delay: 400ms; }
-.lit-section:nth-child(6) { animation-delay: 450ms; }
+/* Scroll-triggered reveal for literature pages */
+
+.lit-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(4px);
+}
+
+.lit-revealed {
+  animation: heroTextIn 600ms var(--ease-out) both;
+}
 
 .lit-section-title {
   font-family: var(--serif);
@@ -1464,7 +1483,6 @@ html:not([data-nav-loaded]) .nav {
   }
 
   .lit-sidebar {
-    order: 0;
     position: static;
     height: auto;
     border-left: none;
