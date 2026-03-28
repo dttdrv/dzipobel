@@ -960,7 +960,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-hero {
   padding: 28px var(--page-padding) 24px;
-  max-width: calc(100% - 280px);
+  max-width: calc(100% - 340px);
   animation: heroTextIn 600ms var(--ease-out) both;
 }
 
@@ -1109,7 +1109,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-page {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 340px;
   gap: 0;
   min-height: calc(100vh - 50px);
 }
@@ -1117,18 +1117,15 @@ html:not([data-nav-loaded]) .nav {
 /* --- Sidebar --- */
 
 .lit-sidebar {
-  padding: 28px 24px 40px;
+  padding: 32px 28px 48px;
   border-left: 1px solid var(--line);
-  position: sticky;
-  top: 50px;
-  height: calc(100vh - 50px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line) transparent;
 }
 
 .lit-sidebar-block {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
 }
 
 .lit-sidebar-block:last-child {
@@ -1142,11 +1139,11 @@ html:not([data-nav-loaded]) .nav {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--soft);
-  margin: 0 0 6px;
+  margin: 0 0 8px;
 }
 
 .lit-sidebar-value {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
   margin: 0;
@@ -1158,14 +1155,12 @@ html:not([data-nav-loaded]) .nav {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .lit-sidebar-list li {
-  font-size: 13px;
-  line-height: 1.45;
-  padding: 6px 10px;
-  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text);
 }
 
