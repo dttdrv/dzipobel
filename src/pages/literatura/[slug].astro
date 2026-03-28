@@ -64,53 +64,7 @@ const otherSections = sections.filter(
 
   <!-- TWO-COLUMN LAYOUT -->
   <div class="lit-page">
-    <!-- SIDEBAR (left) -->
-    <aside class="lit-sidebar lit-reveal">
-      <div class="lit-sidebar-block">
-        <h3 class="lit-sidebar-label">Жанр</h3>
-        <p class="lit-sidebar-value">{entry.data.genre}</p>
-      </div>
-
-      <div class="lit-sidebar-block">
-        <h3 class="lit-sidebar-label">Тема</h3>
-        <p class="lit-sidebar-value">{entry.data.theme}</p>
-      </div>
-
-      <div class="lit-sidebar-block">
-        <h3 class="lit-sidebar-label">Мотиви</h3>
-        <ul class="lit-sidebar-list">
-          {entry.data.motifs.map((m: string) => <li>{m}</li>)}
-        </ul>
-      </div>
-
-      <div class="lit-sidebar-block">
-        <h3 class="lit-sidebar-label">Конфликти</h3>
-        <ul class="lit-sidebar-list">
-          {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
-        </ul>
-      </div>
-
-      {deviceSection && (
-        <div class="lit-sidebar-block">
-          <h3 class="lit-sidebar-label">Изразни средства</h3>
-          <ul class="lit-sidebar-list">
-            {deviceSection.items.map((item: string) => {
-              const dashIdx = item.indexOf(" \u2013 ");
-              const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
-              const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
-              return (
-                <li>
-                  <strong>{name}</strong>
-                  {desc && <span class="lit-sidebar-subdesc"> {desc}</span>}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
-    </aside>
-
-    <!-- MAIN CONTENT (right) -->
+    <!-- MAIN CONTENT (left) -->
     <main class="lit-main">
       <p class="lit-main-excerpt lit-reveal">{entry.data.excerpt}</p>
 
@@ -155,6 +109,52 @@ const otherSections = sections.filter(
         <p class="lit-message-text">{entry.data.message}</p>
       </div>
     </main>
+
+    <!-- SIDEBAR (right) -->
+    <aside class="lit-sidebar lit-reveal">
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Жанр</h3>
+        <p class="lit-sidebar-value">{entry.data.genre}</p>
+      </div>
+
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Тема</h3>
+        <p class="lit-sidebar-value">{entry.data.theme}</p>
+      </div>
+
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Мотиви</h3>
+        <ul class="lit-sidebar-list">
+          {entry.data.motifs.map((m: string) => <li>{m}</li>)}
+        </ul>
+      </div>
+
+      <div class="lit-sidebar-block">
+        <h3 class="lit-sidebar-label">Конфликти</h3>
+        <ul class="lit-sidebar-list">
+          {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
+        </ul>
+      </div>
+
+      {deviceSection && (
+        <div class="lit-sidebar-block">
+          <h3 class="lit-sidebar-label">Изразни средства</h3>
+          <ul class="lit-sidebar-list">
+            {deviceSection.items.map((item: string) => {
+              const dashIdx = item.indexOf(" \u2013 ");
+              const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
+              const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
+              return (
+                <li>
+                  <strong>{name}</strong>
+                  {desc && <span class="lit-sidebar-subdesc"> {desc}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </aside>
   </div>
 </BaseLayout>
 

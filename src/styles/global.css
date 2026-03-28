@@ -1081,7 +1081,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-page {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 1fr 280px;
   gap: 0;
   min-height: calc(100vh - 50px);
 }
@@ -1090,7 +1090,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-sidebar {
   padding: 28px 24px 40px;
-  border-right: 1px solid var(--line);
+  border-left: 1px solid var(--line);
   position: sticky;
   top: 50px;
   height: calc(100vh - 50px);
@@ -1494,10 +1494,9 @@ html:not([data-nav-loaded]) .nav {
   }
 
   .lit-sidebar {
-    order: 2;
     position: static;
     height: auto;
-    border-right: none;
+    border-left: none;
     border-top: 1px solid var(--line);
     padding: 20px var(--page-padding);
     display: grid;
