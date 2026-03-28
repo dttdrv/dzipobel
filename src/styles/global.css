@@ -956,19 +956,31 @@ html:not([data-nav-loaded]) .nav {
   background: rgba(0, 0, 0, 0.02);
 }
 
-/* --- Literature detail: hero --- */
+/* --- Literature detail: hero (left-aligned) --- */
 
 .lit-hero {
-  padding: 48px var(--page-padding) 36px;
-  text-align: center;
+  padding: 28px var(--page-padding) 24px;
+  max-width: calc(100% - 280px);
   animation: heroTextIn 600ms var(--ease-out) both;
+}
+
+.lit-back {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 20px;
+  transition: color var(--ease-smooth);
+}
+
+.lit-back:hover {
+  color: var(--text);
 }
 
 .lit-hero-badges {
   display: flex;
   gap: 6px;
-  justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .lit-hero-badge {
@@ -984,18 +996,34 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-hero-title {
   font-family: var(--serif);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.05;
-  margin: 0 0 8px;
+  line-height: 1.1;
+  margin: 0 0 6px;
   color: var(--text);
 }
 
 .lit-hero-author {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--muted);
-  margin: 0 0 24px;
+  margin: 0 0 16px;
+}
+
+.lit-hero-cta {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  transition: background var(--ease-smooth), border-color var(--ease-smooth);
+}
+
+.lit-hero-cta:hover {
+  background: var(--surface);
+  border-color: var(--muted);
 }
 
 /* --- Literature: sticky topbar (appears on scroll) --- */
@@ -1491,6 +1519,11 @@ html:not([data-nav-loaded]) .nav {
 
   .lit-page {
     grid-template-columns: 1fr;
+  }
+
+  .lit-hero {
+    padding: 24px var(--page-padding) 20px;
+    max-width: none;
   }
 
   .lit-sidebar {

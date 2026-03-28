@@ -48,16 +48,16 @@ const otherSections = sections.filter(
     <a class="lit-topbar-cta" href={entry.data.readUrl} target="_blank" rel="noreferrer">Прочети ↗</a>
   </div>
 
-  <!-- HERO — big title, author, button -->
+  <!-- HERO — left-aligned, above main content -->
   <section class="lit-hero" id="lit-hero">
-    <a href="/" class="back-link" aria-label="Обратно">←</a>
+    <a href="/" class="lit-back">← Назад</a>
     <div class="lit-hero-badges lit-reveal">
       <span class="lit-hero-badge">{entry.data.genre}</span>
       <span class="lit-hero-badge">{entry.data.theme}</span>
     </div>
     <h1 class="lit-hero-title lit-reveal">{entry.data.title}</h1>
     <p class="lit-hero-author lit-reveal">{entry.data.author}</p>
-    <a class="btn btn-primary lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
+    <a class="lit-hero-cta lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
       Прочети в {entry.data.readSource} ↗
     </a>
   </section>
