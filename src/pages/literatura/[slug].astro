@@ -64,52 +64,7 @@ const otherSections = sections.filter(
 
   <!-- TWO-COLUMN LAYOUT -->
   <div class="lit-page">
-    <main class="lit-main">
-      <p class="lit-main-excerpt lit-reveal">{entry.data.excerpt}</p>
-
-      <section class="lit-section lit-reveal">
-        <h2 class="lit-section-title">За автора</h2>
-        <p class="lit-section-text">{entry.data.aboutAuthor}</p>
-      </section>
-
-      <section class="lit-section lit-reveal">
-        <h2 class="lit-section-title">За произведението</h2>
-        <p class="lit-section-text">{entry.data.aboutWork}</p>
-      </section>
-
-      {proseAccordions.map((section) => (
-        <section class="lit-section lit-reveal">
-          <h2 class="lit-section-title">{section.title}</h2>
-          <ul class="lit-section-list">
-            {section.items.map((item: string) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </section>
-      ))}
-
-      {otherSections.map((section) => (
-        <section class="lit-section lit-reveal">
-          <h2 class="lit-section-title">{section.title}</h2>
-          {section.items.length > 1 ? (
-            <ul class="lit-section-list">
-              {section.items.map((item: string) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          ) : (
-            <p class="lit-section-text">{section.items[0]}</p>
-          )}
-        </section>
-      ))}
-
-      <div class="lit-message lit-reveal">
-        <h3 class="lit-message-label">Послание</h3>
-        <p class="lit-message-text">{entry.data.message}</p>
-      </div>
-    </main>
-
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (left) -->
     <aside class="lit-sidebar lit-reveal">
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Жанр</h3>
@@ -154,6 +109,52 @@ const otherSections = sections.filter(
         </div>
       )}
     </aside>
+
+    <!-- MAIN CONTENT (right) -->
+    <main class="lit-main">
+      <p class="lit-main-excerpt lit-reveal">{entry.data.excerpt}</p>
+
+      <section class="lit-section lit-reveal">
+        <h2 class="lit-section-title">За автора</h2>
+        <p class="lit-section-text">{entry.data.aboutAuthor}</p>
+      </section>
+
+      <section class="lit-section lit-reveal">
+        <h2 class="lit-section-title">За произведението</h2>
+        <p class="lit-section-text">{entry.data.aboutWork}</p>
+      </section>
+
+      {proseAccordions.map((section) => (
+        <section class="lit-section lit-reveal">
+          <h2 class="lit-section-title">{section.title}</h2>
+          <ul class="lit-section-list">
+            {section.items.map((item: string) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      {otherSections.map((section) => (
+        <section class="lit-section lit-reveal">
+          <h2 class="lit-section-title">{section.title}</h2>
+          {section.items.length > 1 ? (
+            <ul class="lit-section-list">
+              {section.items.map((item: string) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          ) : (
+            <p class="lit-section-text">{section.items[0]}</p>
+          )}
+        </section>
+      ))}
+
+      <div class="lit-message lit-reveal">
+        <h3 class="lit-message-label">Послание</h3>
+        <p class="lit-message-text">{entry.data.message}</p>
+      </div>
+    </main>
   </div>
 </BaseLayout>
 

@@ -1014,7 +1014,18 @@ html:not([data-nav-loaded]) .nav {
   background: var(--bg);
   backdrop-filter: blur(16px) saturate(1.6);
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
-  animation: navIn 300ms var(--ease-out) both;
+  animation: litTopbarIn 300ms var(--ease-out) both;
+}
+
+@keyframes litTopbarIn {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .lit-topbar-back {
@@ -1070,7 +1081,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-page {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 280px 1fr;
   gap: 0;
   min-height: calc(100vh - 50px);
 }
@@ -1079,7 +1090,7 @@ html:not([data-nav-loaded]) .nav {
 
 .lit-sidebar {
   padding: 28px 24px 40px;
-  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
   position: sticky;
   top: 50px;
   height: calc(100vh - 50px);
@@ -1483,10 +1494,11 @@ html:not([data-nav-loaded]) .nav {
   }
 
   .lit-sidebar {
+    order: 2;
     position: static;
     height: auto;
-    border-left: none;
-    border-bottom: 1px solid var(--line);
+    border-right: none;
+    border-top: 1px solid var(--line);
     padding: 20px var(--page-padding);
     display: grid;
     grid-template-columns: 1fr 1fr;
