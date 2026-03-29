@@ -3,9 +3,25 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
+type CommonMistake = {
+  wrong: string;
+  right: string;
+  explanation: string;
+};
+
+type QuizQuestion = {
+  question: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+};
+
 type GrammarSection = {
   title: string;
   items: string[];
+  verificationTrick?: string;
+  commonMistakes?: CommonMistake[];
+  quiz?: QuizQuestion[];
 };
 
 export async function getStaticPaths() {
@@ -17,12 +33,12 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: CollectionEntry<"grammar"> };
-const sections: GrammarSection[] = entry.data.sections;
+const sections = entry.data.sections as GrammarSection[];
 
 function classifyItem(text: string): string {
   if (/^═══/.test(text)) return "is-separator";
   if (/^(Пример[иа]?:|ПРИМЕР|Напр\.)/.test(text)) return "is-example";
-  if (/^(ВАЖНО|ПРАВИЛО|ЗАПОМНИ|Правило|Внимание|Тук е важно|Забележете):/i.test(text)) return "is-rule";
+  if (/^(ВАЖНО|ПРАВИЛО|ЗАПОМНИ|Правило|Внимание|Тук е важно|Забележете|Любопитно|Опитай):/i.test(text)) return "is-rule";
   return "";
 }
 
@@ -69,12 +85,44 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
               <span class="acc-chevron" aria-hidden="true"></span>
             </summary>
             <div class="acc-body">
+              {/* Verification trick */}
+              {section.verificationTrick && (
+                <div class="trick-box">
+                  <span class="trick-label">Бърза проверка</span>
+                  <p class="trick-text">{section.verificationTrick}</p>
+                </div>
+              )}
+
+              {/* Main items */}
               <ul>
                 {section.items.map((item: string) => {
                   const cls = classifyItem(item);
                   return <li class={cls || undefined}>{item}</li>;
                 })}
               </ul>
+
+              {/* Common mistakes */}
+              {section.commonMistakes && section.commonMistakes.length > 0 && (
+                <div class="mistakes-block">
+                  <span class="mistakes-label">Чести грешки</span>
+                  <div class="mistakes-list">
+                    {section.commonMistakes.map((m) => (
+                      <div class="mistake-pair">
+                        <span class="mistake-wrong">{m.wrong}</span>
+                        <span class="mistake-right">{m.right}</span>
+                        <span class="mistake-why">{m.explanation}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Quiz */}
+              {section.quiz && section.quiz.length > 0 && (
+                <div class="quiz-block" data-quiz data-quiz-questions={JSON.stringify(section.quiz)}>
+                  <span class="quiz-label">Провери се</span>
+                </div>
+              )}
             </div>
           </details>
         );
@@ -104,7 +152,79 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
       });
     };
 
-    initAccordion();
-    document.addEventListener("astro:page-load", initAccordion);
+    const initQuizzes = () => {
+      const quizBlocks = document.querySelectorAll("[data-quiz]");
+      for (const block of quizBlocks) {
+        if (!(block instanceof HTMLElement) || block.dataset.enhanced === "true") continue;
+        block.dataset.enhanced = "true";
+
+        const questions = JSON.parse(block.dataset.quizQuestions || "[]");
+        if (questions.length === 0) continue;
+
+        let currentQ = 0;
+
+        function renderQuestion() {
+          const q = questions[currentQ];
+          block.innerHTML =
+            '<span class="quiz-label">Провери се</span>' +
+            '<div class="quiz-question">' + q.question + '</div>' +
+            '<div class="quiz-options">' +
+            q.options.map(function(opt, i) {
+              return '<button class="quiz-opt" data-idx="' + i + '">' + opt + '</button>';
+            }).join("") +
+            '</div>' +
+            '<div class="quiz-feedback" hidden></div>' +
+            (questions.length > 1 ? '<div class="quiz-counter">' + (currentQ + 1) + ' / ' + questions.length + '</div>' : '');
+
+          const opts = block.querySelectorAll(".quiz-opt");
+          const feedback = block.querySelector(".quiz-feedback");
+
+          for (const opt of opts) {
+            opt.addEventListener("click", function() {
+              if (!(opt instanceof HTMLElement) || !(feedback instanceof HTMLElement)) return;
+              const idx = parseInt(opt.dataset.idx || "0", 10);
+              const isCorrect = idx === q.correct;
+
+              for (const o of opts) {
+                if (o instanceof HTMLElement) {
+                  o.classList.add("quiz-opt--disabled");
+                  if (parseInt(o.dataset.idx || "0", 10) === q.correct) {
+                    o.classList.add("quiz-opt--correct");
+                  }
+                  if (parseInt(o.dataset.idx || "0", 10) === idx && !isCorrect) {
+                    o.classList.add("quiz-opt--wrong");
+                  }
+                }
+              }
+
+              feedback.hidden = false;
+              feedback.className = "quiz-feedback " + (isCorrect ? "quiz-feedback--correct" : "quiz-feedback--wrong");
+              feedback.textContent = isCorrect ? "Правилно! " + q.explanation : "Грешка. " + q.explanation;
+
+              if (currentQ < questions.length - 1) {
+                const nextBtn = document.createElement("button");
+                nextBtn.className = "quiz-next";
+                nextBtn.textContent = "Следващ въпрос →";
+                nextBtn.addEventListener("click", function() {
+                  currentQ++;
+                  renderQuestion();
+                });
+                feedback.appendChild(nextBtn);
+              }
+            });
+          }
+        }
+
+        renderQuestion();
+      }
+    };
+
+    const initAll = () => {
+      initAccordion();
+      initQuizzes();
+    };
+
+    initAll();
+    document.addEventListener("astro:page-load", initAll);
   })();
 </script>

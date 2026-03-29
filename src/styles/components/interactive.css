@@ -1,0 +1,218 @@
+/* ============================================================
+   Interactive components — tricks, mistakes, quizzes
+   ============================================================ */
+
+/* --- Verification trick box --- */
+
+.trick-box {
+  background: rgba(var(--accent-green), 0.06);
+  border: 1px solid rgba(var(--accent-green), 0.15);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.trick-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(var(--accent-green), 1);
+  margin-bottom: 4px;
+}
+
+.trick-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --- Common mistakes block --- */
+
+.mistakes-block {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.mistakes-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(var(--accent-red), 0.8);
+  margin-bottom: 10px;
+}
+
+.mistakes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mistake-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.mistake-wrong {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(var(--accent-red), 0.06);
+  color: var(--text);
+  text-decoration: line-through;
+  text-decoration-color: rgba(var(--accent-red), 0.5);
+}
+
+.mistake-right {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(var(--accent-green), 0.06);
+  color: var(--text);
+}
+
+.mistake-why {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* --- Quiz block --- */
+
+.quiz-block {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.quiz-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(var(--accent-purple), 0.8);
+  margin-bottom: 10px;
+}
+
+.quiz-question {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quiz-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--ease-smooth), border-color var(--ease-smooth);
+  min-height: 44px;
+}
+
+.quiz-opt:hover:not(.quiz-opt--disabled) {
+  background: var(--surface);
+  border-color: var(--muted);
+}
+
+.quiz-opt--disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.quiz-opt--correct {
+  background: rgba(var(--accent-green), 0.1) !important;
+  border-color: rgba(var(--accent-green), 0.4) !important;
+  opacity: 1 !important;
+}
+
+.quiz-opt--wrong {
+  background: rgba(var(--accent-red), 0.08) !important;
+  border-color: rgba(var(--accent-red), 0.3) !important;
+  opacity: 1 !important;
+}
+
+.quiz-feedback {
+  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.quiz-feedback--correct {
+  background: rgba(var(--accent-green), 0.08);
+  border: 1px solid rgba(var(--accent-green), 0.2);
+}
+
+.quiz-feedback--wrong {
+  background: rgba(var(--accent-red), 0.06);
+  border: 1px solid rgba(var(--accent-red), 0.15);
+}
+
+.quiz-next {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--ease-smooth);
+}
+
+.quiz-next:hover {
+  background: var(--surface);
+}
+
+.quiz-counter {
+  font-size: 11px;
+  color: var(--soft);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* --- Mobile --- */
+
+@media (max-width: 720px) {
+  .mistake-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-opt {
+    padding: 10px 14px;
+  }
+}
