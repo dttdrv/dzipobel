@@ -57,12 +57,10 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
   <!-- TOP BAR -->
   <div class="gram-topbar">
     <a href="/" class="gram-topbar-back">← Назад</a>
+    <button class="gram-toc-toggle" id="toc-toggle" aria-label="Съдържание">☰</button>
     <span class="gram-topbar-title">{entry.data.title}</span>
     <span class="gram-topbar-count">{contentSections.length} раздела</span>
   </div>
-
-  <!-- Mobile TOC toggle (floating, below header on left) -->
-  <button class="gram-toc-toggle" id="toc-toggle" aria-label="Отвори съдържание">☰</button>
 
   <!-- Mobile TOC overlay -->
   <div class="gram-toc-overlay" id="toc-overlay"></div>
