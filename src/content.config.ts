@@ -25,7 +25,44 @@ const literature = defineCollection({
         items: z.array(z.string()),
       }),
     ),
+    /* Phase 2 extensions (all optional, non-breaking) */
+    keyQuotes: z
+      .array(
+        z.object({
+          text: z.string(),
+          analysis: z.string(),
+          theme: z.string().optional(),
+        }),
+      )
+      .optional(),
+    essayAngles: z.array(z.string()).optional(),
   }),
+});
+
+const grammarSection = z.object({
+  title: z.string(),
+  items: z.array(z.string()),
+  /* Phase 2 extensions (all optional, non-breaking) */
+  verificationTrick: z.string().optional(),
+  commonMistakes: z
+    .array(
+      z.object({
+        wrong: z.string(),
+        right: z.string(),
+        explanation: z.string(),
+      }),
+    )
+    .optional(),
+  quiz: z
+    .array(
+      z.object({
+        question: z.string(),
+        options: z.array(z.string()),
+        correct: z.number(),
+        explanation: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 const grammar = defineCollection({
@@ -38,12 +75,7 @@ const grammar = defineCollection({
     excerpt: z.string(),
     bullets: z.array(z.string()),
     tags: z.array(z.string()).default([]),
-    sections: z.array(
-      z.object({
-        title: z.string(),
-        items: z.array(z.string()),
-      }),
-    ),
+    sections: z.array(grammarSection),
   }),
 });
 
