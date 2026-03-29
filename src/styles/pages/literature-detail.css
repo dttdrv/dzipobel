@@ -298,6 +298,51 @@
   margin: 0 0 8px;
 }
 
+/* --- Key quotes --- */
+
+.lit-quotes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lit-quote {
+  margin: 0;
+  padding: 16px 20px;
+  border-left: 3px solid var(--line-strong);
+  border-radius: 0 10px 10px 0;
+  background: var(--surface);
+}
+
+.lit-quote-text {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.lit-quote-analysis {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.lit-quote-theme {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--soft);
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+}
+
 .lit-message-text {
   font-family: var(--serif);
   font-size: 16px;

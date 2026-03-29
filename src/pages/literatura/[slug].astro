@@ -107,6 +107,34 @@ const otherSections = sections.filter(
         </section>
       ))}
 
+      {/* Key quotes */}
+      {entry.data.keyQuotes && entry.data.keyQuotes.length > 0 && (
+        <section class="lit-section lit-reveal">
+          <h2 class="lit-section-title">Ключови цитати</h2>
+          <div class="lit-quotes">
+            {entry.data.keyQuotes.map((q: { text: string; analysis: string; theme?: string }) => (
+              <blockquote class="lit-quote">
+                <p class="lit-quote-text">{q.text}</p>
+                <p class="lit-quote-analysis">{q.analysis}</p>
+                {q.theme && <span class="lit-quote-theme">{q.theme}</span>}
+              </blockquote>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Essay angles */}
+      {entry.data.essayAngles && entry.data.essayAngles.length > 0 && (
+        <section class="lit-section lit-reveal">
+          <h2 class="lit-section-title">Идеи за есе</h2>
+          <ul class="lit-section-list">
+            {entry.data.essayAngles.map((angle: string) => (
+              <li>{angle}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <div class="lit-message lit-reveal">
         <h3 class="lit-message-label">Послание</h3>
         <p class="lit-message-text">{entry.data.message}</p>
