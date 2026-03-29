@@ -210,13 +210,14 @@ function findEntry(module: string) {
           const tab = btn.dataset.switch || "literature";
           if (tab === activeTab) return;
 
-          // Determine outgoing and incoming sections
-          const outgoing = tab === "literature" ? gramSection : litSection;
-          const incoming = tab === "literature" ? litSection : gramSection;
+          // Direction: lit→bg = right, bg→lit = left
+          const goingRight = tab === "grammar";
+          const outgoing = goingRight ? litSection : gramSection;
+          const incoming = goingRight ? gramSection : litSection;
 
           // Move the pill
           if (pill instanceof HTMLElement) {
-            pill.dataset.pos = tab === "literature" ? "0" : "1";
+            pill.dataset.pos = goingRight ? "1" : "0";
           }
 
           // Update button states
@@ -226,16 +227,16 @@ function findEntry(module: string) {
             }
           }
 
-          // Blur out the old content
-          outgoing.classList.add("section--exiting");
+          // Slide out old content in the direction of movement
+          outgoing.classList.add(goingRight ? "section--exit-left" : "section--exit-right");
 
-          // After blur finishes, swap visibility and blur in
+          // After exit finishes, swap and slide in new content from the other side
           setTimeout(() => {
             outgoing.hidden = true;
-            outgoing.classList.remove("section--exiting");
+            outgoing.classList.remove("section--exit-left", "section--exit-right");
 
             incoming.hidden = false;
-            incoming.classList.add("section--entering");
+            incoming.classList.add(goingRight ? "section--enter-right" : "section--enter-left");
 
             if (tab === "literature") {
               filterBar.hidden = false;
@@ -243,9 +244,8 @@ function findEntry(module: string) {
               filterBar.hidden = true;
             }
 
-            // Clean up entering class after animation
             setTimeout(() => {
-              incoming.classList.remove("section--entering");
+              incoming.classList.remove("section--enter-left", "section--enter-right");
             }, 350);
           }, 250);
 

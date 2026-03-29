@@ -70,28 +70,52 @@
 /* --- Content section transitions --- */
 
 .section {
-  transition: opacity 300ms ease, filter 300ms ease;
+  transition: opacity 250ms ease, filter 250ms ease, transform 250ms ease;
 }
 
-.section--exiting {
+.section--exit-left {
   opacity: 0;
   filter: blur(6px);
+  transform: translateX(-40px);
 }
 
-.section--entering {
-  animation: sectionEnter 350ms ease both;
+.section--exit-right {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateX(40px);
 }
 
-@keyframes sectionEnter {
+.section--enter-left {
+  animation: sectionEnterLeft 350ms ease both;
+}
+
+.section--enter-right {
+  animation: sectionEnterRight 350ms ease both;
+}
+
+@keyframes sectionEnterLeft {
   from {
     opacity: 0;
     filter: blur(6px);
-    transform: translateY(8px);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
     filter: blur(0);
-    transform: translateY(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes sectionEnterRight {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
   }
 }
 
