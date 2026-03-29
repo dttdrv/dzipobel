@@ -22,7 +22,7 @@ test("home page renders the landing", async ({ page }) => {
 test("literature theme filter works", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("button", { name: "Любов" }).click();
+  await page.locator('[data-filter-type="theme"][data-filter-value="Любов"]').click();
 
   await expect(page.locator('[data-section="literature"] [data-card]:not([hidden])')).toHaveCount(3);
 });

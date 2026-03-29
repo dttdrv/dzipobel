@@ -17,6 +17,8 @@ const grammarEntries: CollectionEntry<"grammar">[] = (
 );
 
 const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
+const authors = [...new Set(literatureEntries.map((e) => e.data.author))];
+const genres = [...new Set(literatureEntries.map((e) => e.data.genre))];
 
 /* Grouped grammar modules with human-friendly descriptions */
 type GrammarGroup = {
@@ -83,12 +85,35 @@ function findEntry(module: string) {
     </div>
   </div>
 
-  <!-- FILTER CHIPS (literature only) -->
-  <div class="filter-bar" data-filters>
-    <button class="filter-chip active" data-theme="">Всички</button>
-    {themes.map((theme) => (
-      <button class="filter-chip" data-theme={theme}>{theme}</button>
-    ))}
+  <!-- FILTER GROUPS (literature only) -->
+  <div class="filter-groups" data-filters>
+    <div class="filter-row">
+      <span class="filter-row-label">Тема</span>
+      <div class="filter-row-chips">
+        <button class="filter-chip active" data-filter-type="theme" data-filter-value="">Всички</button>
+        {themes.map((theme) => (
+          <button class="filter-chip" data-filter-type="theme" data-filter-value={theme}>{theme}</button>
+        ))}
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">Автор</span>
+      <div class="filter-row-chips">
+        <button class="filter-chip active" data-filter-type="author" data-filter-value="">Всички</button>
+        {authors.map((author) => (
+          <button class="filter-chip" data-filter-type="author" data-filter-value={author}>{author}</button>
+        ))}
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">Жанр</span>
+      <div class="filter-row-chips">
+        <button class="filter-chip active" data-filter-type="genre" data-filter-value="">Всички</button>
+        {genres.map((genre) => (
+          <button class="filter-chip" data-filter-type="genre" data-filter-value={genre}>{genre}</button>
+        ))}
+      </div>
+    </div>
   </div>
 
   <!-- LITERATURE CARDS -->
@@ -100,6 +125,8 @@ function findEntry(module: string) {
           class="card-item"
           data-card
           data-theme={entry.data.theme}
+          data-author={entry.data.author}
+          data-genre={entry.data.genre}
           data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
         >
           <span class="card-genre">{entry.data.genre}</span>
@@ -164,12 +191,12 @@ function findEntry(module: string) {
       if (!(filterBar instanceof HTMLElement)) return;
       if (!(emptyState instanceof HTMLElement)) return;
 
-      const filterChips = Array.from(filterBar.querySelectorAll("[data-theme]"));
+      const allFilterChips = Array.from(filterBar.querySelectorAll("[data-filter-type]"));
       const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
 
       let activeTab = "literature";
-      let activeTheme = "";
+      const activeFilters = { theme: "", author: "", genre: "" };
       let searchQuery = "";
 
       const applyFilters = () => {
@@ -179,16 +206,12 @@ function findEntry(module: string) {
         for (const card of cards) {
           if (!(card instanceof HTMLElement)) continue;
 
-          const matchesTheme =
-            activeTab !== "literature" ||
-            !activeTheme ||
-            card.dataset.theme === activeTheme;
+          const matchesTheme = !activeFilters.theme || card.dataset.theme === activeFilters.theme;
+          const matchesAuthor = !activeFilters.author || card.dataset.author === activeFilters.author;
+          const matchesGenre = !activeFilters.genre || card.dataset.genre === activeFilters.genre;
+          const matchesSearch = !searchQuery || (card.dataset.searchText || "").includes(searchQuery);
 
-          const matchesSearch =
-            !searchQuery ||
-            (card.dataset.searchText || "").includes(searchQuery);
-
-          const show = matchesTheme && matchesSearch;
+          const show = activeTab !== "literature" || (matchesTheme && matchesAuthor && matchesGenre && matchesSearch);
           card.hidden = !show;
           if (show) visible += 1;
         }
@@ -221,11 +244,13 @@ function findEntry(module: string) {
             filterBar.hidden = true;
           }
 
-          // Reset filter on tab switch
-          activeTheme = "";
-          for (const chip of filterChips) {
+          // Reset filters on tab switch
+          activeFilters.theme = "";
+          activeFilters.author = "";
+          activeFilters.genre = "";
+          for (const chip of allFilterChips) {
             if (chip instanceof HTMLElement) {
-              chip.classList.toggle("active", chip.dataset.theme === "");
+              chip.classList.toggle("active", chip.dataset.filterValue === "");
             }
           }
 
@@ -233,15 +258,19 @@ function findEntry(module: string) {
         });
       }
 
-      // Filter chips
-      for (const chip of filterChips) {
+      // Multi-filter chips
+      for (const chip of allFilterChips) {
         if (!(chip instanceof HTMLElement)) continue;
         chip.addEventListener("click", () => {
-          activeTheme = chip.dataset.theme || "";
+          const filterType = chip.dataset.filterType || "";
+          const filterValue = chip.dataset.filterValue || "";
 
-          for (const c of filterChips) {
-            if (c instanceof HTMLElement) {
-              c.classList.toggle("active", c.dataset.theme === activeTheme);
+          activeFilters[filterType] = filterValue;
+
+          // Update active state for chips of the same type
+          for (const c of allFilterChips) {
+            if (c instanceof HTMLElement && c.dataset.filterType === filterType) {
+              c.classList.toggle("active", c.dataset.filterValue === filterValue);
             }
           }
 

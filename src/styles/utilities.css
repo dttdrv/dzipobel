@@ -73,25 +73,29 @@
     font-size: 13px;
   }
 
-  .filter-bar {
+  .filter-groups {
+    padding: 10px var(--page-padding) 0;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .filter-row-label {
+    width: auto;
+  }
+
+  .filter-row-chips {
     overflow-x: auto;
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-left: var(--page-padding);
-    padding-right: var(--page-padding);
-    justify-content: flex-start;
-    gap: 8px;
   }
 
-  .filter-bar::-webkit-scrollbar {
+  .filter-row-chips::-webkit-scrollbar {
     display: none;
-  }
-
-  .filter-bar::after {
-    content: "";
-    flex-shrink: 0;
-    width: 1px;
   }
 
   .hero {

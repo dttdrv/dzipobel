@@ -61,8 +61,43 @@
   }
 }
 
-/* --- Filter chips --- */
+/* --- Filter groups --- */
 
+.filter-groups {
+  padding: 12px var(--page-padding) 0;
+  max-width: 780px;
+  margin: 0 auto;
+  animation: heroTextIn 700ms var(--ease-out) 280ms both;
+}
+
+.filter-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-row-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--soft);
+  flex-shrink: 0;
+  width: 48px;
+}
+
+.filter-row-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* Legacy compat */
 .filter-bar {
   display: flex;
   gap: 6px;
