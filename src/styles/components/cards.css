@@ -1,62 +1,68 @@
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border-radius: 16px;
-  overflow: hidden;
-  margin: 16px var(--page-padding) 0;
+/* ============================================================
+   Literature list — clean rows instead of card grid
+   ============================================================ */
+
+.lit-list {
+  max-width: 640px;
+  margin: 16px auto 0;
+  padding: 0 var(--page-padding);
 }
 
-.card-item {
-  background: var(--bg);
-  padding: 24px 22px;
-  display: grid;
-  gap: 8px;
-  align-content: start;
+.lit-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left var(--ease-smooth);
   cursor: pointer;
-  transition:
-    background var(--ease-smooth),
-    transform var(--spring),
-    box-shadow var(--ease-smooth);
-  will-change: transform;
 }
 
-.card-item:hover {
-  background: rgba(0, 0, 0, 0.02);
+.lit-list-item:first-child {
+  border-top: 1px solid var(--line);
 }
 
-.card-item:active {
-  transform: scale(0.96);
+.lit-list-item:hover {
+  padding-left: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .card-item:hover {
-    background: rgba(255, 255, 255, 0.03);
-  }
-}
-
-.card-genre {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--soft);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.card-title {
+.lit-list-title {
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0;
+  flex-shrink: 0;
 }
 
-.card-author {
-  font-size: 12px;
+.lit-list-meta {
+  font-size: 13px;
+  color: var(--muted);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lit-list-theme {
+  font-size: 11px;
   color: var(--soft);
-  margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .lit-list-item {
+    flex-wrap: wrap;
+    gap: 2px 12px;
+  }
+
+  .lit-list-meta {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .lit-list-theme {
+    font-size: 10px;
+  }
 }

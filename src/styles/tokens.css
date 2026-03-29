@@ -5,17 +5,17 @@
 :root {
   color-scheme: light dark;
 
-  /* Colors */
-  --bg: #fafafa;
-  --surface: rgba(255, 255, 255, 0.7);
-  --surface-strong: rgba(255, 255, 255, 0.9);
-  --text: #111111;
-  --muted: #666666;
-  --soft: #999999;
-  --line: rgba(0, 0, 0, 0.06);
-  --line-strong: rgba(0, 0, 0, 0.08);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.06);
+  /* Colors — light mode (matches Chrome light) */
+  --bg: #ffffff;
+  --surface: #f1f3f4;
+  --surface-strong: #e8eaed;
+  --text: #202124;
+  --muted: #5f6368;
+  --soft: #9aa0a6;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.12);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.08);
 
   /* Typography */
   --serif: var(--font-literata, "Literata"), Georgia, serif;
@@ -55,16 +55,17 @@
   --accent-purple: 139, 92, 246;
 }
 
+/* Dark mode — matches Chrome Windows 11 dark */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #202124;
-    --surface: rgba(255, 255, 255, 0.06);
-    --surface-strong: rgba(255, 255, 255, 0.1);
+    --bg: #292a2d;
+    --surface: #35363a;
+    --surface-strong: #3c4043;
     --text: #e8eaed;
     --muted: #9aa0a6;
     --soft: #5f6368;
-    --line: rgba(255, 255, 255, 0.08);
-    --line-strong: rgba(255, 255, 255, 0.12);
+    --line: rgba(255, 255, 255, 0.1);
+    --line-strong: rgba(255, 255, 255, 0.14);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.5);
   }

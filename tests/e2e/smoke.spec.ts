@@ -22,7 +22,7 @@ test("home page renders the landing", async ({ page }) => {
 test("literature theme filter works", async ({ page }) => {
   await page.goto("/");
 
-  await page.locator('[data-filter-type="theme"][data-filter-value="Любов"]').click();
+  await page.locator('select[data-filter-type="theme"]').selectOption("Любов");
 
   await expect(page.locator('[data-section="literature"] [data-card]:not([hidden])')).toHaveCount(3);
 });
@@ -32,7 +32,8 @@ test("grammar section works", async ({ page }) => {
 
   await page.getByRole("button", { name: "Български език" }).click();
 
-  await expect(page.locator(".gram-item")).toHaveCount(9);
+  const gramItems = page.locator(".gram-item");
+  await expect(gramItems).toHaveCount(9);
   await expect(page.locator("[data-filters]")).toBeHidden();
 });
 

@@ -12,21 +12,6 @@
     --page-padding: 16px;
   }
 
-  .card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-left: var(--page-padding);
-    margin-right: var(--page-padding);
-    border-radius: 14px;
-  }
-
-  .card-item {
-    padding: 18px 16px;
-  }
-
-  .card-title {
-    font-size: 15px;
-  }
-
   .gram-groups {
     gap: 20px;
   }
@@ -73,29 +58,14 @@
     font-size: 13px;
   }
 
-  .filter-groups {
-    padding: 10px var(--page-padding) 0;
+  .filter-dropdowns {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
-  .filter-row {
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 8px;
-  }
-
-  .filter-row-label {
-    width: auto;
-  }
-
-  .filter-row-chips {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .filter-row-chips::-webkit-scrollbar {
-    display: none;
+  .filter-select {
+    font-size: 12px;
+    padding: 7px 24px 7px 10px;
   }
 
   .hero {

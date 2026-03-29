@@ -29,24 +29,14 @@ type GrammarGroup = {
 
 const grammarGroups: GrammarGroup[] = [
   {
-    label: "Звук и дума",
-    hint: "Как звучат и се образуват думите",
-    modules: ["Фонетика", "Морфология", "Словообразуване"],
+    label: "Език",
+    hint: "Звукове, думи, правопис и значение",
+    modules: ["Фонетика", "Морфология", "Словообразуване", "Правопис", "Лексикология"],
   },
   {
-    label: "Изречение и текст",
-    hint: "Как се свързват думите в смислен текст",
-    modules: ["Синтаксис", "Стилистика", "Текстолингвистика"],
-  },
-  {
-    label: "Правила за писане",
-    hint: "Как се пише правилно",
-    modules: ["Правопис", "Лексикология"],
-  },
-  {
-    label: "Подготовка за изпита",
-    hint: "Как да се справиш на матурата",
-    modules: ["Създаване на текст"],
+    label: "Текст и писане",
+    hint: "Изречения, стилове, текстове и подготовка за изпита",
+    modules: ["Синтаксис", "Стилистика", "Текстолингвистика", "Създаване на текст"],
   },
 ];
 
@@ -85,53 +75,44 @@ function findEntry(module: string) {
     </div>
   </div>
 
-  <!-- FILTER GROUPS (literature only) -->
-  <div class="filter-groups" data-filters>
-    <div class="filter-row">
-      <span class="filter-row-label">Тема</span>
-      <div class="filter-row-chips">
-        <button class="filter-chip active" data-filter-type="theme" data-filter-value="">Всички</button>
-        {themes.map((theme) => (
-          <button class="filter-chip" data-filter-type="theme" data-filter-value={theme}>{theme}</button>
-        ))}
-      </div>
-    </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Автор</span>
-      <div class="filter-row-chips">
-        <button class="filter-chip active" data-filter-type="author" data-filter-value="">Всички</button>
-        {authors.map((author) => (
-          <button class="filter-chip" data-filter-type="author" data-filter-value={author}>{author}</button>
-        ))}
-      </div>
-    </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Жанр</span>
-      <div class="filter-row-chips">
-        <button class="filter-chip active" data-filter-type="genre" data-filter-value="">Всички</button>
-        {genres.map((genre) => (
-          <button class="filter-chip" data-filter-type="genre" data-filter-value={genre}>{genre}</button>
-        ))}
-      </div>
-    </div>
+  <!-- DROPDOWN FILTERS (literature only) -->
+  <div class="filter-dropdowns" data-filters>
+    <select class="filter-select" data-filter-type="theme">
+      <option value="">Всички теми</option>
+      {themes.map((theme) => (
+        <option value={theme}>{theme}</option>
+      ))}
+    </select>
+    <select class="filter-select" data-filter-type="author">
+      <option value="">Всички автори</option>
+      {authors.map((author) => (
+        <option value={author}>{author}</option>
+      ))}
+    </select>
+    <select class="filter-select" data-filter-type="genre">
+      <option value="">Всички жанрове</option>
+      {genres.map((genre) => (
+        <option value={genre}>{genre}</option>
+      ))}
+    </select>
   </div>
 
-  <!-- LITERATURE CARDS -->
+  <!-- LITERATURE LIST -->
   <section class="section" data-section="literature">
-    <div class="card-grid" data-card-grid>
+    <div class="lit-list">
       {literatureEntries.map((entry) => (
         <a
           href={`/literatura/${entry.id}/`}
-          class="card-item"
+          class="lit-list-item"
           data-card
           data-theme={entry.data.theme}
           data-author={entry.data.author}
           data-genre={entry.data.genre}
           data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
         >
-          <span class="card-genre">{entry.data.genre}</span>
-          <h2 class="card-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h2>
-          <span class="card-author">{entry.data.author}</span>
+          <span class="lit-list-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
+          <span class="lit-list-meta">{entry.data.author} · {entry.data.genre}</span>
+          <span class="lit-list-theme">{entry.data.theme}</span>
         </a>
       ))}
     </div>
@@ -191,7 +172,7 @@ function findEntry(module: string) {
       if (!(filterBar instanceof HTMLElement)) return;
       if (!(emptyState instanceof HTMLElement)) return;
 
-      const allFilterChips = Array.from(filterBar.querySelectorAll("[data-filter-type]"));
+      const filterSelects = Array.from(filterBar.querySelectorAll("select[data-filter-type]"));
       const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
 
@@ -248,32 +229,20 @@ function findEntry(module: string) {
           activeFilters.theme = "";
           activeFilters.author = "";
           activeFilters.genre = "";
-          for (const chip of allFilterChips) {
-            if (chip instanceof HTMLElement) {
-              chip.classList.toggle("active", chip.dataset.filterValue === "");
-            }
+          for (const sel of filterSelects) {
+            if (sel instanceof HTMLSelectElement) sel.value = "";
           }
 
           applyFilters();
         });
       }
 
-      // Multi-filter chips
-      for (const chip of allFilterChips) {
-        if (!(chip instanceof HTMLElement)) continue;
-        chip.addEventListener("click", () => {
-          const filterType = chip.dataset.filterType || "";
-          const filterValue = chip.dataset.filterValue || "";
-
-          activeFilters[filterType] = filterValue;
-
-          // Update active state for chips of the same type
-          for (const c of allFilterChips) {
-            if (c instanceof HTMLElement && c.dataset.filterType === filterType) {
-              c.classList.toggle("active", c.dataset.filterValue === filterValue);
-            }
-          }
-
+      // Dropdown filters
+      for (const sel of filterSelects) {
+        if (!(sel instanceof HTMLSelectElement)) continue;
+        sel.addEventListener("change", () => {
+          const filterType = sel.dataset.filterType || "";
+          activeFilters[filterType] = sel.value;
           applyFilters();
         });
       }
