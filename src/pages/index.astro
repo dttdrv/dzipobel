@@ -103,7 +103,7 @@ function findEntry(module: string) {
           data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
         >
           <span class="card-genre">{entry.data.genre}</span>
-          <h2 class="card-title">{entry.data.title}</h2>
+          <h2 class="card-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h2>
           <span class="card-author">{entry.data.author}</span>
         </a>
       ))}
@@ -131,7 +131,7 @@ function findEntry(module: string) {
                   data-card
                   data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")} ${humanNames[mod] || ""}`.toLocaleLowerCase("bg-BG")}
                 >
-                  <span class="gram-item-title">{entry.data.title}</span>
+                  <span class="gram-item-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
                   <span class="gram-item-sub">{humanNames[mod] || entry.data.excerpt}</span>
                   <span class="gram-item-count">{entry.data.sections.length} раздела</span>
                 </a>

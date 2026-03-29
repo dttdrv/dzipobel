@@ -41,7 +41,7 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
   <section class="detail-header">
     <a href="/" class="back-link" aria-label="Обратно">←</a>
     <span class="detail-kicker">{entry.data.module}</span>
-    <h1 class="detail-title">{entry.data.title}</h1>
+    <h1 class="detail-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
     <p class="detail-meta">{visibleSections.length} раздела</p>
   </section>
 

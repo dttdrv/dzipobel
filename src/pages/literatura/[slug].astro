@@ -55,7 +55,7 @@ const otherSections = sections.filter(
       <span class="lit-hero-badge">{entry.data.genre}</span>
       <span class="lit-hero-badge">{entry.data.theme}</span>
     </div>
-    <h1 class="lit-hero-title lit-reveal">{entry.data.title}</h1>
+    <h1 class="lit-hero-title lit-reveal" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
     <p class="lit-hero-author lit-reveal">{entry.data.author}</p>
     <a class="lit-hero-cta lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
       Прочети в {entry.data.readSource} ↗
