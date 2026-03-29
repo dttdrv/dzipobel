@@ -155,9 +155,10 @@
 
 .gram-main-excerpt {
   font-size: 15px;
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.6;
   margin: 0;
+  opacity: 0.8;
 }
 
 /* --- Content sections (always open, not accordion) --- */
@@ -192,7 +193,7 @@
   position: relative;
   padding-left: 18px;
   font-size: 15px;
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.7;
   margin-bottom: 8px;
 }

@@ -115,7 +115,7 @@
 
 .acc-text {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.75;
   margin: 0;
 }
@@ -130,7 +130,7 @@
   position: relative;
   padding-left: 18px;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.65;
   margin-bottom: 8px;
 }
