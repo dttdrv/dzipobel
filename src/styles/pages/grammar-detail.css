@@ -313,39 +313,69 @@
 
 /* --- Responsive --- */
 
+/* Mobile TOC toggle button */
+.gram-toc-toggle {
+  display: none;
+}
+
 @media (max-width: 720px) {
   .gram-page {
     grid-template-columns: 1fr;
   }
 
-  .gram-toc {
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    padding: 16px var(--page-padding);
+  .gram-toc-toggle {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
     align-items: center;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .gram-toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 30;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    padding: 20px 16px 40px;
+    transform: translateX(-100%);
+    transition: transform 300ms var(--ease-out);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gram-toc[data-open="true"] {
+    transform: translateX(0);
+  }
+
+  .gram-toc-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 29;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .gram-toc-overlay[data-open="true"] {
+    display: block;
   }
 
   .gram-toc-label {
     width: 100%;
-    margin-bottom: 6px;
-  }
-
-  .gram-toc-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .gram-toc-link {
-    padding: 5px 10px;
-    font-size: 11px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-pill);
+    margin-bottom: 12px;
   }
 
   .gram-main {

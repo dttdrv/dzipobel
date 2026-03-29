@@ -58,12 +58,16 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
   <div class="gram-topbar">
     <a href="/" class="gram-topbar-back">← Назад</a>
     <span class="gram-topbar-title">{entry.data.title}</span>
+    <button class="gram-toc-toggle" id="toc-toggle">☰ Раздели</button>
     <span class="gram-topbar-count">{contentSections.length} раздела</span>
   </div>
 
   <div class="gram-page">
+    <!-- Mobile TOC overlay -->
+    <div class="gram-toc-overlay" id="toc-overlay"></div>
+
     <!-- SIDEBAR: table of contents -->
-    <aside class="gram-toc">
+    <aside class="gram-toc" id="gram-toc">
       <h3 class="gram-toc-label">{entry.data.module}</h3>
       <nav class="gram-toc-nav">
         {contentSections.map((section, idx) => (
@@ -239,9 +243,30 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
       for (const el of sectionEls) obs.observe(el);
     };
 
+    /* Mobile TOC toggle */
+    const initTocToggle = () => {
+      const toggle = document.getElementById("toc-toggle");
+      const toc = document.getElementById("gram-toc");
+      const overlay = document.getElementById("toc-overlay");
+      if (!toggle || !toc || !overlay) return;
+
+      const open = () => { toc.dataset.open = "true"; overlay.dataset.open = "true"; };
+      const close = () => { toc.dataset.open = "false"; overlay.dataset.open = "false"; };
+
+      toggle.addEventListener("click", open);
+      overlay.addEventListener("click", close);
+
+      // Close on TOC link click (mobile)
+      const links = toc.querySelectorAll(".gram-toc-link");
+      for (const link of links) {
+        link.addEventListener("click", close);
+      }
+    };
+
     const initAll = () => {
       initQuizzes();
       initTocHighlight();
+      initTocToggle();
     };
 
     initAll();

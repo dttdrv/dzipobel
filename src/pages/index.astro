@@ -76,30 +76,28 @@ function findEntry(module: string) {
     </div>
   </div>
 
-  <!-- DROPDOWN FILTERS (literature only) -->
-  <div class="filter-dropdowns" data-filters>
-    <select class="filter-select" data-filter-type="theme">
-      <option value="">Всички теми</option>
-      {themes.map((theme) => (
-        <option value={theme}>{theme}</option>
-      ))}
-    </select>
-    <select class="filter-select" data-filter-type="author">
-      <option value="">Всички автори</option>
-      {authors.map((author) => (
-        <option value={author}>{author}</option>
-      ))}
-    </select>
-    <select class="filter-select" data-filter-type="genre">
-      <option value="">Всички жанрове</option>
-      {genres.map((genre) => (
-        <option value={genre}>{genre}</option>
-      ))}
-    </select>
-  </div>
-
-  <!-- LITERATURE LIST -->
+  <!-- LITERATURE (filters + list together so they slide as one) -->
   <section class="section" data-section="literature">
+    <div class="filter-dropdowns" data-filters>
+      <select class="filter-select" data-filter-type="theme">
+        <option value="">Всички теми</option>
+        {themes.map((theme) => (
+          <option value={theme}>{theme}</option>
+        ))}
+      </select>
+      <select class="filter-select" data-filter-type="author">
+        <option value="">Всички автори</option>
+        {authors.map((author) => (
+          <option value={author}>{author}</option>
+        ))}
+      </select>
+      <select class="filter-select" data-filter-type="genre">
+        <option value="">Всички жанрове</option>
+        {genres.map((genre) => (
+          <option value={genre}>{genre}</option>
+        ))}
+      </select>
+    </div>
     <div class="lit-list">
       {literatureEntries.map((entry) => (
         <a
@@ -165,15 +163,13 @@ function findEntry(module: string) {
       const switcherBtns = Array.from(switcher.querySelectorAll("[data-switch]"));
       const litSection = document.querySelector('[data-section="literature"]');
       const gramSection = document.querySelector('[data-section="grammar"]');
-      const filterBar = document.querySelector("[data-filters]");
       const emptyState = document.querySelector("[data-empty]");
 
       if (!(litSection instanceof HTMLElement)) return;
       if (!(gramSection instanceof HTMLElement)) return;
-      if (!(filterBar instanceof HTMLElement)) return;
       if (!(emptyState instanceof HTMLElement)) return;
 
-      const filterSelects = Array.from(filterBar.querySelectorAll("select[data-filter-type]"));
+      const filterSelects = Array.from(litSection.querySelectorAll("select[data-filter-type]"));
       const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
 
@@ -238,11 +234,7 @@ function findEntry(module: string) {
             incoming.hidden = false;
             incoming.classList.add(goingRight ? "section--enter-right" : "section--enter-left");
 
-            if (tab === "literature") {
-              filterBar.hidden = false;
-            } else {
-              filterBar.hidden = true;
-            }
+            // filters are inside litSection, no separate toggle needed
 
             setTimeout(() => {
               incoming.classList.remove("section--enter-left", "section--enter-right");
