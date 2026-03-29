@@ -49,10 +49,7 @@ test("literature detail page", async ({ page }) => {
 test("grammar detail page", async ({ page }) => {
   await page.goto("/bulgarski/morfologiya/");
 
-  await expect(
-    page.getByRole("heading", { name: "Морфология" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Обратно" }),
-  ).toBeVisible();
+  await expect(page.locator(".gram-main-title")).toBeVisible();
+  await expect(page.locator(".gram-topbar-back")).toBeVisible();
+  await expect(page.locator(".gram-toc")).toBeVisible();
 });

@@ -222,14 +222,19 @@
 }
 
 .lit-reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  filter: blur(4px);
-}
-
-.lit-revealed {
   animation: heroTextIn 600ms var(--ease-out) both;
 }
+
+.lit-reveal:nth-child(1) { animation-delay: 0ms; }
+.lit-reveal:nth-child(2) { animation-delay: 60ms; }
+.lit-reveal:nth-child(3) { animation-delay: 120ms; }
+.lit-reveal:nth-child(4) { animation-delay: 180ms; }
+.lit-reveal:nth-child(5) { animation-delay: 240ms; }
+.lit-reveal:nth-child(6) { animation-delay: 300ms; }
+.lit-reveal:nth-child(7) { animation-delay: 360ms; }
+.lit-reveal:nth-child(8) { animation-delay: 420ms; }
+.lit-reveal:nth-child(9) { animation-delay: 480ms; }
+.lit-reveal:nth-child(10) { animation-delay: 540ms; }
 
 .lit-section-title {
   font-family: var(--serif);

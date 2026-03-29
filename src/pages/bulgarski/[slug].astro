@@ -46,7 +46,7 @@ function isSeparatorSection(title: string): boolean {
   return /^═══/.test(title);
 }
 
-const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
+const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
 ---
 
 <BaseLayout
@@ -54,37 +54,52 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
   description={entry.data.excerpt}
   hideNav={true}
 >
-  <section class="detail-header">
-    <a href="/" class="back-link" aria-label="Обратно">←</a>
-    <span class="detail-kicker">{entry.data.module}</span>
-    <h1 class="detail-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
-    <p class="detail-meta">{visibleSections.length} раздела</p>
-  </section>
+  <!-- TOP BAR -->
+  <div class="gram-topbar">
+    <a href="/" class="gram-topbar-back">← Назад</a>
+    <span class="gram-topbar-title">{entry.data.title}</span>
+    <span class="gram-topbar-count">{contentSections.length} раздела</span>
+  </div>
 
-  <div class="detail-content">
-    <div class="acc-toolbar">
-      <button class="acc-toggle-all" data-expand-all>Отвори всички</button>
-    </div>
+  <div class="gram-page">
+    <!-- SIDEBAR: table of contents -->
+    <aside class="gram-toc">
+      <h3 class="gram-toc-label">{entry.data.module}</h3>
+      <nav class="gram-toc-nav">
+        {contentSections.map((section, idx) => (
+          <a href={`#section-${idx}`} class="gram-toc-link">
+            <span class="gram-toc-link-text">{section.title}</span>
+            {(section.quiz && section.quiz.length > 0) && <span class="gram-toc-badge" title="Има тест">?</span>}
+          </a>
+        ))}
+      </nav>
+    </aside>
 
-    {
-      sections.map((section) => {
-        const isSep = isSeparatorSection(section.title);
+    <!-- MAIN CONTENT -->
+    <main class="gram-main">
+      <div class="gram-main-header">
+        <h1 class="gram-main-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
+        <p class="gram-main-excerpt">{entry.data.excerpt}</p>
+      </div>
 
-        if (isSep) {
+      {
+        sections.map((section) => {
+          const isSep = isSeparatorSection(section.title);
+
+          if (isSep) {
+            return (
+              <div class="acc-divider" role="separator">
+                <span>{section.title.replace(/═/g, "").trim()}</span>
+              </div>
+            );
+          }
+
+          const sectionIdx = contentSections.indexOf(section);
+
           return (
-            <div class="acc-divider" role="separator">
-              <span>{section.title.replace(/═/g, "").trim()}</span>
-            </div>
-          );
-        }
+            <section class="gram-section" id={`section-${sectionIdx}`}>
+              <h2 class="gram-section-title">{section.title}</h2>
 
-        return (
-          <details class="acc" data-accordion name="grammar-sections">
-            <summary class="acc-head">
-              <span class="acc-title">{section.title}</span>
-              <span class="acc-chevron" aria-hidden="true"></span>
-            </summary>
-            <div class="acc-body">
               {/* Verification trick */}
               {section.verificationTrick && (
                 <div class="trick-box">
@@ -94,7 +109,7 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
               )}
 
               {/* Main items */}
-              <ul>
+              <ul class="gram-section-list">
                 {section.items.map((item: string) => {
                   const cls = classifyItem(item);
                   return <li class={cls || undefined}>{item}</li>;
@@ -123,35 +138,16 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
                   <span class="quiz-label">Провери се</span>
                 </div>
               )}
-            </div>
-          </details>
-        );
-      })
-    }
+            </section>
+          );
+        })
+      }
+    </main>
   </div>
 </BaseLayout>
 
 <script is:inline>
   (() => {
-    const initAccordion = () => {
-      const toggleBtn = document.querySelector("[data-expand-all]");
-      if (!(toggleBtn instanceof HTMLElement) || toggleBtn.dataset.enhanced === "true") return;
-      toggleBtn.dataset.enhanced = "true";
-
-      const allDetails = Array.from(document.querySelectorAll("[data-accordion]"));
-      let allOpen = false;
-
-      toggleBtn.addEventListener("click", () => {
-        allOpen = !allOpen;
-        for (const d of allDetails) {
-          if (d instanceof HTMLDetailsElement) {
-            d.open = allOpen;
-          }
-        }
-        toggleBtn.textContent = allOpen ? "Затвори всички" : "Отвори всички";
-      });
-    };
-
     const initQuizzes = () => {
       const quizBlocks = document.querySelectorAll("[data-quiz]");
       for (const block of quizBlocks) {
@@ -219,9 +215,33 @@ const visibleSections = sections.filter((s) => !isSeparatorSection(s.title));
       }
     };
 
+    /* Highlight active TOC link on scroll */
+    const initTocHighlight = () => {
+      const links = document.querySelectorAll(".gram-toc-link");
+      const sectionEls = document.querySelectorAll(".gram-section[id]");
+      if (!links.length || !sectionEls.length) return;
+
+      const obs = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const id = entry.target.id;
+              for (const link of links) {
+                if (link instanceof HTMLElement) {
+                  link.classList.toggle("gram-toc-link--active", link.getAttribute("href") === "#" + id);
+                }
+              }
+            }
+          }
+        },
+        { threshold: 0.1, rootMargin: "-80px 0px -60% 0px" },
+      );
+      for (const el of sectionEls) obs.observe(el);
+    };
+
     const initAll = () => {
-      initAccordion();
       initQuizzes();
+      initTocHighlight();
     };
 
     initAll();
