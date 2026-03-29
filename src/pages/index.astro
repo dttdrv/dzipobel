@@ -87,26 +87,28 @@ function findEntry(module: string) {
 
   <!-- LITERATURE (filters + list together so they slide as one) -->
   <section class="section" data-section="literature">
+    <!-- Grade toggle (pill style, separate from dropdowns) -->
+    <div class="grade-toggle">
+      <button class="grade-btn active" data-grade-filter="">Всички</button>
+      <button class="grade-btn" data-grade-filter="11 клас">11 клас</button>
+      <button class="grade-btn" data-grade-filter="12 клас">12 клас</button>
+    </div>
+    <!-- Cascading dropdowns -->
     <div class="filter-dropdowns" data-filters>
-      <select class="filter-select" data-filter-type="grade">
-        <option value="">Всички класове</option>
-        <option value="11 клас">11 клас</option>
-        <option value="12 клас">12 клас</option>
-      </select>
       <select class="filter-select" data-filter-type="theme">
-        <option value="">Всички теми</option>
+        <option value="">Тема</option>
         {themes.map((theme) => (
           <option value={theme}>{theme}</option>
         ))}
       </select>
       <select class="filter-select" data-filter-type="author">
-        <option value="">Всички автори</option>
+        <option value="">Автор</option>
         {authors.map((author) => (
           <option value={author}>{author}</option>
         ))}
       </select>
       <select class="filter-select" data-filter-type="genre">
-        <option value="">Всички жанрове</option>
+        <option value="">Жанр</option>
         {genres.map((genre) => (
           <option value={genre}>{genre}</option>
         ))}
@@ -188,12 +190,81 @@ function findEntry(module: string) {
       if (!(emptyState instanceof HTMLElement)) return;
 
       const filterSelects = Array.from(litSection.querySelectorAll("select[data-filter-type]"));
+      const gradeBtns = Array.from(litSection.querySelectorAll("[data-grade-filter]"));
+      const themeSelect = litSection.querySelector('select[data-filter-type="theme"]');
       const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
+
+      const grade11Themes = ["Родното и чуждото", "Миналото и паметта", "Обществото и властта", "Животът и смъртта", "Природата"];
 
       let activeTab = "literature";
       const activeFilters = { grade: "", theme: "", author: "", genre: "" };
       let searchQuery = "";
+
+      /* Save filter state to URL hash */
+      const saveState = () => {
+        const parts = [];
+        if (activeTab === "grammar") parts.push("tab=bg");
+        if (activeFilters.grade) parts.push("grade=" + encodeURIComponent(activeFilters.grade));
+        if (activeFilters.theme) parts.push("theme=" + encodeURIComponent(activeFilters.theme));
+        if (activeFilters.author) parts.push("author=" + encodeURIComponent(activeFilters.author));
+        if (activeFilters.genre) parts.push("genre=" + encodeURIComponent(activeFilters.genre));
+        history.replaceState(null, "", parts.length ? "#" + parts.join("&") : location.pathname);
+      };
+
+      /* Restore from URL hash */
+      const restoreState = () => {
+        const hash = location.hash.slice(1);
+        if (!hash) return;
+        const params = new URLSearchParams(hash);
+        if (params.get("tab") === "bg") {
+          activeTab = "grammar";
+          litSection.hidden = true;
+          gramSection.hidden = false;
+          for (const b of switcherBtns) {
+            if (b instanceof HTMLElement) b.classList.toggle("active", b.dataset.switch === "grammar");
+          }
+          if (pill instanceof HTMLElement) pill.dataset.pos = "1";
+        }
+        activeFilters.grade = params.get("grade") || "";
+        activeFilters.theme = params.get("theme") || "";
+        activeFilters.author = params.get("author") || "";
+        activeFilters.genre = params.get("genre") || "";
+        // Sync UI
+        for (const btn of gradeBtns) {
+          if (btn instanceof HTMLElement) btn.classList.toggle("active", (btn.dataset.gradeFilter || "") === activeFilters.grade);
+        }
+        for (const sel of filterSelects) {
+          if (sel instanceof HTMLSelectElement) sel.value = activeFilters[sel.dataset.filterType || ""] || "";
+        }
+        updateThemeOptions();
+      };
+
+      /* Update theme dropdown based on grade selection */
+      const updateThemeOptions = () => {
+        if (!(themeSelect instanceof HTMLSelectElement)) return;
+        const currentTheme = themeSelect.value;
+        const options = themeSelect.querySelectorAll("option");
+        for (const opt of options) {
+          if (!(opt instanceof HTMLOptionElement) || !opt.value) continue;
+          const isGrade11Theme = grade11Themes.includes(opt.value);
+          if (activeFilters.grade === "11 клас") {
+            opt.hidden = !isGrade11Theme;
+          } else if (activeFilters.grade === "12 клас") {
+            opt.hidden = isGrade11Theme;
+          } else {
+            opt.hidden = false;
+          }
+        }
+        // Reset theme if it's now hidden
+        if (currentTheme) {
+          const selected = themeSelect.querySelector('option[value="' + currentTheme + '"]');
+          if (selected instanceof HTMLOptionElement && selected.hidden) {
+            themeSelect.value = "";
+            activeFilters.theme = "";
+          }
+        }
+      };
 
       const applyFilters = () => {
         const cards = activeTab === "literature" ? litCards : gramCards;
@@ -214,6 +285,7 @@ function findEntry(module: string) {
         }
 
         emptyState.hidden = visible !== 0;
+        saveState();
       };
 
       // Switcher with sliding pill and blur transition
@@ -270,7 +342,24 @@ function findEntry(module: string) {
           for (const sel of filterSelects) {
             if (sel instanceof HTMLSelectElement) sel.value = "";
           }
+          for (const b of gradeBtns) {
+            if (b instanceof HTMLElement) b.classList.toggle("active", (b.dataset.gradeFilter || "") === "");
+          }
+          updateThemeOptions();
 
+          applyFilters();
+        });
+      }
+
+      // Grade toggle buttons
+      for (const btn of gradeBtns) {
+        if (!(btn instanceof HTMLElement)) continue;
+        btn.addEventListener("click", () => {
+          activeFilters.grade = btn.dataset.gradeFilter || "";
+          for (const b of gradeBtns) {
+            if (b instanceof HTMLElement) b.classList.toggle("active", (b.dataset.gradeFilter || "") === activeFilters.grade);
+          }
+          updateThemeOptions();
           applyFilters();
         });
       }
@@ -304,6 +393,7 @@ function findEntry(module: string) {
         });
       }
 
+      restoreState();
       applyFilters();
     };
 

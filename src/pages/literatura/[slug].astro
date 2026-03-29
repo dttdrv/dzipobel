@@ -43,7 +43,7 @@ const otherSections = sections.filter(
 
   <!-- STICKY HEADER — hidden until hero scrolls away -->
   <div class="lit-topbar" id="lit-topbar" hidden>
-    <a href="/" class="lit-topbar-back">← Назад</a>
+    <a href="javascript:void(0)" class="lit-topbar-back" onclick="history.back()">← Назад</a>
     <div class="lit-topbar-center">
       <span class="lit-topbar-title">{entry.data.title}</span>
       <span class="lit-topbar-author">{entry.data.author}</span>
@@ -53,13 +53,13 @@ const otherSections = sections.filter(
 
   <!-- HERO — left-aligned, above main content -->
   <section class="lit-hero" id="lit-hero">
-    <a href="/" class="lit-back">← Назад</a>
+    <a href="javascript:void(0)" class="lit-back" onclick="history.back()">← Назад</a>
     <div class="lit-hero-badges lit-reveal">
-      <span class="lit-hero-badge">{entry.data.genre}</span>
-      <span class="lit-hero-badge">{entry.data.theme}</span>
+      <a href={`/#genre=${encodeURIComponent(entry.data.genre)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.genre}</a>
+      <a href={`/#theme=${encodeURIComponent(entry.data.theme)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.theme}</a>
     </div>
     <h1 class="lit-hero-title lit-reveal" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
-    <p class="lit-hero-author lit-reveal">{entry.data.author}</p>
+    <a href={`/#author=${encodeURIComponent(entry.data.author)}`} class="lit-hero-author lit-reveal lit-hero-author--link">{entry.data.author}</a>
     <a class="lit-hero-cta lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
       Прочети в {entry.data.readSource} ↗
     </a>

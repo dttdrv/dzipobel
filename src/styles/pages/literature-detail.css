@@ -46,10 +46,29 @@
   color: var(--text);
 }
 
+.lit-hero-badge--link {
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.lit-hero-badge--link:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
 .lit-hero-author {
   font-size: 15px;
   color: var(--muted);
   margin: 0 0 16px;
+}
+
+.lit-hero-author--link {
+  display: inline-block;
+  transition: color 200ms ease;
+}
+
+.lit-hero-author--link:hover {
+  color: var(--text);
 }
 
 .lit-hero-cta {

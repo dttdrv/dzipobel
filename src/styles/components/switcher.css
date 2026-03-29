@@ -119,6 +119,38 @@
   }
 }
 
+/* --- Grade toggle --- */
+
+.grade-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px var(--page-padding) 0;
+}
+
+.grade-btn {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.grade-btn:hover {
+  border-color: var(--muted);
+}
+
+.grade-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
 /* --- Dropdown filters --- */
 
 .filter-dropdowns {
