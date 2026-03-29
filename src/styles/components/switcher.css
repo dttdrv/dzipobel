@@ -15,12 +15,30 @@
   background: rgba(0, 0, 0, 0.04);
   border-radius: 999px;
   position: relative;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
   .switcher {
     background: rgba(255, 255, 255, 0.06);
   }
+}
+
+/* Sliding pill indicator */
+.switcher-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--text);
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.switcher-pill[data-pos="1"] {
+  transform: translateX(100%);
 }
 
 .switcher-btn {
@@ -32,14 +50,13 @@
   color: var(--muted);
   border: none;
   cursor: pointer;
-  transition:
-    color var(--ease-smooth),
-    background var(--ease-smooth),
-    box-shadow var(--ease-smooth),
-    transform var(--spring);
+  transition: color 300ms ease;
   font-family: inherit;
   position: relative;
   z-index: 1;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .switcher-btn:active {
@@ -47,17 +64,34 @@
 }
 
 .switcher-btn.active {
-  background: #111;
-  color: #fff;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.08);
+  color: var(--bg);
 }
 
-@media (prefers-color-scheme: dark) {
-  .switcher-btn.active {
-    background: #f0f0f0;
-    color: #0a0a0a;
+/* --- Content section transitions --- */
+
+.section {
+  transition: opacity 300ms ease, filter 300ms ease;
+}
+
+.section--exiting {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+.section--entering {
+  animation: sectionEnter 350ms ease both;
+}
+
+@keyframes sectionEnter {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
   }
 }
 
@@ -96,46 +130,6 @@
   outline-offset: 1px;
 }
 
-.filter-chip {
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  cursor: pointer;
-  transition:
-    all var(--ease-smooth),
-    transform var(--spring);
-  white-space: nowrap;
-  font-family: inherit;
-}
-
-.filter-chip:active {
-  transform: scale(0.88);
-}
-
-.filter-chip:hover {
-  border-color: var(--muted);
-  background: rgba(0, 0, 0, 0.02);
-}
-
-.filter-chip.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-@media (prefers-color-scheme: dark) {
-  .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  .filter-chip.active {
-    background: #f0f0f0;
-    color: #0a0a0a;
-    border-color: #f0f0f0;
-  }
+.filter-dropdowns[hidden] {
+  display: none !important;
 }

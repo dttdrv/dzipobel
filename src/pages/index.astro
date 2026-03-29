@@ -70,6 +70,7 @@ function findEntry(module: string) {
   <!-- SWITCHER -->
   <div class="switcher-bar">
     <div class="switcher" data-switcher>
+      <div class="switcher-pill" data-pill data-pos="0"></div>
       <button class="switcher-btn active" data-switch="literature">Литература</button>
       <button class="switcher-btn" data-switch="grammar">Български език</button>
     </div>
@@ -200,30 +201,55 @@ function findEntry(module: string) {
         emptyState.hidden = visible !== 0;
       };
 
-      // Switcher
+      // Switcher with sliding pill and blur transition
+      const pill = document.querySelector("[data-pill]");
+
       for (const btn of switcherBtns) {
         if (!(btn instanceof HTMLElement)) continue;
         btn.addEventListener("click", () => {
           const tab = btn.dataset.switch || "literature";
           if (tab === activeTab) return;
 
-          activeTab = tab;
+          // Determine outgoing and incoming sections
+          const outgoing = tab === "literature" ? gramSection : litSection;
+          const incoming = tab === "literature" ? litSection : gramSection;
 
+          // Move the pill
+          if (pill instanceof HTMLElement) {
+            pill.dataset.pos = tab === "literature" ? "0" : "1";
+          }
+
+          // Update button states
           for (const b of switcherBtns) {
             if (b instanceof HTMLElement) {
               b.classList.toggle("active", b.dataset.switch === tab);
             }
           }
 
-          if (tab === "literature") {
-            litSection.hidden = false;
-            gramSection.hidden = true;
-            filterBar.hidden = false;
-          } else {
-            litSection.hidden = true;
-            gramSection.hidden = false;
-            filterBar.hidden = true;
-          }
+          // Blur out the old content
+          outgoing.classList.add("section--exiting");
+
+          // After blur finishes, swap visibility and blur in
+          setTimeout(() => {
+            outgoing.hidden = true;
+            outgoing.classList.remove("section--exiting");
+
+            incoming.hidden = false;
+            incoming.classList.add("section--entering");
+
+            if (tab === "literature") {
+              filterBar.hidden = false;
+            } else {
+              filterBar.hidden = true;
+            }
+
+            // Clean up entering class after animation
+            setTimeout(() => {
+              incoming.classList.remove("section--entering");
+            }, 350);
+          }, 250);
+
+          activeTab = tab;
 
           // Reset filters on tab switch
           activeFilters.theme = "";

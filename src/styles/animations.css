@@ -90,6 +90,4 @@
   animation-delay: 300ms;
 }
 
-.section {
-  transition: opacity 400ms ease, transform 400ms ease;
-}
+/* Section transitions handled in switcher.css */
