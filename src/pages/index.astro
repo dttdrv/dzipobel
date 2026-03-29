@@ -16,9 +16,18 @@ const grammarEntries: CollectionEntry<"grammar">[] = (
     a.data.order - b.data.order,
 );
 
-const themes = [...new Set(literatureEntries.map((e) => e.data.theme))];
-const authors = [...new Set(literatureEntries.map((e) => e.data.author))];
-const genres = [...new Set(literatureEntries.map((e) => e.data.genre))];
+/* Derive grade from theme */
+const grade11Themes = ["Родното и чуждото", "Миналото и паметта", "Обществото и властта", "Животът и смъртта", "Природата"];
+function getGrade(theme: string): string {
+  return grade11Themes.includes(theme) ? "11 клас" : "12 клас";
+}
+
+/* Sort chronologically by author birth year (approximated by order) */
+const sortedLitEntries = [...literatureEntries].sort((a, b) => a.data.order - b.data.order);
+
+const themes = [...new Set(sortedLitEntries.map((e) => e.data.theme))];
+const authors = [...new Set(sortedLitEntries.map((e) => e.data.author))];
+const genres = [...new Set(sortedLitEntries.map((e) => e.data.genre))];
 
 /* Grouped grammar modules with human-friendly descriptions */
 type GrammarGroup = {
@@ -64,7 +73,7 @@ function findEntry(module: string) {
     <div class="hero-orb hero-orb--1" aria-hidden="true"></div>
     <div class="hero-orb hero-orb--2" aria-hidden="true"></div>
     <h1 class="hero-headline">Подготви се<br>за матурата.</h1>
-    <p class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ, 12 клас.</p>
+    <p class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ.</p>
   </section>
 
   <!-- SWITCHER -->
@@ -79,6 +88,11 @@ function findEntry(module: string) {
   <!-- LITERATURE (filters + list together so they slide as one) -->
   <section class="section" data-section="literature">
     <div class="filter-dropdowns" data-filters>
+      <select class="filter-select" data-filter-type="grade">
+        <option value="">Всички класове</option>
+        <option value="11 клас">11 клас</option>
+        <option value="12 клас">12 клас</option>
+      </select>
       <select class="filter-select" data-filter-type="theme">
         <option value="">Всички теми</option>
         {themes.map((theme) => (
@@ -99,21 +113,25 @@ function findEntry(module: string) {
       </select>
     </div>
     <div class="lit-list">
-      {literatureEntries.map((entry) => (
-        <a
-          href={`/literatura/${entry.id}/`}
-          class="lit-list-item"
-          data-card
-          data-theme={entry.data.theme}
-          data-author={entry.data.author}
-          data-genre={entry.data.genre}
-          data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
-        >
-          <span class="lit-list-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
-          <span class="lit-list-meta">{entry.data.author} · {entry.data.genre}</span>
-          <span class="lit-list-theme">{entry.data.theme}</span>
-        </a>
-      ))}
+      {sortedLitEntries.map((entry) => {
+        const grade = getGrade(entry.data.theme);
+        return (
+          <a
+            href={`/literatura/${entry.id}/`}
+            class="lit-list-item"
+            data-card
+            data-theme={entry.data.theme}
+            data-author={entry.data.author}
+            data-genre={entry.data.genre}
+            data-grade={grade}
+            data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${grade} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
+          >
+            <span class="lit-list-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
+            <span class="lit-list-meta">{entry.data.author} · {entry.data.genre}</span>
+            <span class="lit-list-theme">{grade} · {entry.data.theme}</span>
+          </a>
+        );
+      })}
     </div>
     <p class="empty-state" data-empty hidden>Няма резултати.</p>
   </section>
@@ -174,7 +192,7 @@ function findEntry(module: string) {
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
 
       let activeTab = "literature";
-      const activeFilters = { theme: "", author: "", genre: "" };
+      const activeFilters = { grade: "", theme: "", author: "", genre: "" };
       let searchQuery = "";
 
       const applyFilters = () => {
@@ -184,12 +202,13 @@ function findEntry(module: string) {
         for (const card of cards) {
           if (!(card instanceof HTMLElement)) continue;
 
+          const matchesGrade = !activeFilters.grade || card.dataset.grade === activeFilters.grade;
           const matchesTheme = !activeFilters.theme || card.dataset.theme === activeFilters.theme;
           const matchesAuthor = !activeFilters.author || card.dataset.author === activeFilters.author;
           const matchesGenre = !activeFilters.genre || card.dataset.genre === activeFilters.genre;
           const matchesSearch = !searchQuery || (card.dataset.searchText || "").includes(searchQuery);
 
-          const show = activeTab !== "literature" || (matchesTheme && matchesAuthor && matchesGenre && matchesSearch);
+          const show = activeTab !== "literature" || (matchesGrade && matchesTheme && matchesAuthor && matchesGenre && matchesSearch);
           card.hidden = !show;
           if (show) visible += 1;
         }
@@ -244,6 +263,7 @@ function findEntry(module: string) {
           activeTab = tab;
 
           // Reset filters on tab switch
+          activeFilters.grade = "";
           activeFilters.theme = "";
           activeFilters.author = "";
           activeFilters.genre = "";
