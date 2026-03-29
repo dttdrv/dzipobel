@@ -1,0 +1,62 @@
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 16px var(--page-padding) 0;
+}
+
+.card-item {
+  background: var(--bg);
+  padding: 24px 22px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  cursor: pointer;
+  transition:
+    background var(--ease-smooth),
+    transform var(--spring),
+    box-shadow var(--ease-smooth);
+  will-change: transform;
+}
+
+.card-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.card-item:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.card-genre {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.card-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.card-author {
+  font-size: 12px;
+  color: var(--soft);
+  margin: 0;
+}

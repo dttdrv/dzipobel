@@ -1,0 +1,51 @@
+.hero {
+  padding: 60px var(--page-padding) 32px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.hero-headline {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin: 0;
+  color: var(--text);
+  animation: heroTextIn 900ms var(--ease-out) both;
+}
+
+.hero-sub {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 12px auto 0;
+  animation: heroTextIn 900ms var(--ease-out) 120ms both;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(200, 200, 200, 0.3), transparent 70%);
+}
+
+.hero-orb--1 {
+  width: 320px;
+  height: 320px;
+  top: -80px;
+  right: -60px;
+  animation: drift 20s infinite alternate ease-in-out;
+}
+
+.hero-orb--2 {
+  width: 240px;
+  height: 240px;
+  bottom: -40px;
+  left: -40px;
+  animation: drift 20s infinite alternate-reverse ease-in-out;
+}

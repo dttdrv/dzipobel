@@ -1,0 +1,251 @@
+/* --- Accordion toolbar --- */
+
+.acc-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.acc-toggle-all {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: border-color var(--ease-smooth), color var(--ease-smooth);
+}
+
+.acc-toggle-all:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+/* --- Accordion sections --- */
+
+.acc {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: box-shadow var(--ease-smooth);
+}
+
+.acc[open] {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.acc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: background var(--ease-smooth);
+}
+
+.acc-head::-webkit-details-marker {
+  display: none;
+}
+
+.acc-head::marker {
+  content: "";
+}
+
+.acc-head:hover {
+  background: var(--surface);
+}
+
+.acc-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.acc-chevron {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  position: relative;
+  transition: transform var(--ease-smooth);
+}
+
+.acc-chevron::before,
+.acc-chevron::after {
+  content: "";
+  position: absolute;
+  background: var(--soft);
+  border-radius: 1px;
+  transition: background var(--ease-smooth);
+}
+
+.acc-chevron::before {
+  width: 10px;
+  height: 2px;
+  top: 8px;
+  left: 4px;
+}
+
+.acc-chevron::after {
+  width: 2px;
+  height: 10px;
+  top: 4px;
+  left: 8px;
+}
+
+.acc[open] .acc-chevron::after {
+  transform: scaleY(0);
+}
+
+.acc-head:hover .acc-chevron::before,
+.acc-head:hover .acc-chevron::after {
+  background: var(--text);
+}
+
+.acc-body {
+  padding: 0 18px 16px;
+}
+
+.acc-text {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 0;
+}
+
+.acc-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.acc-body ul li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.acc-body ul li:last-child {
+  margin-bottom: 0;
+}
+
+.acc-body ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+/* --- Highlight callouts --- */
+
+.acc-body ul li.is-example {
+  background: rgba(var(--accent-blue), 0.05);
+  border-left: 3px solid rgba(var(--accent-blue), 0.35);
+  padding: 10px 14px 10px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-left: 0;
+  font-style: italic;
+  color: var(--text);
+}
+
+.acc-body ul li.is-example::before {
+  display: none;
+}
+
+.acc-body ul li.is-rule {
+  background: rgba(var(--accent-amber), 0.05);
+  border-left: 3px solid rgba(var(--accent-amber), 0.4);
+  padding: 10px 14px 10px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-left: 0;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.acc-body ul li.is-rule::before {
+  display: none;
+}
+
+/* --- Separator divider --- */
+
+.acc-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 12px;
+  color: var(--soft);
+}
+
+.acc-divider::before,
+.acc-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.acc-divider span {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* --- Dark mode overrides --- */
+
+@media (prefers-color-scheme: dark) {
+  .acc[open] {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  }
+  .acc-body ul li.is-example {
+    background: rgba(var(--accent-blue), 0.08);
+    border-left-color: rgba(var(--accent-blue), 0.5);
+  }
+  .acc-body ul li.is-rule {
+    background: rgba(var(--accent-amber), 0.08);
+    border-left-color: rgba(var(--accent-amber), 0.5);
+  }
+}
+
+/* --- Progressive: animated details open/close (Chromium) --- */
+
+@supports selector(::details-content) {
+  .acc::details-content {
+    transition: block-size 300ms var(--ease-smooth), content-visibility 300ms var(--ease-smooth);
+    block-size: 0;
+    overflow: clip;
+  }
+
+  .acc[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* --- Progressive: dim closed sections when one is open --- */
+
+@supports selector(:has(*)) {
+  .detail-content:has(.acc[open]) .acc:not([open]) {
+    opacity: 0.6;
+    transition: opacity var(--ease-smooth);
+  }
+
+  .detail-content:has(.acc[open]) .acc:not([open]):hover {
+    opacity: 1;
+  }
+}

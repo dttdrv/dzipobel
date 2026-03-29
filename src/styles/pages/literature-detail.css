@@ -1,0 +1,339 @@
+/* --- Literature detail: hero (left-aligned) --- */
+
+.lit-hero {
+  padding: 28px var(--page-padding) 24px;
+  max-width: calc(100% - 340px);
+  animation: heroTextIn 600ms var(--ease-out) both;
+}
+
+.lit-back {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 20px;
+  transition: color var(--ease-smooth);
+}
+
+.lit-back:hover {
+  color: var(--text);
+}
+
+.lit-hero-badges {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.lit-hero-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+}
+
+.lit-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 6px;
+  color: var(--text);
+}
+
+.lit-hero-author {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.lit-hero-cta {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  transition: background var(--ease-smooth), border-color var(--ease-smooth);
+}
+
+.lit-hero-cta:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+}
+
+/* --- Sticky topbar (appears on scroll) --- */
+
+.lit-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px var(--page-padding);
+  border-bottom: 1px solid var(--line);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--bg);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  animation: litTopbarIn 300ms var(--ease-out) both;
+}
+
+.lit-topbar-back {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--ease-smooth);
+}
+
+.lit-topbar-back:hover {
+  color: var(--text);
+}
+
+.lit-topbar-center {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.lit-topbar-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.lit-topbar-author {
+  font-size: 12px;
+  color: var(--soft);
+  margin-left: 6px;
+}
+
+.lit-topbar-cta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background var(--ease-smooth), border-color var(--ease-smooth);
+}
+
+.lit-topbar-cta:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+}
+
+/* --- Two-column page --- */
+
+.lit-page {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  min-height: calc(100vh - 50px);
+}
+
+/* --- Sidebar --- */
+
+.lit-sidebar {
+  padding: 32px 28px 48px;
+  border-left: 1px solid var(--line);
+}
+
+.lit-sidebar-block {
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.lit-sidebar-block:last-child {
+  margin-bottom: 0;
+}
+
+.lit-sidebar-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--soft);
+  margin: 0 0 8px;
+}
+
+.lit-sidebar-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.lit-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lit-sidebar-list li {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.lit-sidebar-subdesc {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* --- Main content area --- */
+
+.lit-main {
+  padding: 32px clamp(24px, 4vw, 56px) 48px;
+  max-width: 780px;
+}
+
+.lit-main-excerpt {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.lit-section {
+  margin-bottom: 32px;
+}
+
+.lit-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(4px);
+}
+
+.lit-revealed {
+  animation: heroTextIn 600ms var(--ease-out) both;
+}
+
+.lit-section-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.lit-section-text {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.lit-section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lit-section-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.lit-section-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.lit-section-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Message highlight --- */
+
+.lit-message {
+  background: rgba(var(--accent-amber), 0.06);
+  border: 1px solid rgba(var(--accent-amber), 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 8px;
+}
+
+.lit-message-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(180, 120, 20, 0.8);
+  margin: 0 0 8px;
+}
+
+.lit-message-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lit-message {
+    background: rgba(var(--accent-amber), 0.08);
+    border-color: rgba(var(--accent-amber), 0.2);
+  }
+  .lit-message-label {
+    color: rgba(245, 178, 50, 0.8);
+  }
+}
+
+/* --- Reading progress bar (CSS scroll-driven) --- */
+
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(var(--accent-blue), 0.5);
+    transform-origin: left;
+    z-index: 30;
+    animation: readingProgress linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes readingProgress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+}

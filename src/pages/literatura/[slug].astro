@@ -38,6 +38,9 @@ const otherSections = sections.filter(
   description={entry.data.excerpt}
   hideNav={true}
 >
+  <!-- READING PROGRESS BAR (CSS scroll-driven, progressive) -->
+  <div class="reading-progress" aria-hidden="true"></div>
+
   <!-- STICKY HEADER — hidden until hero scrolls away -->
   <div class="lit-topbar" id="lit-topbar" hidden>
     <a href="/" class="lit-topbar-back">← Назад</a>

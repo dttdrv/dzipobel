@@ -1,0 +1,83 @@
+.gram-groups {
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 0 var(--page-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.gram-group-head {
+  margin-bottom: 10px;
+}
+
+.gram-group-label {
+  display: block;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.gram-group-hint {
+  display: block;
+  font-size: 13px;
+  color: var(--soft);
+  margin-top: 2px;
+}
+
+.gram-group-items {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.gram-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  transition: background var(--ease-smooth);
+  cursor: pointer;
+}
+
+.gram-item:last-child {
+  border-bottom: none;
+}
+
+.gram-item:hover {
+  background: var(--surface);
+}
+
+.gram-item:active {
+  background: var(--surface-strong);
+}
+
+.gram-item-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.gram-item-sub {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.gram-item-count {
+  font-size: 11px;
+  color: var(--soft);
+  flex-shrink: 0;
+  white-space: nowrap;
+}

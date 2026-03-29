@@ -1,0 +1,71 @@
+/* ============================================================
+   Design tokens — Light Frost design system
+   ============================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Colors */
+  --bg: #fafafa;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-strong: rgba(255, 255, 255, 0.9);
+  --text: #111111;
+  --muted: #666666;
+  --soft: #999999;
+  --line: rgba(0, 0, 0, 0.06);
+  --line-strong: rgba(0, 0, 0, 0.08);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.06);
+
+  /* Typography */
+  --serif: var(--font-literata, "Literata"), Georgia, serif;
+  --sans: var(--font-manrope, "Manrope"), system-ui, sans-serif;
+
+  /* Layout */
+  --page-width: min(1380px, 100vw);
+  --page-padding: clamp(20px, 4vw, 48px);
+
+  /* Spacing (base-4) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Motion */
+  --spring: 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Radii */
+  --radius-card: 16px;
+  --radius-input: 14px;
+  --radius-pill: 999px;
+
+  /* Semantic accent colors */
+  --accent-blue: 59, 130, 246;
+  --accent-amber: 245, 158, 11;
+  --accent-green: 16, 185, 129;
+  --accent-red: 239, 68, 68;
+  --accent-purple: 139, 92, 246;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --surface: rgba(255, 255, 255, 0.05);
+    --surface-strong: rgba(255, 255, 255, 0.08);
+    --text: #f0f0f0;
+    --muted: #999999;
+    --soft: #666666;
+    --line: rgba(255, 255, 255, 0.06);
+    --line-strong: rgba(255, 255, 255, 0.08);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+}
