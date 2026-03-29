@@ -57,15 +57,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121212;
-    --surface: rgba(255, 255, 255, 0.05);
-    --surface-strong: rgba(255, 255, 255, 0.08);
-    --text: #f0f0f0;
-    --muted: #999999;
-    --soft: #666666;
-    --line: rgba(255, 255, 255, 0.06);
-    --line-strong: rgba(255, 255, 255, 0.08);
-    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --bg: #202124;
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-strong: rgba(255, 255, 255, 0.1);
+    --text: #e8eaed;
+    --muted: #9aa0a6;
+    --soft: #5f6368;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.12);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.5);
   }
 }
