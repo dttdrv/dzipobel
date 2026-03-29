@@ -29,7 +29,7 @@ describe("literature content", () => {
 
     const entries = readJsonFiles(literatureDir);
 
-    expect(entries).toHaveLength(12);
+    expect(entries).toHaveLength(27);
 
     for (const entry of entries) {
       expect(entry.value.title).toBeTypeOf("string");
