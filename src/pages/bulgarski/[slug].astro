@@ -62,10 +62,10 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
     <span class="gram-topbar-count">{contentSections.length} раздела</span>
   </div>
 
-  <div class="gram-page">
-    <!-- Mobile TOC overlay -->
-    <div class="gram-toc-overlay" id="toc-overlay"></div>
+  <!-- Mobile TOC overlay (outside grid) -->
+  <div class="gram-toc-overlay" id="toc-overlay"></div>
 
+  <div class="gram-page">
     <!-- SIDEBAR: table of contents -->
     <aside class="gram-toc" id="gram-toc">
       <h3 class="gram-toc-label">{entry.data.module}</h3>
