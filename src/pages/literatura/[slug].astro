@@ -56,6 +56,7 @@ const otherSections = sections.filter(
     <a href="javascript:void(0)" class="lit-back" onclick="history.back()">← Назад</a>
     <div class="lit-hero-badges lit-reveal">
       <a href={`/#genre=${encodeURIComponent(entry.data.genre)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.genre}</a>
+      <span class="lit-hero-sep">·</span>
       <a href={`/#theme=${encodeURIComponent(entry.data.theme)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.theme}</a>
     </div>
     <h1 class="lit-hero-title lit-reveal" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
@@ -141,12 +142,8 @@ const otherSections = sections.filter(
       </div>
     </main>
 
-    <!-- Mobile sidebar toggle -->
-    <button class="lit-sidebar-toggle" id="lit-sidebar-toggle">☰ Информация</button>
-    <div class="lit-sidebar-overlay" id="lit-sidebar-overlay"></div>
-
-    <!-- SIDEBAR (right) -->
-    <aside class="lit-sidebar lit-reveal" id="lit-sidebar">
+    <!-- SIDEBAR (right, inline on mobile) -->
+    <aside class="lit-sidebar lit-reveal">
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Жанр</h3>
         <p class="lit-sidebar-value">{entry.data.genre}</p>
@@ -233,26 +230,11 @@ const otherSections = sections.filter(
       for (const el of reveals) revealObs.observe(el);
     };
 
-    const initSidebarToggle = () => {
-      const toggle = document.getElementById("lit-sidebar-toggle");
-      const sidebar = document.getElementById("lit-sidebar");
-      const overlay = document.getElementById("lit-sidebar-overlay");
-      if (!toggle || !sidebar || !overlay) return;
-
-      const open = () => { sidebar.dataset.open = "true"; overlay.dataset.open = "true"; };
-      const close = () => { sidebar.dataset.open = "false"; overlay.dataset.open = "false"; };
-
-      toggle.addEventListener("click", open);
-      overlay.addEventListener("click", close);
-    };
-
     init();
-    initSidebarToggle();
     document.addEventListener("astro:page-load", () => {
       const hero = document.getElementById("lit-hero");
       if (hero) delete hero.dataset.enhanced;
       init();
-      initSidebarToggle();
     });
   })();
 </script>

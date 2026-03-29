@@ -21,19 +21,29 @@
 
 .lit-hero-badges {
   display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--soft);
 }
 
 .lit-hero-badge {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  padding: 4px 10px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
+  color: var(--soft);
+}
+
+.lit-hero-badge--link {
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.lit-hero-badge--link:hover {
+  color: var(--text);
+}
+
+.lit-hero-sep {
+  color: var(--line-strong);
+  margin: 0 2px;
 }
 
 .lit-hero-title {
@@ -43,16 +53,6 @@
   letter-spacing: -0.03em;
   line-height: 1.1;
   margin: 0 0 6px;
-  color: var(--text);
-}
-
-.lit-hero-badge--link {
-  cursor: pointer;
-  transition: border-color 200ms ease, color 200ms ease;
-}
-
-.lit-hero-badge--link:hover {
-  border-color: var(--text);
   color: var(--text);
 }
 
@@ -165,31 +165,6 @@
 }
 
 /* --- Sidebar --- */
-
-.lit-sidebar-toggle {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  background: none;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  cursor: pointer;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 25;
-  background: var(--bg);
-  box-shadow: var(--shadow);
-}
-
-.lit-sidebar-overlay {
-  display: none;
-}
 
 .lit-sidebar {
   padding: 32px 28px 48px;

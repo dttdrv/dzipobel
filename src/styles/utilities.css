@@ -128,43 +128,21 @@
   }
 
   .lit-sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 300px;
-    height: 100vh;
-    z-index: 30;
-    background: var(--bg);
-    border-left: 1px solid var(--line);
-    padding: 20px;
-    transform: translateX(100%);
-    transition: transform 300ms var(--ease-out);
-    overflow-y: auto;
-  }
-
-  .lit-sidebar[data-open="true"] {
-    transform: translateX(0);
-  }
-
-  .lit-sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 29;
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .lit-sidebar-overlay[data-open="true"] {
-    display: block;
-  }
-
-  .lit-sidebar-toggle {
-    display: flex;
+    position: static;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding: 24px var(--page-padding);
   }
 
   .lit-sidebar-block {
     margin-bottom: 16px;
+  }
+
+  /* Hide mobile toggle + overlay since sidebar is inline */
+  .lit-sidebar-toggle,
+  .lit-sidebar-overlay {
+    display: none !important;
   }
 
   .lit-main {
