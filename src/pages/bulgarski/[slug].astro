@@ -346,7 +346,7 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
       for (const el of sectionEls) obs.observe(el);
     };
 
-    /* Hover-edge sidebar with bulge handle */
+    /* Hover-edge (desktop) + click toggle (all devices) for the TOC */
     const initTocHover = () => {
       const handle = document.getElementById("toc-handle");
       const hoverEdge = document.getElementById("toc-hover-edge");
@@ -356,6 +356,7 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
       if (handle.dataset.enhanced === "true") return;
       handle.dataset.enhanced = "true";
 
+      const hasHover = window.matchMedia && window.matchMedia("(hover: hover)").matches;
       let closeTimer = null;
       let pinned = false;
 
@@ -378,21 +379,29 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
         closeTimer = window.setTimeout(close, 120);
       };
 
-      hoverEdge.addEventListener("mouseenter", open);
-      handle.addEventListener("mouseenter", open);
-      toc.addEventListener("mouseenter", open);
+      /* Hover behavior — ONLY on devices that truly support hover. On touch,
+         emulated mouseenter+click race conditions made the menu open & instantly
+         close again, looking like "the button does nothing". */
+      if (hasHover) {
+        hoverEdge.addEventListener("mouseenter", open);
+        handle.addEventListener("mouseenter", open);
+        toc.addEventListener("mouseenter", open);
 
-      handle.addEventListener("mouseleave", scheduleClose);
-      toc.addEventListener("mouseleave", scheduleClose);
+        handle.addEventListener("mouseleave", scheduleClose);
+        toc.addEventListener("mouseleave", scheduleClose);
+      }
 
-      // Click-to-pin (mobile/keyboard friendly)
+      /* Click toggle works on every device */
       handle.addEventListener("click", (e) => {
         e.preventDefault();
-        pinned = !pinned;
-        if (pinned) {
-          open();
-        } else {
+        e.stopPropagation();
+        const isOpen = toc.dataset.open === "true";
+        if (isOpen) {
+          pinned = false;
           close();
+        } else {
+          pinned = true;
+          open();
         }
       });
 
