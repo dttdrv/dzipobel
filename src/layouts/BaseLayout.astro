@@ -3,7 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 import "../styles/global.css";
 
-const { title, description, hideNav = false } = Astro.props;
+const { title, description, isDetail = false, detailTitle, backUrl = "/", readUrl } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,7 +15,7 @@ const { title, description, hideNav = false } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#292a2d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
     <Font cssVariable="--font-literata" preload />
     <Font cssVariable="--font-manrope" preload />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -23,29 +23,111 @@ const { title, description, hideNav = false } = Astro.props;
     <title>{title}</title>
     <ClientRouter />
   </head>
-  <body>
-    <div class="site-shell">
-      {!hideNav && (
-        <header class="nav" id="site-nav">
-          <a href="/" class="nav-brand" aria-label="ДЗИ библиотека">ДЗИ по БЕЛ</a>
-          <button class="nav-search" aria-label="Търсене" data-search-toggle>⌕</button>
-        </header>
+  <body data-page-detail={isDetail ? "true" : "false"}>
+    <!-- Reading progress (top of viewport, full width) -->
+    {isDetail && <div class="site-progress" aria-hidden="true"></div>}
+
+    <!-- Floating Chrome -->
+    <div class="float-shell" data-float-chrome>
+      <div class="float-left">
+        {isDetail && (
+          <a href={backUrl} class="float-button float-back" data-back data-back-url={backUrl} aria-label="Назад">←</a>
+        )}
+      </div>
+
+      {!isDetail && (
+        <div class="float-title" data-float-title>
+          ДЗИ по БЕЛ
+        </div>
+      )}
+      {isDetail && detailTitle && (
+        <div class="float-title float-title--center" data-float-title data-float-morph>
+          {detailTitle}
+        </div>
       )}
 
-      {!hideNav && <div class="nav-spacer" aria-hidden="true"></div>}
+      <div class="float-right">
+        {isDetail && readUrl && (
+          <a class="float-read" href={readUrl} target="_blank" rel="noreferrer">Прочети ↗</a>
+        )}
+        {!isDetail && (
+          <>
+            {readUrl && (
+              <a class="float-read" href={readUrl} target="_blank" rel="noreferrer">Прочети ↗</a>
+            )}
+            <a class="float-instagram" href="https://www.instagram.com/dttdrv/" target="_blank" rel="noreferrer" aria-label="Instagram @dttdrv">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+              </svg>
+              <span>@dttdrv</span>
+            </a>
+          </>
+        )}
+      </div>
+    </div>
 
+    <div class="site-shell" data-site-shell>
       <main>
         <slot />
       </main>
 
-      <footer class="footer">
-        <span class="footer-credit">
-          Направено от <a href="https://www.instagram.com/dttdrv/" target="_blank" rel="noreferrer">@dttdrv</a>
-        </span>
+      <footer class="site-footer">
+        Направено от <a href="https://www.instagram.com/dttdrv/" target="_blank" rel="noreferrer" class="site-footer-credit">Деян Тодоров</a> — 2026
       </footer>
     </div>
-    <script>
-      import "../scripts/interactions";
+
+    <script is:inline>
+      (() => {
+        let scrollObs = null;
+
+        const initChrome = () => {
+          if (scrollObs) {
+            scrollObs.disconnect();
+            scrollObs = null;
+          }
+
+          const shells = document.querySelectorAll("[data-float-chrome]");
+          const sentinel = document.querySelector("[data-scroll-sentinel]");
+          const morphSource = document.querySelector("[data-morph-source]");
+          if (shells.length && sentinel) {
+            scrollObs = new IntersectionObserver(
+              ([entry]) => {
+                const passed = !entry.isIntersecting;
+                for (const shell of shells) {
+                  shell.dataset.revealed = passed ? "true" : "false";
+                }
+                if (morphSource instanceof HTMLElement) {
+                  morphSource.dataset.morphed = passed ? "true" : "false";
+                }
+              },
+              { threshold: 0, rootMargin: "-1px 0px 0px 0px" },
+            );
+            scrollObs.observe(sentinel);
+          }
+
+          /* Back button: animate exit, then navigate to backUrl with
+             a sessionStorage hint so the landing page restores its state. */
+          const backLinks = document.querySelectorAll("[data-back]:not([data-back-enhanced])");
+          for (const link of backLinks) {
+            link.dataset.backEnhanced = "true";
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              const url = link.dataset.backUrl || "/";
+              try { sessionStorage.setItem("__restoreOnLand", "true"); } catch {}
+              document.body.dataset.exiting = "true";
+              window.setTimeout(() => { window.location.href = url; }, 220);
+            });
+          }
+        };
+
+        initChrome();
+        document.addEventListener("astro:page-load", () => {
+          delete document.body.dataset.exiting;
+          initChrome();
+        });
+      })();
     </script>
   </body>
 </html>

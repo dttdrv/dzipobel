@@ -26,6 +26,11 @@ type LiteratureInput = {
     theme: string;
     genre: string;
     excerpt: string;
+    examFocus?: {
+      titleMeaning: string;
+      examRelevance: string;
+      genreRationale?: string;
+    };
     tags?: string[];
   };
 };
@@ -93,6 +98,9 @@ export function buildLibraryIndex(input: {
         entry.data.theme,
         entry.data.genre,
         entry.data.excerpt,
+        entry.data.examFocus?.titleMeaning ?? "",
+        entry.data.examFocus?.examRelevance ?? "",
+        entry.data.examFocus?.genreRationale ?? "",
         ...(entry.data.tags ?? []),
       ].join(" "),
     ),

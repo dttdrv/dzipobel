@@ -13,6 +13,11 @@ const literature = defineCollection({
     excerpt: z.string(),
     aboutAuthor: z.string(),
     aboutWork: z.string(),
+    examFocus: z.object({
+      titleMeaning: z.string(),
+      examRelevance: z.string(),
+      genreRationale: z.string().optional(),
+    }),
     readUrl: z.string().url(),
     readSource: z.string(),
     motifs: z.array(z.string()),

@@ -8,3 +8,4 @@ npm-debug.log*
 _scaffold-trash/
 .superpowers/
 test-results/
+dev-server.log

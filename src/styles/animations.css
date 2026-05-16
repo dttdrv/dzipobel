@@ -2,45 +2,6 @@
   from {
     opacity: 0;
     transform: translateY(20px);
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes navIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-16px) scale(0.9);
-    filter: blur(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes navExpand {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) scale(0.85);
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes litTopbarIn {
-  from {
-    opacity: 0;
-    transform: translateY(-100%);
   }
   to {
     opacity: 1;
@@ -52,21 +13,10 @@
   from {
     opacity: 0;
     transform: translateY(16px);
-    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes drift {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(12px, 8px);
   }
 }
 
@@ -88,6 +38,62 @@
 
 .reveal-delay-3 {
   animation-delay: 300ms;
+}
+
+@keyframes readingProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes pageReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* When body is in exit state, run the reverse of pageReveal */
+body[data-exiting="true"] [class*="page-reveal"],
+body[data-exiting="true"] .lit-hero,
+body[data-exiting="true"] .lit-main,
+body[data-exiting="true"] .lit-sidebar,
+body[data-exiting="true"] .gram-main,
+body[data-exiting="true"] .gram-section,
+body[data-exiting="true"] .gram-main-header,
+body[data-exiting="true"] .hero-headline,
+body[data-exiting="true"] .hero-sub {
+  animation: pageExit 220ms cubic-bezier(0.4, 0, 0.6, 1) forwards !important;
+}
+
+/* Slight chrome fade on exit too */
+body[data-exiting="true"] .float-shell,
+body[data-exiting="true"] .gram-toc-handle {
+  transition: opacity 200ms ease;
+  opacity: 0;
+}
+
+/* --- Universal subtle click feedback for interactive elements --- */
+
+button,
+a {
+  transition: transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+button:active,
+a:active,
+[role="button"]:active {
+  transform: scale(0.96);
 }
 
 /* Section transitions handled in switcher.css */

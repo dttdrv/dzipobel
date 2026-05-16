@@ -1,70 +1,138 @@
 /* ============================================================
-   Grammar detail page — full-width with sidebar TOC
+   Grammar detail page — full-width with hover sidebar TOC
    ============================================================ */
-
-/* --- Top bar --- */
-
-.gram-topbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px var(--page-padding);
-  border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--bg);
-  backdrop-filter: blur(16px) saturate(1.6);
-  -webkit-backdrop-filter: blur(16px) saturate(1.6);
-}
-
-.gram-topbar-back {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: color var(--ease-smooth);
-}
-
-.gram-topbar-back:hover {
-  color: var(--text);
-}
-
-.gram-topbar-title {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  flex: 1;
-  text-align: center;
-}
-
-.gram-topbar-count {
-  font-size: 12px;
-  color: var(--soft);
-  flex-shrink: 0;
-}
 
 /* --- Two-column layout --- */
 
 .gram-page {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  min-height: calc(100vh - 50px);
+  grid-template-columns: 1fr;
+  min-height: 100dvh;
+}
+
+/* --- Edge hover trigger (invisible) --- */
+
+.gram-toc-hover-edge {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 22px;
+  z-index: 88;
+  pointer-events: auto;
+}
+
+/* --- Bulge handle (vertical centered, floats over back button) --- */
+
+.gram-toc-handle {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 64px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  cursor: pointer;
+  z-index: 96;
+  transition:
+    transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    width 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background 220ms ease,
+    color 220ms ease,
+    opacity 220ms ease;
+}
+
+.gram-toc-handle:hover {
+  width: 30px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.gram-toc-handle:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.gram-toc-handle svg {
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.gram-toc-handle[data-open="true"] {
+  opacity: 0;
+  transform: translateY(-50%) translateX(-8px);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .gram-toc-handle {
+    background: rgba(9, 9, 11, 0.85);
+  }
+  .gram-toc-handle:hover {
+    background: rgba(9, 9, 11, 0.98);
+  }
 }
 
 /* --- Sidebar TOC --- */
 
 .gram-toc {
-  padding: 24px 16px 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(320px, calc(100vw - 48px));
+  height: 100dvh;
+  z-index: 95; /* over back button (80) and progress (90) */
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  padding: 76px 16px 40px;
   border-right: 1px solid var(--line);
-  position: sticky;
-  top: 50px;
-  height: calc(100vh - 50px);
+  transform: translateX(-100%);
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0);
+}
+
+.gram-toc[data-open="true"] {
+  transform: translateX(0);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .gram-toc {
+    background: rgba(9, 9, 11, 0.96);
+  }
+  .gram-toc[data-open="true"] {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.gram-toc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transition: background 240ms ease;
+}
+
+.gram-toc-overlay[data-open="true"] {
+  background: rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
 }
 
 .gram-toc-label {
@@ -78,10 +146,26 @@
   padding: 0 8px;
 }
 
+.gram-toc-divider {
+  margin: 16px 8px;
+  border-top: 1px solid var(--line);
+}
+
 .gram-toc-nav {
   display: flex;
   flex-direction: column;
   gap: 1px;
+}
+
+.gram-toc-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.gram-toc-row .gram-toc-link {
+  flex: 1;
+  min-width: 0;
 }
 
 .gram-toc-link {
@@ -115,32 +199,45 @@
   white-space: nowrap;
 }
 
-.gram-toc-badge {
-  width: 16px;
-  height: 16px;
-  display: flex;
+.gram-toc-test {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 9px;
+  font-family: var(--sans);
+  font-size: 10px;
   font-weight: 700;
-  flex-shrink: 0;
-  background: rgba(var(--accent-purple), 0.12);
-  color: rgba(var(--accent-purple), 0.8);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.gram-toc-test:hover {
+  color: var(--text);
+  border-color: var(--text);
+  background: var(--surface);
+}
+
+.gram-toc-test:active {
+  transform: scale(0.94);
 }
 
 /* --- Main content --- */
 
 .gram-main {
-  padding: 32px clamp(24px, 4vw, 56px) 48px;
+  padding: 96px clamp(24px, 4vw, 56px) 48px;
   max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .gram-main-header {
   margin-bottom: 36px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--line);
-  animation: heroTextIn 600ms var(--ease-out) both;
 }
 
 .gram-main-title {
@@ -151,6 +248,12 @@
   line-height: 1.1;
   margin: 0 0 8px;
   color: var(--text);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.gram-main-title[data-morphed="true"] {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
 .gram-main-excerpt {
@@ -164,8 +267,8 @@
 /* --- Content sections (always open, not accordion) --- */
 
 .gram-section {
-  margin-bottom: 32px;
-  padding-bottom: 32px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
   border-bottom: 1px solid var(--line);
   scroll-margin-top: 80px;
 }
@@ -176,11 +279,13 @@
 
 .gram-section-title {
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.02em;
   margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
 }
 
 .gram-section-list {
@@ -250,108 +355,70 @@
   }
 }
 
-/* --- Old detail page classes (kept for back-compat) --- */
+/* --- Per-section quiz card (minimal outline) --- */
 
-.detail-header {
-  padding: 48px var(--page-padding) 24px;
-  text-align: center;
-  animation: heroTextIn 700ms var(--ease-out) both;
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--surface);
-  backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+.gram-quiz-card {
+  margin-top: 24px;
+  padding: 22px 22px 20px;
   border: 1px solid var(--line);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
-  color: var(--text);
-  font-size: 18px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: transform var(--spring), box-shadow var(--ease-smooth), background var(--ease-smooth);
+  border-radius: 10px;
+  background: transparent;
+  scroll-margin-top: 80px;
 }
 
-.back-link:hover { transform: scale(1.1); background: var(--surface-strong); }
-.back-link:active { transform: scale(0.9); }
+.gram-quiz-card-head {
+  margin-bottom: 16px;
+}
 
-.detail-kicker {
+.gram-quiz-card-kicker {
+  display: inline-block;
+  font-family: var(--sans);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
   color: var(--soft);
-  margin: 0 0 8px;
+  margin-bottom: 6px;
 }
 
-.detail-title {
+.gram-quiz-card-title {
   font-family: var(--serif);
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin: 0;
+  letter-spacing: -0.02em;
   color: var(--text);
+  margin: 0 0 4px;
 }
 
-.detail-meta {
+.gram-quiz-card-sub {
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--soft);
-  margin: 8px 0 0;
+  color: var(--muted);
+  margin: 0;
 }
 
-.detail-content {
-  padding: 0 var(--page-padding) 48px;
-  max-width: 680px;
-  margin: 0 auto;
-  animation: heroTextIn 600ms var(--ease-out) 180ms both;
+/* --- Unified page reveal animation --- */
+
+.page-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: pageReveal 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.gram-section.page-reveal:nth-of-type(1) { animation-delay: 60ms; }
+.gram-section.page-reveal:nth-of-type(2) { animation-delay: 120ms; }
+.gram-section.page-reveal:nth-of-type(3) { animation-delay: 180ms; }
+.gram-section.page-reveal:nth-of-type(4) { animation-delay: 240ms; }
+.gram-section.page-reveal:nth-of-type(5) { animation-delay: 280ms; }
+.gram-section.page-reveal:nth-of-type(n+6) { animation-delay: 320ms; }
+
+@keyframes pageReveal {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Responsive --- */
 
-/* Mobile TOC toggle — sits in topbar on mobile */
-.gram-toc-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--line-strong);
-  background: transparent;
-  color: var(--text);
-  font-size: 14px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
 @media (max-width: 720px) {
-  .gram-page {
-    grid-template-columns: 1fr;
-  }
-
-  .gram-topbar {
-    padding: 8px var(--page-padding);
-    gap: 10px;
-  }
-
-  .gram-topbar-title {
-    font-size: 13px;
-  }
-
-  .gram-topbar-count {
-    font-size: 11px;
-  }
-
-  .gram-toc-toggle {
-    display: flex;
-  }
-
   .gram-main-header {
     margin-bottom: 24px;
     padding-bottom: 16px;
@@ -366,41 +433,7 @@
   }
 
   .gram-section-title {
-    font-size: 16px;
-  }
-
-  .gram-toc {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px;
-    height: 100vh;
-    z-index: 30;
-    background: var(--bg);
-    border-right: 1px solid var(--line);
-    padding: 20px 16px 40px;
-    transform: translateX(-100%);
-    transition: transform 300ms var(--ease-out);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .gram-toc[data-open="true"] {
-    transform: translateX(0);
-  }
-
-  .gram-toc-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 29;
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .gram-toc-overlay[data-open="true"] {
-    display: block;
+    font-size: 17px;
   }
 
   .gram-toc-label {
@@ -409,19 +442,50 @@
   }
 
   .gram-main {
-    padding: 24px var(--page-padding) 40px;
+    padding: 88px var(--page-padding) 40px;
   }
 
-  .detail-header {
-    padding: 32px var(--page-padding) 20px;
+  .gram-quiz-card {
+    padding: 20px 18px;
   }
 
-  .detail-title {
-    font-size: clamp(1.5rem, 6vw, 1.85rem);
+  .gram-quiz-card-title {
+    font-size: 17px;
   }
 
-  .detail-content {
-    max-width: none;
-    padding: 0 var(--page-padding) 40px;
+  /* Mobile: dedicated pill button below the back button (top-left) */
+  .gram-toc-handle {
+    position: fixed;
+    top: calc(max(12px, env(safe-area-inset-top)) + 48px);
+    bottom: auto;
+    left: 16px;
+    right: auto;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    transform: none;
   }
+
+  .gram-toc-handle:hover {
+    width: 36px;
+  }
+
+  .gram-toc-handle:active {
+    transform: scale(0.94);
+  }
+
+  .gram-toc-handle[data-open="true"] {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  /* Disable invisible hover edge on touch */
+  .gram-toc-hover-edge {
+    display: none;
+  }
+}
+
+@media (hover: none) {
+  .gram-toc-hover-edge { display: none; }
 }

@@ -8,7 +8,22 @@
       "Bash(npx tsc:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:chitanka.info)",
+      "WebFetch(domain:www.slovo.bg)",
+      "WebFetch(domain:literaturensviat.com)",
+      "WebFetch(domain:www.google.com)",
+      "WebSearch",
+      "WebFetch(domain:liternet.bg)",
+      "Bash(sed -i 's|text/37731-az-iskam-da-te-pomnia-vse-taka|text/6166-az-iskam-da-te-pomnja-vse-taka|' az-iskam-da-te-pomnya-vse-taka.json)",
+      "Bash(sed -i 's|text/47682-kolko-si-hubava|text/7627-kolko-si-hubava|' kolko-si-hubava.json)",
+      "Bash(sed -i 's|text/12939-spasova-mogila|text/5297-spasova-mogila|' spasova-mogila.json)",
+      "Bash(sed -i 's|text/22381-molitva|text/12119-molitva|' molitva.json)",
+      "Bash(sed -i 's|text/31518-vjara|text/11434-vjara|' vyara.json)",
+      "Bash(cd:*)",
+      "WebFetch(domain:dzipobel.pages.dev)",
+      "WebFetch(domain:dzipobel.wiki)",
+      "Bash(npm --version)"
     ]
   }
 }

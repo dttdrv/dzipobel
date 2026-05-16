@@ -33,7 +33,7 @@ const genres = [...new Set(sortedLitEntries.map((e) => e.data.genre))];
 type GrammarGroup = {
   label: string;
   hint: string;
-  modules: string[]; // module field values
+  modules: string[];
 };
 
 const grammarGroups: GrammarGroup[] = [
@@ -64,55 +64,94 @@ const humanNames: Record<string, string> = {
 function findEntry(module: string) {
   return grammarEntries.find((e) => e.data.module === module);
 }
+
+type DropdownOption = { value: string; label: string };
+
+const themeOptions: DropdownOption[] = themes.map((t) => ({ value: t, label: t }));
+const authorOptions: DropdownOption[] = authors.map((a) => ({ value: a, label: a }));
+const genreOptions: DropdownOption[] = genres.map((g) => ({ value: g, label: g }));
 ---
 
 <BaseLayout title="ДЗИ библиотека" description="Безплатна библиотека с литература и български език преди ДЗИ.">
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-orb hero-orb--1" aria-hidden="true"></div>
-    <div class="hero-orb hero-orb--2" aria-hidden="true"></div>
-    <h1 class="hero-headline">Подготви се<br>за матурата.</h1>
-    <p class="hero-sub">Безплатна библиотека с произведения и граматика за ДЗИ.</p>
+    <h1 class="hero-headline" data-scroll-sentinel>Подготовка за ДЗИ по БЕЛ</h1>
+    <p class="hero-sub">Произведения и граматика за държавен зрелостен изпит.</p>
   </section>
 
-  <!-- SWITCHER -->
-  <div class="switcher-bar">
-    <div class="switcher" data-switcher>
-      <div class="switcher-pill" data-pill data-pos="0"></div>
-      <button class="switcher-btn active" data-switch="literature">Литература</button>
-      <button class="switcher-btn" data-switch="grammar">Български език</button>
+  <!-- STUDY FINDER -->
+  <div class="finder">
+    <div class="switcher-bar">
+      <div class="switcher" data-switcher>
+        <div class="switcher-pill" data-pill data-pos="0"></div>
+        <button class="switcher-btn active" data-switch="literature">Литература</button>
+        <button class="switcher-btn" data-switch="grammar">Български език</button>
+      </div>
     </div>
   </div>
 
-  <!-- LITERATURE (filters + list together so they slide as one) -->
+  <!-- LITERATURE -->
   <section class="section" data-section="literature">
-    <!-- Grade toggle (pill style, separate from dropdowns) -->
-    <div class="grade-toggle">
-      <button class="grade-btn active" data-grade-filter="">Всички</button>
-      <button class="grade-btn" data-grade-filter="11 клас">11 клас</button>
-      <button class="grade-btn" data-grade-filter="12 клас">12 клас</button>
-    </div>
-    <!-- Cascading dropdowns -->
-    <div class="filter-dropdowns" data-filters>
-      <select class="filter-select" data-filter-type="theme">
-        <option value="">Тема</option>
-        {themes.map((theme) => (
-          <option value={theme}>{theme}</option>
-        ))}
-      </select>
-      <select class="filter-select" data-filter-type="author">
-        <option value="">Автор</option>
-        {authors.map((author) => (
-          <option value={author}>{author}</option>
-        ))}
-      </select>
-      <select class="filter-select" data-filter-type="genre">
-        <option value="">Жанр</option>
-        {genres.map((genre) => (
-          <option value={genre}>{genre}</option>
-        ))}
-      </select>
+    <div class="filter-bar" data-filters>
+      <div class="filter-group">
+        <span class="filter-group-label">Клас</span>
+        <div class="filter-segment">
+          <button class="filter-segment-btn active" data-grade-filter="">Всички</button>
+          <button class="filter-segment-btn" data-grade-filter="11 клас">11</button>
+          <button class="filter-segment-btn" data-grade-filter="12 клас">12</button>
+        </div>
+      </div>
+
+      <div class="filter-dropdowns">
+        <div class="dropdown" data-dropdown data-filter-type="theme">
+          <button type="button" class="dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+            <span class="dropdown-trigger-label">Тема</span>
+            <span class="dropdown-trigger-value" data-dropdown-value></span>
+            <svg class="dropdown-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
+              <path d="M0 0l5 6 5-6z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="dropdown-panel" role="listbox" data-dropdown-panel>
+            <button type="button" role="option" class="dropdown-option dropdown-option--active" data-dropdown-option="">Всички</button>
+            {themeOptions.map((opt) => (
+              <button type="button" role="option" class="dropdown-option" data-dropdown-option={opt.value}>{opt.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="dropdown" data-dropdown data-filter-type="author">
+          <button type="button" class="dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+            <span class="dropdown-trigger-label">Автор</span>
+            <span class="dropdown-trigger-value" data-dropdown-value></span>
+            <svg class="dropdown-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
+              <path d="M0 0l5 6 5-6z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="dropdown-panel" role="listbox" data-dropdown-panel>
+            <button type="button" role="option" class="dropdown-option dropdown-option--active" data-dropdown-option="">Всички</button>
+            {authorOptions.map((opt) => (
+              <button type="button" role="option" class="dropdown-option" data-dropdown-option={opt.value}>{opt.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="dropdown" data-dropdown data-filter-type="genre">
+          <button type="button" class="dropdown-trigger" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+            <span class="dropdown-trigger-label">Жанр</span>
+            <span class="dropdown-trigger-value" data-dropdown-value></span>
+            <svg class="dropdown-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
+              <path d="M0 0l5 6 5-6z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="dropdown-panel" role="listbox" data-dropdown-panel>
+            <button type="button" role="option" class="dropdown-option dropdown-option--active" data-dropdown-option="">Всички</button>
+            {genreOptions.map((opt) => (
+              <button type="button" role="option" class="dropdown-option" data-dropdown-option={opt.value}>{opt.label}</button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
     <div class="lit-list">
       {sortedLitEntries.map((entry) => {
@@ -122,11 +161,11 @@ function findEntry(module: string) {
             href={`/literatura/${entry.id}/`}
             class="lit-list-item"
             data-card
+            data-nav-card="literature"
             data-theme={entry.data.theme}
             data-author={entry.data.author}
             data-genre={entry.data.genre}
             data-grade={grade}
-            data-search-text={`${entry.data.title} ${entry.data.author} ${entry.data.genre} ${entry.data.theme} ${grade} ${entry.data.tags.join(" ")}`.toLocaleLowerCase("bg-BG")}
           >
             <span class="lit-list-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
             <span class="lit-list-meta">{entry.data.author} · {entry.data.genre}</span>
@@ -135,7 +174,7 @@ function findEntry(module: string) {
         );
       })}
     </div>
-    <p class="empty-state" data-empty hidden>Няма резултати.</p>
+    <p class="empty-state" data-empty hidden>Няма произведения по тези критерии.</p>
   </section>
 
   <!-- GRAMMAR: GROUPED NAV -->
@@ -156,7 +195,7 @@ function findEntry(module: string) {
                   href={`/bulgarski/${entry.id}/`}
                   class="gram-item"
                   data-card
-                  data-search-text={`${entry.data.title} ${entry.data.module} ${entry.data.excerpt} ${entry.data.tags.join(" ")} ${humanNames[mod] || ""}`.toLocaleLowerCase("bg-BG")}
+                  data-nav-card="grammar"
                 >
                   <span class="gram-item-title" transition:name={`title-${entry.id}`}>{entry.data.title}</span>
                   <span class="gram-item-sub">{humanNames[mod] || entry.data.excerpt}</span>
@@ -168,13 +207,34 @@ function findEntry(module: string) {
         </div>
       ))}
     </div>
-    <p class="empty-state" data-empty hidden>Няма резултати.</p>
+    <p class="empty-state" data-empty hidden>Няма граматични модули по тази дума.</p>
   </section>
 
 </BaseLayout>
 
 <script is:inline>
   (() => {
+    const STATE_KEY = "__landingState";
+
+    const restoreLandingState = () => {
+      let restore = null;
+      try {
+        const flag = sessionStorage.getItem("__restoreOnLand");
+        const raw = sessionStorage.getItem(STATE_KEY);
+        if (flag === "true" && raw) {
+          restore = JSON.parse(raw);
+        }
+        sessionStorage.removeItem("__restoreOnLand");
+      } catch {}
+      return restore;
+    };
+
+    const saveLandingState = (tab, filters, scroll) => {
+      try {
+        sessionStorage.setItem(STATE_KEY, JSON.stringify({ tab, filters, scroll }));
+      } catch {}
+    };
+
     const initLanding = () => {
       const switcher = document.querySelector("[data-switcher]");
       if (!(switcher instanceof HTMLElement) || switcher.dataset.enhanced === "true") return;
@@ -183,71 +243,33 @@ function findEntry(module: string) {
       const switcherBtns = Array.from(switcher.querySelectorAll("[data-switch]"));
       const litSection = document.querySelector('[data-section="literature"]');
       const gramSection = document.querySelector('[data-section="grammar"]');
-      const emptyState = document.querySelector("[data-empty]");
+      const litEmpty = litSection?.querySelector("[data-empty]");
+      const gramEmpty = gramSection?.querySelector("[data-empty]");
 
       if (!(litSection instanceof HTMLElement)) return;
       if (!(gramSection instanceof HTMLElement)) return;
-      if (!(emptyState instanceof HTMLElement)) return;
 
-      const filterSelects = Array.from(litSection.querySelectorAll("select[data-filter-type]"));
+      const dropdowns = Array.from(litSection.querySelectorAll("[data-dropdown]"));
       const gradeBtns = Array.from(litSection.querySelectorAll("[data-grade-filter]"));
-      const themeSelect = litSection.querySelector('select[data-filter-type="theme"]');
       const litCards = Array.from(litSection.querySelectorAll("[data-card]"));
       const gramCards = Array.from(gramSection.querySelectorAll("[data-card]"));
+      const litList = litSection.querySelector(".lit-list");
 
       const grade11Themes = ["Родното и чуждото", "Миналото и паметта", "Обществото и властта", "Животът и смъртта", "Природата"];
 
       let activeTab = "literature";
       const activeFilters = { grade: "", theme: "", author: "", genre: "" };
-      let searchQuery = "";
 
-      /* Save filter state to URL hash */
-      const saveState = () => {
-        const parts = [];
-        if (activeTab === "grammar") parts.push("tab=bg");
-        if (activeFilters.grade) parts.push("grade=" + encodeURIComponent(activeFilters.grade));
-        if (activeFilters.theme) parts.push("theme=" + encodeURIComponent(activeFilters.theme));
-        if (activeFilters.author) parts.push("author=" + encodeURIComponent(activeFilters.author));
-        if (activeFilters.genre) parts.push("genre=" + encodeURIComponent(activeFilters.genre));
-        history.replaceState(null, "", parts.length ? "#" + parts.join("&") : location.pathname);
-      };
-
-      /* Restore from URL hash */
-      const restoreState = () => {
-        const hash = location.hash.slice(1);
-        if (!hash) return;
-        const params = new URLSearchParams(hash);
-        if (params.get("tab") === "bg") {
-          activeTab = "grammar";
-          litSection.hidden = true;
-          gramSection.hidden = false;
-          for (const b of switcherBtns) {
-            if (b instanceof HTMLElement) b.classList.toggle("active", b.dataset.switch === "grammar");
-          }
-          if (pill instanceof HTMLElement) pill.dataset.pos = "1";
-        }
-        activeFilters.grade = params.get("grade") || "";
-        activeFilters.theme = params.get("theme") || "";
-        activeFilters.author = params.get("author") || "";
-        activeFilters.genre = params.get("genre") || "";
-        // Sync UI
-        for (const btn of gradeBtns) {
-          if (btn instanceof HTMLElement) btn.classList.toggle("active", (btn.dataset.gradeFilter || "") === activeFilters.grade);
-        }
-        for (const sel of filterSelects) {
-          if (sel instanceof HTMLSelectElement) sel.value = activeFilters[sel.dataset.filterType || ""] || "";
-        }
-        updateThemeOptions();
-      };
-
-      /* Update theme dropdown based on grade selection */
+      /* Update theme options visibility based on grade */
       const updateThemeOptions = () => {
-        if (!(themeSelect instanceof HTMLSelectElement)) return;
-        const currentTheme = themeSelect.value;
-        const options = themeSelect.querySelectorAll("option");
-        for (const opt of options) {
-          if (!(opt instanceof HTMLOptionElement) || !opt.value) continue;
-          const isGrade11Theme = grade11Themes.includes(opt.value);
+        const themeDropdown = dropdowns.find((d) => d.getAttribute("data-filter-type") === "theme");
+        if (!themeDropdown) return;
+        const opts = themeDropdown.querySelectorAll("[data-dropdown-option]");
+        for (const opt of opts) {
+          if (!(opt instanceof HTMLElement)) continue;
+          const value = opt.getAttribute("data-dropdown-option") || "";
+          if (!value) continue;
+          const isGrade11Theme = grade11Themes.includes(value);
           if (activeFilters.grade === "11 клас") {
             opt.hidden = !isGrade11Theme;
           } else if (activeFilters.grade === "12 клас") {
@@ -256,13 +278,48 @@ function findEntry(module: string) {
             opt.hidden = false;
           }
         }
-        // Reset theme if it's now hidden
-        if (currentTheme) {
-          const selected = themeSelect.querySelector('option[value="' + currentTheme + '"]');
-          if (selected instanceof HTMLOptionElement && selected.hidden) {
-            themeSelect.value = "";
+        // Reset hidden current theme
+        if (activeFilters.theme) {
+          const isGrade11Theme = grade11Themes.includes(activeFilters.theme);
+          const out =
+            (activeFilters.grade === "11 клас" && !isGrade11Theme) ||
+            (activeFilters.grade === "12 клас" && isGrade11Theme);
+          if (out) {
             activeFilters.theme = "";
+            setDropdownValue(themeDropdown, "", "Тема");
           }
+        }
+      };
+
+      const setDropdownValue = (dropdown, value, fallbackLabel) => {
+        const valueEl = dropdown.querySelector("[data-dropdown-value]");
+        const labelEl = dropdown.querySelector(".dropdown-trigger-label");
+        const opts = dropdown.querySelectorAll("[data-dropdown-option]");
+        for (const opt of opts) {
+          if (opt instanceof HTMLElement) {
+            opt.classList.toggle("dropdown-option--active", (opt.getAttribute("data-dropdown-option") || "") === value);
+          }
+        }
+        if (value) {
+          if (valueEl instanceof HTMLElement) valueEl.textContent = value;
+          if (labelEl instanceof HTMLElement) labelEl.dataset.hasValue = "true";
+        } else {
+          if (valueEl instanceof HTMLElement) valueEl.textContent = "";
+          if (labelEl instanceof HTMLElement) {
+            labelEl.dataset.hasValue = "false";
+            labelEl.textContent = fallbackLabel;
+          }
+        }
+      };
+
+      const labelFor = (type) => type === "theme" ? "Тема" : type === "author" ? "Автор" : "Жанр";
+
+      const closeAllDropdowns = (except) => {
+        for (const d of dropdowns) {
+          if (d === except) continue;
+          d.dataset.open = "false";
+          const t = d.querySelector("[data-dropdown-trigger]");
+          if (t instanceof HTMLElement) t.setAttribute("aria-expanded", "false");
         }
       };
 
@@ -272,86 +329,85 @@ function findEntry(module: string) {
 
         for (const card of cards) {
           if (!(card instanceof HTMLElement)) continue;
-
           const matchesGrade = !activeFilters.grade || card.dataset.grade === activeFilters.grade;
           const matchesTheme = !activeFilters.theme || card.dataset.theme === activeFilters.theme;
           const matchesAuthor = !activeFilters.author || card.dataset.author === activeFilters.author;
           const matchesGenre = !activeFilters.genre || card.dataset.genre === activeFilters.genre;
-          const matchesSearch = !searchQuery || (card.dataset.searchText || "").includes(searchQuery);
 
-          const show = activeTab !== "literature" || (matchesGrade && matchesTheme && matchesAuthor && matchesGenre && matchesSearch);
+          const show = activeTab === "literature"
+            ? (matchesGrade && matchesTheme && matchesAuthor && matchesGenre)
+            : true;
           card.hidden = !show;
           if (show) visible += 1;
         }
 
-        emptyState.hidden = visible !== 0;
-        saveState();
+        const empty = activeTab === "literature" ? litEmpty : gramEmpty;
+        if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
+
+        if (activeTab === "literature" && litList instanceof HTMLElement) {
+          litList.classList.add("lit-list--settling");
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => litList.classList.remove("lit-list--settling"));
+          });
+        }
       };
 
-      // Switcher with sliding pill and blur transition
+      /* Switcher */
       const pill = document.querySelector("[data-pill]");
+      const switchTo = (tab, instant) => {
+        if (tab === activeTab) return;
+        const goingRight = tab === "grammar";
+        const outgoing = goingRight ? litSection : gramSection;
+        const incoming = goingRight ? gramSection : litSection;
+
+        if (pill instanceof HTMLElement) pill.dataset.pos = goingRight ? "1" : "0";
+        for (const b of switcherBtns) {
+          if (b instanceof HTMLElement) b.classList.toggle("active", b.dataset.switch === tab);
+        }
+
+        if (instant) {
+          outgoing.hidden = true;
+          incoming.hidden = false;
+          activeTab = tab;
+          return;
+        }
+
+        outgoing.classList.add(goingRight ? "section--exit-left" : "section--exit-right");
+        setTimeout(() => {
+          outgoing.hidden = true;
+          outgoing.classList.remove("section--exit-left", "section--exit-right");
+          incoming.hidden = false;
+          incoming.classList.add(goingRight ? "section--enter-right" : "section--enter-left");
+          setTimeout(() => incoming.classList.remove("section--enter-left", "section--enter-right"), 350);
+        }, 250);
+
+        activeTab = tab;
+      };
 
       for (const btn of switcherBtns) {
         if (!(btn instanceof HTMLElement)) continue;
         btn.addEventListener("click", () => {
           const tab = btn.dataset.switch || "literature";
           if (tab === activeTab) return;
-
-          // Direction: lit→bg = right, bg→lit = left
-          const goingRight = tab === "grammar";
-          const outgoing = goingRight ? litSection : gramSection;
-          const incoming = goingRight ? gramSection : litSection;
-
-          // Move the pill
-          if (pill instanceof HTMLElement) {
-            pill.dataset.pos = goingRight ? "1" : "0";
-          }
-
-          // Update button states
-          for (const b of switcherBtns) {
-            if (b instanceof HTMLElement) {
-              b.classList.toggle("active", b.dataset.switch === tab);
-            }
-          }
-
-          // Slide out old content in the direction of movement
-          outgoing.classList.add(goingRight ? "section--exit-left" : "section--exit-right");
-
-          // After exit finishes, swap and slide in new content from the other side
-          setTimeout(() => {
-            outgoing.hidden = true;
-            outgoing.classList.remove("section--exit-left", "section--exit-right");
-
-            incoming.hidden = false;
-            incoming.classList.add(goingRight ? "section--enter-right" : "section--enter-left");
-
-            // filters are inside litSection, no separate toggle needed
-
-            setTimeout(() => {
-              incoming.classList.remove("section--enter-left", "section--enter-right");
-            }, 350);
-          }, 250);
-
-          activeTab = tab;
-
-          // Reset filters on tab switch
+          // Reset filters on user-initiated tab switch
           activeFilters.grade = "";
           activeFilters.theme = "";
           activeFilters.author = "";
           activeFilters.genre = "";
-          for (const sel of filterSelects) {
-            if (sel instanceof HTMLSelectElement) sel.value = "";
+          for (const d of dropdowns) {
+            const type = d.getAttribute("data-filter-type") || "";
+            setDropdownValue(d, "", labelFor(type));
           }
           for (const b of gradeBtns) {
             if (b instanceof HTMLElement) b.classList.toggle("active", (b.dataset.gradeFilter || "") === "");
           }
           updateThemeOptions();
-
+          switchTo(tab, false);
           applyFilters();
         });
       }
 
-      // Grade toggle buttons
+      /* Grade toggle */
       for (const btn of gradeBtns) {
         if (!(btn instanceof HTMLElement)) continue;
         btn.addEventListener("click", () => {
@@ -364,37 +420,81 @@ function findEntry(module: string) {
         });
       }
 
-      // Dropdown filters
-      for (const sel of filterSelects) {
-        if (!(sel instanceof HTMLSelectElement)) continue;
-        sel.addEventListener("change", () => {
-          const filterType = sel.dataset.filterType || "";
-          activeFilters[filterType] = sel.value;
-          applyFilters();
-        });
+      /* Custom dropdowns */
+      for (const dropdown of dropdowns) {
+        if (!(dropdown instanceof HTMLElement)) continue;
+        const trigger = dropdown.querySelector("[data-dropdown-trigger]");
+        const type = dropdown.getAttribute("data-filter-type") || "";
+        const opts = dropdown.querySelectorAll("[data-dropdown-option]");
+
+        if (trigger instanceof HTMLElement) {
+          trigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const open = dropdown.dataset.open === "true";
+            closeAllDropdowns(dropdown);
+            dropdown.dataset.open = open ? "false" : "true";
+            trigger.setAttribute("aria-expanded", open ? "false" : "true");
+          });
+        }
+
+        for (const opt of opts) {
+          if (!(opt instanceof HTMLElement)) continue;
+          opt.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const value = opt.getAttribute("data-dropdown-option") || "";
+            activeFilters[type] = value;
+            setDropdownValue(dropdown, value, labelFor(type));
+            dropdown.dataset.open = "false";
+            if (trigger instanceof HTMLElement) trigger.setAttribute("aria-expanded", "false");
+            applyFilters();
+          });
+        }
       }
 
-      // Search
-      const handleSearch = (query) => {
-        searchQuery = (query || "").trim().toLocaleLowerCase("bg-BG");
-        applyFilters();
-      };
-
-      document.addEventListener("search-input", (e) => {
-        if (e instanceof CustomEvent) {
-          handleSearch(e.detail);
-        }
+      // Close dropdowns on outside click / Escape
+      document.addEventListener("click", () => closeAllDropdowns(null));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAllDropdowns(null);
       });
 
-      const searchInput = document.querySelector("[data-search-input]");
-      if (searchInput instanceof HTMLInputElement) {
-        searchInput.addEventListener("input", () => {
-          handleSearch(searchInput.value);
+      /* Save state when navigating to a detail page */
+      const navCards = document.querySelectorAll("[data-nav-card]");
+      for (const card of navCards) {
+        if (!(card instanceof HTMLElement)) continue;
+        card.addEventListener("click", () => {
+          saveLandingState(activeTab, { ...activeFilters }, window.scrollY);
         });
       }
 
-      restoreState();
-      applyFilters();
+      /* Restore landing state if user just navigated back */
+      const restore = restoreLandingState();
+      if (restore) {
+        if (restore.tab && restore.tab !== activeTab) {
+          switchTo(restore.tab, true);
+        }
+        if (restore.filters) {
+          activeFilters.grade = restore.filters.grade || "";
+          activeFilters.theme = restore.filters.theme || "";
+          activeFilters.author = restore.filters.author || "";
+          activeFilters.genre = restore.filters.genre || "";
+
+          for (const b of gradeBtns) {
+            if (b instanceof HTMLElement) b.classList.toggle("active", (b.dataset.gradeFilter || "") === activeFilters.grade);
+          }
+          for (const d of dropdowns) {
+            const type = d.getAttribute("data-filter-type") || "";
+            setDropdownValue(d, activeFilters[type] || "", labelFor(type));
+          }
+          updateThemeOptions();
+        }
+        applyFilters();
+        // Scroll restore after layout settles
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: restore.scroll || 0, left: 0, behavior: "instant" });
+        });
+      } else {
+        applyFilters();
+      }
     };
 
     initLanding();

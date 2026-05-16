@@ -33,6 +33,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: CollectionEntry<"grammar"> };
+const allGrammar = (await getCollection("grammar")).sort(
+  (a: CollectionEntry<"grammar">, b: CollectionEntry<"grammar">) => a.data.order - b.data.order,
+);
 const sections = entry.data.sections as GrammarSection[];
 
 function classifyItem(text: string): string {
@@ -52,28 +55,46 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
 <BaseLayout
   title={`${entry.data.title} • ДЗИ библиотека`}
   description={entry.data.excerpt}
-  hideNav={true}
+  isDetail={true}
+  detailTitle={entry.data.title}
+  backUrl="/"
 >
-  <!-- TOP BAR -->
-  <div class="gram-topbar">
-    <a href="/" class="gram-topbar-back">← Назад</a>
-    <button class="gram-toc-toggle" id="toc-toggle" aria-label="Съдържание">☰</button>
-    <span class="gram-topbar-title">{entry.data.title}</span>
-    <span class="gram-topbar-count">{contentSections.length} раздела</span>
-  </div>
+  <!-- Edge-hover handle (bulge) — opens TOC -->
+  <button class="gram-toc-handle" id="toc-handle" aria-label="Покажи съдържание" aria-controls="gram-toc">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="9 6 15 12 9 18"></polyline>
+    </svg>
+  </button>
+  <!-- Invisible hover edge -->
+  <div class="gram-toc-hover-edge" id="toc-hover-edge" aria-hidden="true"></div>
 
-  <!-- Mobile TOC overlay -->
+  <!-- Backdrop overlay -->
   <div class="gram-toc-overlay" id="toc-overlay"></div>
 
   <div class="gram-page">
-    <!-- SIDEBAR: table of contents -->
+    <!-- SIDEBAR: table of contents & categories -->
     <aside class="gram-toc" id="gram-toc">
-      <h3 class="gram-toc-label">{entry.data.module}</h3>
+      <h3 class="gram-toc-label">В тази тема</h3>
       <nav class="gram-toc-nav">
         {contentSections.map((section, idx) => (
-          <a href={`#section-${idx}`} class="gram-toc-link">
-            <span class="gram-toc-link-text">{section.title}</span>
-            {(section.quiz && section.quiz.length > 0) && <span class="gram-toc-badge" title="Има тест">?</span>}
+          <div class="gram-toc-row">
+            <a href={`#section-${idx}`} class="gram-toc-link">
+              <span class="gram-toc-link-text">{section.title}</span>
+            </a>
+            {section.quiz && section.quiz.length > 0 && (
+              <a href={`#quiz-${idx}`} class="gram-toc-test" title="Тест за раздела">Тест</a>
+            )}
+          </div>
+        ))}
+      </nav>
+
+      <div class="gram-toc-divider"></div>
+
+      <h3 class="gram-toc-label">Всички теми</h3>
+      <nav class="gram-toc-nav">
+        {allGrammar.map((g) => (
+          <a href={`/bulgarski/${g.id}/`} class={`gram-toc-link ${g.id === entry.id ? "gram-toc-link--active" : ""}`}>
+            <span class="gram-toc-link-text">{g.data.title}</span>
           </a>
         ))}
       </nav>
@@ -81,8 +102,8 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
 
     <!-- MAIN CONTENT -->
     <main class="gram-main">
-      <div class="gram-main-header">
-        <h1 class="gram-main-title" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
+      <div class="gram-main-header page-reveal">
+        <h1 class="gram-main-title" data-scroll-sentinel data-morph-source transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
         <p class="gram-main-excerpt">{entry.data.excerpt}</p>
       </div>
 
@@ -92,7 +113,7 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
 
           if (isSep) {
             return (
-              <div class="acc-divider" role="separator">
+              <div class="acc-divider page-reveal" role="separator">
                 <span>{section.title.replace(/═/g, "").trim()}</span>
               </div>
             );
@@ -101,7 +122,7 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
           const sectionIdx = contentSections.indexOf(section);
 
           return (
-            <section class="gram-section" id={`section-${sectionIdx}`}>
+            <section class="gram-section page-reveal" id={`section-${sectionIdx}`}>
               <h2 class="gram-section-title">{section.title}</h2>
 
               {/* Verification trick */}
@@ -125,7 +146,7 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
                 <div class="mistakes-block">
                   <span class="mistakes-label">Чести грешки</span>
                   <div class="mistakes-list">
-                    {section.commonMistakes.map((m) => (
+                    {section.commonMistakes.map((m: CommonMistake) => (
                       <div class="mistake-pair">
                         <span class="mistake-wrong">{m.wrong}</span>
                         <span class="mistake-right">{m.right}</span>
@@ -136,11 +157,22 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
                 </div>
               )}
 
-              {/* Quiz */}
+              {/* Per-section quiz — prominent */}
               {section.quiz && section.quiz.length > 0 && (
-                <div class="quiz-block" data-quiz data-quiz-questions={JSON.stringify(section.quiz)}>
-                  <span class="quiz-label">Провери се</span>
-                </div>
+                <aside
+                  class="gram-quiz-card"
+                  id={`quiz-${sectionIdx}`}
+                  data-section-quiz={JSON.stringify(section.quiz)}
+                  aria-labelledby={`quiz-${sectionIdx}-title`}
+                >
+                  <div class="gram-quiz-card-head">
+                    <span class="gram-quiz-card-kicker">Тест</span>
+                    <h3 id={`quiz-${sectionIdx}-title`} class="gram-quiz-card-title">Провери знанията си</h3>
+                    <p class="gram-quiz-card-sub">{section.quiz.length} {section.quiz.length === 1 ? "въпрос" : "въпроса"} от „{section.title}“</p>
+                  </div>
+                  <div class="gram-quiz-progress" aria-hidden="true"><div class="gram-quiz-progress-bar" data-quiz-progress></div></div>
+                  <div class="gram-quiz-stage" data-quiz-stage aria-live="polite"></div>
+                </aside>
               )}
             </section>
           );
@@ -152,64 +184,133 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
 
 <script is:inline>
   (() => {
-    const initQuizzes = () => {
-      const quizBlocks = document.querySelectorAll("[data-quiz]");
-      for (const block of quizBlocks) {
-        if (!(block instanceof HTMLElement) || block.dataset.enhanced === "true") continue;
-        block.dataset.enhanced = "true";
+    const initSectionQuizzes = () => {
+      const panels = document.querySelectorAll("[data-section-quiz]");
+      for (const panel of panels) {
+        if (!(panel instanceof HTMLElement) || panel.dataset.enhanced === "true") continue;
+        panel.dataset.enhanced = "true";
 
-        const questions = JSON.parse(block.dataset.quizQuestions || "[]");
+        const questions = JSON.parse(panel.dataset.sectionQuiz || "[]");
         if (questions.length === 0) continue;
 
+        const stage = panel.querySelector("[data-quiz-stage]");
+        const progressBar = panel.querySelector("[data-quiz-progress]");
         let currentQ = 0;
+        let score = 0;
+
+        function updateProgress() {
+          if (progressBar instanceof HTMLElement) {
+            progressBar.style.width = ((currentQ / questions.length) * 100) + "%";
+          }
+        }
+
+        function renderSummary() {
+          if (!(stage instanceof HTMLElement)) return;
+          stage.innerHTML = "";
+
+          const title = document.createElement("div");
+          title.className = "gram-quiz-summary-title";
+          title.textContent = "Готово";
+          stage.appendChild(title);
+
+          const result = document.createElement("div");
+          result.className = "gram-quiz-summary-result";
+          result.textContent = score + " / " + questions.length + " правилни";
+          stage.appendChild(result);
+
+          const again = document.createElement("button");
+          again.className = "gram-quiz-next";
+          again.type = "button";
+          again.textContent = "Отново";
+          again.addEventListener("click", () => {
+            currentQ = 0;
+            score = 0;
+            renderQuestion();
+          });
+          stage.appendChild(again);
+        }
 
         function renderQuestion() {
+          if (!(stage instanceof HTMLElement)) return;
           const q = questions[currentQ];
-          block.innerHTML =
-            '<span class="quiz-label">Провери се</span>' +
-            '<div class="quiz-question">' + q.question + '</div>' +
-            '<div class="quiz-options">' +
-            q.options.map(function(opt, i) {
-              return '<button class="quiz-opt" data-idx="' + i + '">' + opt + '</button>';
-            }).join("") +
-            '</div>' +
-            '<div class="quiz-feedback" hidden></div>' +
-            (questions.length > 1 ? '<div class="quiz-counter">' + (currentQ + 1) + ' / ' + questions.length + '</div>' : '');
+          stage.innerHTML = "";
 
-          const opts = block.querySelectorAll(".quiz-opt");
-          const feedback = block.querySelector(".quiz-feedback");
+          const question = document.createElement("div");
+          question.className = "gram-quiz-question";
+          question.textContent = q.question;
+          stage.appendChild(question);
+
+          const options = document.createElement("div");
+          options.className = "gram-quiz-options";
+          q.options.forEach(function(opt, i) {
+            const btn = document.createElement("button");
+            btn.className = "gram-quiz-opt";
+            btn.type = "button";
+            btn.dataset.idx = String(i);
+            btn.textContent = opt;
+            options.appendChild(btn);
+          });
+          stage.appendChild(options);
+
+          const feedback = document.createElement("div");
+          feedback.className = "gram-quiz-feedback";
+          feedback.hidden = true;
+          stage.appendChild(feedback);
+
+          updateProgress();
+
+          const opts = options.querySelectorAll(".gram-quiz-opt");
+          let answered = false;
 
           for (const opt of opts) {
             opt.addEventListener("click", function() {
               if (!(opt instanceof HTMLElement) || !(feedback instanceof HTMLElement)) return;
+              if (answered) return;
+              answered = true;
               const idx = parseInt(opt.dataset.idx || "0", 10);
               const isCorrect = idx === q.correct;
+              if (isCorrect) score += 1;
 
               for (const o of opts) {
-                if (o instanceof HTMLElement) {
-                  o.classList.add("quiz-opt--disabled");
+                if (o instanceof HTMLButtonElement) {
+                  o.classList.add("gram-quiz-opt--disabled");
+                  o.disabled = true;
                   if (parseInt(o.dataset.idx || "0", 10) === q.correct) {
-                    o.classList.add("quiz-opt--correct");
+                    o.classList.add("gram-quiz-opt--correct");
                   }
                   if (parseInt(o.dataset.idx || "0", 10) === idx && !isCorrect) {
-                    o.classList.add("quiz-opt--wrong");
+                    o.classList.add("gram-quiz-opt--wrong");
                   }
                 }
               }
 
               feedback.hidden = false;
-              feedback.className = "quiz-feedback " + (isCorrect ? "quiz-feedback--correct" : "quiz-feedback--wrong");
-              feedback.textContent = isCorrect ? "Правилно! " + q.explanation : "Грешка. " + q.explanation;
+              feedback.className = "gram-quiz-feedback";
+              feedback.textContent = (isCorrect ? "Правилно. " : "Грешка. ") + q.explanation;
 
               if (currentQ < questions.length - 1) {
                 const nextBtn = document.createElement("button");
-                nextBtn.className = "quiz-next";
+                nextBtn.className = "gram-quiz-next";
+                nextBtn.type = "button";
                 nextBtn.textContent = "Следващ въпрос →";
                 nextBtn.addEventListener("click", function() {
-                  currentQ++;
+                  currentQ += 1;
                   renderQuestion();
                 });
                 feedback.appendChild(nextBtn);
+                nextBtn.focus();
+              } else {
+                const finishBtn = document.createElement("button");
+                finishBtn.className = "gram-quiz-next";
+                finishBtn.type = "button";
+                finishBtn.textContent = "Виж резултата →";
+                finishBtn.addEventListener("click", function() {
+                  currentQ += 1;
+                  updateProgress();
+                  renderSummary();
+                });
+                feedback.appendChild(finishBtn);
+                finishBtn.focus();
               }
             });
           }
@@ -219,9 +320,11 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
       }
     };
 
-    /* Highlight active TOC link on scroll */
+    /* Highlight active TOC link on scroll
+       Only scope to in-page section links (.gram-toc-row .gram-toc-link),
+       NOT the "Всички теми" links which point to other pages. */
     const initTocHighlight = () => {
-      const links = document.querySelectorAll(".gram-toc-link");
+      const links = document.querySelectorAll(".gram-toc-row .gram-toc-link");
       const sectionEls = document.querySelectorAll(".gram-section[id]");
       if (!links.length || !sectionEls.length) return;
 
@@ -243,30 +346,82 @@ const contentSections = sections.filter((s) => !isSeparatorSection(s.title));
       for (const el of sectionEls) obs.observe(el);
     };
 
-    /* Mobile TOC toggle */
-    const initTocToggle = () => {
-      const toggle = document.getElementById("toc-toggle");
+    /* Hover-edge sidebar with bulge handle */
+    const initTocHover = () => {
+      const handle = document.getElementById("toc-handle");
+      const hoverEdge = document.getElementById("toc-hover-edge");
       const toc = document.getElementById("gram-toc");
       const overlay = document.getElementById("toc-overlay");
-      if (!toggle || !toc || !overlay) return;
+      if (!handle || !toc || !overlay || !hoverEdge) return;
+      if (handle.dataset.enhanced === "true") return;
+      handle.dataset.enhanced = "true";
 
-      const open = () => { toc.dataset.open = "true"; overlay.dataset.open = "true"; };
-      const close = () => { toc.dataset.open = "false"; overlay.dataset.open = "false"; };
+      let closeTimer = null;
+      let pinned = false;
 
-      toggle.addEventListener("click", open);
-      overlay.addEventListener("click", close);
+      const open = () => {
+        if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+        toc.dataset.open = "true";
+        overlay.dataset.open = "true";
+        handle.dataset.open = "true";
+        handle.setAttribute("aria-expanded", "true");
+      };
+      const close = () => {
+        if (pinned) return;
+        toc.dataset.open = "false";
+        overlay.dataset.open = "false";
+        handle.dataset.open = "false";
+        handle.setAttribute("aria-expanded", "false");
+      };
+      const scheduleClose = () => {
+        if (closeTimer) clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(close, 120);
+      };
 
-      // Close on TOC link click (mobile)
-      const links = toc.querySelectorAll(".gram-toc-link");
+      hoverEdge.addEventListener("mouseenter", open);
+      handle.addEventListener("mouseenter", open);
+      toc.addEventListener("mouseenter", open);
+
+      handle.addEventListener("mouseleave", scheduleClose);
+      toc.addEventListener("mouseleave", scheduleClose);
+
+      // Click-to-pin (mobile/keyboard friendly)
+      handle.addEventListener("click", (e) => {
+        e.preventDefault();
+        pinned = !pinned;
+        if (pinned) {
+          open();
+        } else {
+          close();
+        }
+      });
+
+      overlay.addEventListener("click", () => {
+        pinned = false;
+        close();
+      });
+
+      // Close on TOC link click
+      const links = toc.querySelectorAll(".gram-toc-link, .gram-toc-test");
       for (const link of links) {
-        link.addEventListener("click", close);
+        link.addEventListener("click", () => {
+          pinned = false;
+          close();
+        });
       }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && toc.dataset.open === "true") {
+          pinned = false;
+          close();
+        }
+      });
     };
 
     const initAll = () => {
-      initQuizzes();
+      initSectionQuizzes();
       initTocHighlight();
-      initTocToggle();
+      initTocHover();
     };
 
     initAll();

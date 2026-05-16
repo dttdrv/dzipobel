@@ -19,10 +19,10 @@ describe("filterLibraryItems", () => {
       title: "Молитва",
       href: "/literatura/molitva",
       category: "Литература",
-      filterValue: "Вяра и надеждата",
+      filterValue: "Вярата и надеждата",
       meta: "Атанас Далчев • Стихотворение",
-      description: "Вяра и надеждата",
-      searchText: normalizeSearchText("Молитва Атанас Далчев вяра и надеждата"),
+      description: "Вярата и надеждата",
+      searchText: normalizeSearchText("Молитва Атанас Далчев вярата и надеждата"),
       type: "literature" as const,
     },
     {
@@ -90,9 +90,13 @@ describe("buildLibraryIndex", () => {
           data: {
             title: "Вяра",
             author: "Никола Вапцаров",
-            theme: "Вяра и надеждата",
+            theme: "Вярата и надеждата",
             genre: "Стихотворение",
             excerpt: "Вярата е двигател на живота.",
+            examFocus: {
+              titleMeaning: "Вярата е духовна опора.",
+              examRelevance: "На ДЗИ заглавието води към надеждата.",
+            },
             tags: ["вяра", "бъдеще"],
           },
         },
@@ -117,5 +121,31 @@ describe("buildLibraryIndex", () => {
       "Вяра",
       "Морфология",
     ]);
+  });
+
+  it("includes literature exam focus in searchable text", () => {
+    const [item] = buildLibraryIndex({
+      literature: [
+        {
+          slug: "vyara",
+          data: {
+            title: "Вяра",
+            author: "Никола Вапцаров",
+            theme: "Вярата и надеждата",
+            genre: "Стихотворение",
+            excerpt: "Вярата е двигател на живота.",
+            examFocus: {
+              titleMeaning: "Вярата е духовна опора.",
+              examRelevance: "На ДЗИ заглавието води към надеждата.",
+            },
+            tags: [],
+          },
+        },
+      ],
+      grammar: [],
+    });
+
+    expect(item.searchText).toContain("духовна опора");
+    expect(item.searchText).toContain("дзи заглавието");
   });
 });

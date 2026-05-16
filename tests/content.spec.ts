@@ -15,6 +15,16 @@ function readJsonFiles(dir: string) {
     }));
 }
 
+const knownTypoPatterns = [
+  "краеве, крайеве",
+  "грубоватни",
+  "лежешката",
+  "ЗАРАДИ ПРОБКА",
+  "Пасарбан",
+  "всичко му интересуваше",
+  ",,",
+];
+
 describe("project records", () => {
   it("keeps the planning records in the repo root", () => {
     expect(existsSync(join(rootDir, "PROJECT_BRIEF.md"))).toBe(true);
@@ -24,7 +34,7 @@ describe("project records", () => {
 });
 
 describe("literature content", () => {
-  it("ships 12 literature entries with reading links", () => {
+  it("ships 27 literature entries with reading links and exam focus", () => {
     expect(existsSync(literatureDir)).toBe(true);
 
     const entries = readJsonFiles(literatureDir);
@@ -38,6 +48,10 @@ describe("literature content", () => {
       expect(entry.value.readUrl).toBeTypeOf("string");
       expect(String(entry.value.readUrl)).toMatch(/^https:\/\//);
       expect(entry.value.readSource).toBeTypeOf("string");
+      expect(entry.value.examFocus).toMatchObject({
+        titleMeaning: expect.any(String),
+        examRelevance: expect.any(String),
+      });
     }
   });
 });
@@ -63,5 +77,32 @@ describe("grammar content", () => {
         "Създаване на текст",
       ]),
     );
+  });
+
+  it("keeps common mistakes and typo traps sane", () => {
+    const entries = readJsonFiles(grammarDir);
+
+    for (const entry of entries) {
+      const raw = JSON.stringify(entry.value);
+      for (const typo of knownTypoPatterns) {
+        expect(raw, `${entry.name} contains ${typo}`).not.toContain(typo);
+      }
+
+      const sections = entry.value.sections as Array<{
+        commonMistakes?: Array<{ wrong: string; right: string }>;
+        quiz?: Array<{ options: unknown[]; correct: number }>;
+      }>;
+
+      for (const section of sections) {
+        for (const mistake of section.commonMistakes ?? []) {
+          expect(mistake.wrong).not.toBe(mistake.right);
+        }
+        for (const quiz of section.quiz ?? []) {
+          expect(Number.isInteger(quiz.correct)).toBe(true);
+          expect(quiz.correct).toBeGreaterThanOrEqual(0);
+          expect(quiz.correct).toBeLessThan(quiz.options.length);
+        }
+      }
+    }
   });
 });

@@ -12,18 +12,25 @@
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-  transition: padding-left var(--ease-smooth);
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
   cursor: pointer;
 }
 
 .lit-list-item:first-child {
-  border-top: 1px solid var(--line);
+  /* removed border-top */
 }
 
 .lit-list-item:hover {
-  padding-left: 8px;
+  background: var(--surface);
+  transform: translateY(-1px);
+}
+
+.lit-list-item:active {
+  transform: scale(0.98);
 }
 
 .lit-list-title {

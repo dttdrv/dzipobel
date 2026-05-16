@@ -1,9 +1,15 @@
 /* --- Literature detail: hero (left-aligned) --- */
 
 .lit-hero {
-  padding: 28px var(--page-padding) 24px;
-  max-width: calc(100% - 340px);
-  animation: heroTextIn 600ms var(--ease-out) both;
+  padding: 112px var(--page-padding) 28px;
+  max-width: calc(100% - 400px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.lit-hero[data-morphed="true"] {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
 }
 
 .lit-back {
@@ -71,111 +77,32 @@
   color: var(--text);
 }
 
-.lit-hero-cta {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  padding: 8px 18px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  transition: background var(--ease-smooth), border-color var(--ease-smooth);
-}
-
-.lit-hero-cta:hover {
-  background: var(--surface);
-  border-color: var(--muted);
-}
-
-/* --- Sticky topbar (appears on scroll) --- */
-
-.lit-topbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px var(--page-padding);
-  border-bottom: 1px solid var(--line);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: var(--bg);
-  backdrop-filter: blur(16px) saturate(1.6);
-  -webkit-backdrop-filter: blur(16px) saturate(1.6);
-  animation: litTopbarIn 300ms var(--ease-out) both;
-}
-
-.lit-topbar-back {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: color var(--ease-smooth);
-}
-
-.lit-topbar-back:hover {
-  color: var(--text);
-}
-
-.lit-topbar-center {
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-}
-
-.lit-topbar-title {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.lit-topbar-author {
-  font-size: 12px;
-  color: var(--soft);
-  margin-left: 6px;
-}
-
-.lit-topbar-cta {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  padding: 6px 14px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background var(--ease-smooth), border-color var(--ease-smooth);
-}
-
-.lit-topbar-cta:hover {
-  background: var(--surface);
-  border-color: var(--muted);
-}
-
-/* --- Two-column page --- */
+/* --- Two-column page (main left, sidebar right — wider for readability) --- */
 
 .lit-page {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 400px;
   gap: 0;
-  min-height: calc(100vh - 50px);
+  min-height: calc(100dvh - 50px);
 }
 
-/* --- Sidebar --- */
+/* --- Sidebar (right) --- */
 
 .lit-sidebar {
-  padding: 32px 28px 48px;
+  padding: 32px 32px 48px;
   border-left: 1px solid var(--line);
+}
+
+/* Mobile-only inline sections are hidden on desktop */
+.lit-section--mobile-only {
+  display: none;
 }
 
 .lit-sidebar-block {
   margin-bottom: 20px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 16px 18px;
 }
 
 .lit-sidebar-block:last-child {
@@ -205,19 +132,32 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .lit-sidebar-list li {
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text);
 }
 
 .lit-sidebar-subdesc {
   font-weight: 400;
   color: var(--text);
-  opacity: 0.7;
+  opacity: 0.72;
+}
+
+/* Devices list inside main (used on mobile) */
+.lit-section-list--devices li {
+  padding-left: 0;
+}
+.lit-section-list--devices li::before {
+  display: none;
+}
+.lit-device-desc {
+  color: var(--text);
+  opacity: 0.72;
+  font-weight: 400;
 }
 
 /* --- Main content area --- */
@@ -240,21 +180,6 @@
 .lit-section {
   margin-bottom: 32px;
 }
-
-.lit-reveal {
-  animation: heroTextIn 600ms var(--ease-out) both;
-}
-
-.lit-reveal:nth-child(1) { animation-delay: 0ms; }
-.lit-reveal:nth-child(2) { animation-delay: 60ms; }
-.lit-reveal:nth-child(3) { animation-delay: 120ms; }
-.lit-reveal:nth-child(4) { animation-delay: 180ms; }
-.lit-reveal:nth-child(5) { animation-delay: 240ms; }
-.lit-reveal:nth-child(6) { animation-delay: 300ms; }
-.lit-reveal:nth-child(7) { animation-delay: 360ms; }
-.lit-reveal:nth-child(8) { animation-delay: 420ms; }
-.lit-reveal:nth-child(9) { animation-delay: 480ms; }
-.lit-reveal:nth-child(10) { animation-delay: 540ms; }
 
 .lit-section-title {
   font-family: var(--serif);
@@ -303,24 +228,33 @@
   margin-bottom: 0;
 }
 
-/* --- Message highlight --- */
+/* --- Послание — standalone closing passage --- */
 
 .lit-message {
-  background: rgba(var(--accent-amber), 0.06);
-  border: 1px solid rgba(var(--accent-amber), 0.15);
-  border-radius: 12px;
-  padding: 24px;
-  margin-top: 8px;
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
 }
 
 .lit-message-label {
+  display: inline-block;
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(180, 120, 20, 0.8);
-  margin: 0 0 8px;
+  letter-spacing: 0.12em;
+  color: var(--soft);
+  margin-bottom: 12px;
+}
+
+.lit-message-text {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+  white-space: pre-line;
+  letter-spacing: -0.005em;
 }
 
 /* --- Key quotes --- */
@@ -369,42 +303,91 @@
   border-radius: var(--radius-pill);
 }
 
-.lit-message-text {
-  font-family: var(--serif);
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--text);
-  margin: 0;
+/* --- Unified page reveal animation --- */
+/* Headers and content rise together (no awkward solo-hero motion) */
+
+.page-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: pageReveal 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.lit-main > .page-reveal:nth-child(1) { animation-delay: 80ms; }
+.lit-main > .page-reveal:nth-child(2) { animation-delay: 140ms; }
+.lit-main > .page-reveal:nth-child(3) { animation-delay: 200ms; }
+.lit-main > .page-reveal:nth-child(4) { animation-delay: 260ms; }
+.lit-main > .page-reveal:nth-child(5) { animation-delay: 320ms; }
+.lit-main > .page-reveal:nth-child(6) { animation-delay: 360ms; }
+.lit-main > .page-reveal:nth-child(7) { animation-delay: 400ms; }
+.lit-main > .page-reveal:nth-child(n+8) { animation-delay: 440ms; }
+
+.lit-sidebar.page-reveal { animation-delay: 160ms; }
+.lit-hero.page-reveal { animation-delay: 0ms; }
+
+@keyframes pageReveal {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-color-scheme: dark) {
-  .lit-message {
-    background: rgba(var(--accent-amber), 0.08);
-    border-color: rgba(var(--accent-amber), 0.2);
+}
+
+@media (max-width: 1024px) {
+  .lit-hero {
+    max-width: calc(100% - 360px);
   }
-  .lit-message-label {
-    color: rgba(245, 178, 50, 0.8);
+  .lit-page {
+    grid-template-columns: minmax(0, 1fr) 360px;
   }
 }
 
-/* --- Reading progress bar (CSS scroll-driven) --- */
-
-@supports (animation-timeline: scroll()) {
-  .reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: rgba(var(--accent-blue), 0.5);
-    transform-origin: left;
-    z-index: 30;
-    animation: readingProgress linear both;
-    animation-timeline: scroll(root block);
+@media (max-width: 960px) {
+  .lit-hero {
+    max-width: 100%;
+    padding-top: 96px;
   }
 
-  @keyframes readingProgress {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+  .lit-page {
+    grid-template-columns: 1fr;
+  }
+
+  /* On mobile: only Жанр + Тема shown at the top (two pills side-by-side).
+     Motifs, Conflicts, and Devices move INLINE into the main flow. */
+  .lit-sidebar {
+    order: 1;
+    border-left: none;
+    border-bottom: 1px solid var(--line);
+    padding: 12px var(--page-padding) 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .lit-sidebar-block {
+    margin-bottom: 0;
+    padding: 10px 14px;
+  }
+
+  .lit-sidebar-block--detail {
+    display: none;
+  }
+
+  .lit-section--mobile-only {
+    display: block;
+  }
+
+  .lit-main {
+    order: 2;
+    max-width: 100%;
+    padding: 24px var(--page-padding) 32px;
+  }
+}
+
+@media (max-width: 720px) {
+  .lit-hero {
+    padding-top: 88px;
+  }
+
+  .lit-message-text {
+    font-size: 17px;
   }
 }

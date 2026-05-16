@@ -4,7 +4,16 @@ import tseslint from "typescript-eslint";
 
 export default [
   {
-    ignores: ["dist", "node_modules", ".astro", "_scaffold-trash"],
+    ignores: [
+      "dist",
+      "node_modules",
+      ".astro",
+      "_scaffold-trash",
+      "scratch",
+      "refactor_json.cjs",
+      "home_raw.html",
+      "vyara_raw.html",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

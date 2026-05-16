@@ -21,9 +21,8 @@ export const prerender = true;
 const { entry } = Astro.props as { entry: CollectionEntry<"literature"> };
 const sections: LiteratureSection[] = entry.data.sections;
 
-const proseAccordions = sections.filter(
-  (s) => s.title === "Композиция" || s.title === "Основни образи",
-);
+const compositionSection = sections.find((s) => s.title === "Композиция");
+const charactersSection = sections.find((s) => s.title === "Основни образи");
 const deviceSection = sections.find((s) => s.title === "Изразни средства");
 const otherSections = sections.filter(
   (s) =>
@@ -36,65 +35,86 @@ const otherSections = sections.filter(
 <BaseLayout
   title={`${entry.data.title} • ДЗИ библиотека`}
   description={entry.data.excerpt}
-  hideNav={true}
+  isDetail={true}
+  detailTitle={entry.data.title}
+  detailSub={entry.data.author}
+  readUrl={entry.data.readUrl}
 >
-  <!-- READING PROGRESS BAR (CSS scroll-driven, progressive) -->
-  <div class="reading-progress" aria-hidden="true"></div>
-
-  <!-- STICKY HEADER — hidden until hero scrolls away -->
-  <div class="lit-topbar" id="lit-topbar" hidden>
-    <a href="javascript:void(0)" class="lit-topbar-back" onclick="history.back()">← Назад</a>
-    <div class="lit-topbar-center">
-      <span class="lit-topbar-title">{entry.data.title}</span>
-      <span class="lit-topbar-author">{entry.data.author}</span>
-    </div>
-    <a class="lit-topbar-cta" href={entry.data.readUrl} target="_blank" rel="noreferrer">Прочети ↗</a>
-  </div>
 
   <!-- HERO — left-aligned, above main content -->
-  <section class="lit-hero" id="lit-hero">
-    <a href="javascript:void(0)" class="lit-back" onclick="history.back()">← Назад</a>
-    <div class="lit-hero-badges lit-reveal">
-      <a href={`/#genre=${encodeURIComponent(entry.data.genre)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.genre}</a>
+  <section class="lit-hero page-reveal" id="lit-hero">
+    <div class="lit-hero-badges">
+      <span class="lit-hero-badge">{entry.data.genre}</span>
       <span class="lit-hero-sep">·</span>
-      <a href={`/#theme=${encodeURIComponent(entry.data.theme)}`} class="lit-hero-badge lit-hero-badge--link">{entry.data.theme}</a>
+      <span class="lit-hero-badge">{entry.data.theme}</span>
     </div>
-    <h1 class="lit-hero-title lit-reveal" transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
-    <a href={`/#author=${encodeURIComponent(entry.data.author)}`} class="lit-hero-author lit-reveal lit-hero-author--link">{entry.data.author}</a>
-    <a class="lit-hero-cta lit-reveal" href={entry.data.readUrl} target="_blank" rel="noreferrer">
-      Прочети в {entry.data.readSource} ↗
-    </a>
+    <h1 class="lit-hero-title" data-scroll-sentinel data-morph-source transition:name={`title-${entry.id}`}>{entry.data.title}</h1>
+    <span class="lit-hero-author">{entry.data.author}</span>
   </section>
 
-  <!-- TWO-COLUMN LAYOUT -->
+  <!-- TWO-COLUMN LAYOUT (main left, sidebar right) -->
   <div class="lit-page">
-    <!-- MAIN CONTENT (left) -->
+    <!-- MAIN CONTENT (left, in focus) -->
     <main class="lit-main">
-      <p class="lit-main-excerpt lit-reveal">{entry.data.excerpt}</p>
+      <p class="lit-main-excerpt page-reveal">{entry.data.excerpt}</p>
 
-      <section class="lit-section lit-reveal">
+      <section class="lit-section page-reveal">
         <h2 class="lit-section-title">За автора</h2>
         <p class="lit-section-text">{entry.data.aboutAuthor}</p>
       </section>
 
-      <section class="lit-section lit-reveal">
+      <section class="lit-section page-reveal">
         <h2 class="lit-section-title">За произведението</h2>
         <p class="lit-section-text">{entry.data.aboutWork}</p>
       </section>
 
-      {proseAccordions.map((section) => (
-        <section class="lit-section lit-reveal">
-          <h2 class="lit-section-title">{section.title}</h2>
+      {compositionSection && (
+        <section class="lit-section page-reveal">
+          <h2 class="lit-section-title">Композиция</h2>
           <ul class="lit-section-list">
-            {section.items.map((item: string) => (
+            {compositionSection.items.map((item: string) => (
               <li>{item}</li>
             ))}
           </ul>
         </section>
-      ))}
+      )}
+
+      {/* Mobile-only: Motifs + Conflicts below Composition */}
+      {entry.data.motifs && entry.data.motifs.length > 0 && (
+        <section class="lit-section lit-section--mobile-only page-reveal">
+          <h2 class="lit-section-title">Мотиви</h2>
+          <ul class="lit-section-list">
+            {entry.data.motifs.map((m: string) => (
+              <li>{m}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {entry.data.conflicts && entry.data.conflicts.length > 0 && (
+        <section class="lit-section lit-section--mobile-only page-reveal">
+          <h2 class="lit-section-title">Конфликти</h2>
+          <ul class="lit-section-list">
+            {entry.data.conflicts.map((c: string) => (
+              <li>{c}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {charactersSection && (
+        <section class="lit-section page-reveal">
+          <h2 class="lit-section-title">Основни образи</h2>
+          <ul class="lit-section-list">
+            {charactersSection.items.map((item: string) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {otherSections.map((section) => (
-        <section class="lit-section lit-reveal">
+        <section class="lit-section page-reveal">
           <h2 class="lit-section-title">{section.title}</h2>
           {section.items.length > 1 ? (
             <ul class="lit-section-list">
@@ -110,7 +130,7 @@ const otherSections = sections.filter(
 
       {/* Key quotes */}
       {entry.data.keyQuotes && entry.data.keyQuotes.length > 0 && (
-        <section class="lit-section lit-reveal">
+        <section class="lit-section page-reveal">
           <h2 class="lit-section-title">Ключови цитати</h2>
           <div class="lit-quotes">
             {entry.data.keyQuotes.map((q: { text: string; analysis: string; theme?: string }) => (
@@ -124,26 +144,35 @@ const otherSections = sections.filter(
         </section>
       )}
 
-      {/* Essay angles */}
-      {entry.data.essayAngles && entry.data.essayAngles.length > 0 && (
-        <section class="lit-section lit-reveal">
-          <h2 class="lit-section-title">Идеи за есе</h2>
-          <ul class="lit-section-list">
-            {entry.data.essayAngles.map((angle: string) => (
-              <li>{angle}</li>
-            ))}
+      {/* Mobile-only: Devices below Quotes */}
+      {deviceSection && (
+        <section class="lit-section lit-section--mobile-only page-reveal">
+          <h2 class="lit-section-title">Изразни средства</h2>
+          <ul class="lit-section-list lit-section-list--devices">
+            {deviceSection.items.map((item: string) => {
+              const dashIdx = item.indexOf(" \u2013 ");
+              const name = dashIdx > -1 ? item.slice(0, dashIdx) : item;
+              const desc = dashIdx > -1 ? item.slice(dashIdx + 3) : "";
+              return (
+                <li>
+                  <strong>{name}</strong>
+                  {desc && <span class="lit-device-desc"> — {desc}</span>}
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}
 
-      <div class="lit-message lit-reveal">
-        <h3 class="lit-message-label">Послание</h3>
+      {/* Послание — standalone closing passage, not boxed */}
+      <div class="lit-message page-reveal">
+        <span class="lit-message-label">Послание</span>
         <p class="lit-message-text">{entry.data.message}</p>
       </div>
     </main>
 
-    <!-- SIDEBAR (right, inline on mobile) -->
-    <aside class="lit-sidebar lit-reveal">
+    <!-- SIDEBAR (right) — full metadata on desktop, only Жанр + Тема on mobile -->
+    <aside class="lit-sidebar page-reveal">
       <div class="lit-sidebar-block">
         <h3 class="lit-sidebar-label">Жанр</h3>
         <p class="lit-sidebar-value">{entry.data.genre}</p>
@@ -154,14 +183,14 @@ const otherSections = sections.filter(
         <p class="lit-sidebar-value">{entry.data.theme}</p>
       </div>
 
-      <div class="lit-sidebar-block">
+      <div class="lit-sidebar-block lit-sidebar-block--detail">
         <h3 class="lit-sidebar-label">Мотиви</h3>
         <ul class="lit-sidebar-list">
           {entry.data.motifs.map((m: string) => <li>{m}</li>)}
         </ul>
       </div>
 
-      <div class="lit-sidebar-block">
+      <div class="lit-sidebar-block lit-sidebar-block--detail">
         <h3 class="lit-sidebar-label">Конфликти</h3>
         <ul class="lit-sidebar-list">
           {entry.data.conflicts.map((c: string) => <li>{c}</li>)}
@@ -169,7 +198,7 @@ const otherSections = sections.filter(
       </div>
 
       {deviceSection && (
-        <div class="lit-sidebar-block">
+        <div class="lit-sidebar-block lit-sidebar-block--detail">
           <h3 class="lit-sidebar-label">Изразни средства</h3>
           <ul class="lit-sidebar-list">
             {deviceSection.items.map((item: string) => {
@@ -190,51 +219,4 @@ const otherSections = sections.filter(
   </div>
 </BaseLayout>
 
-<script is:inline>
-  (() => {
-    const init = () => {
-      const hero = document.getElementById("lit-hero");
-      const topbar = document.getElementById("lit-topbar");
-      if (!hero || !topbar) return;
-      if (hero.dataset.enhanced === "true") return;
-      hero.dataset.enhanced = "true";
 
-      /* Show topbar when hero scrolls out of view */
-      const obs = new IntersectionObserver(
-        ([e]) => {
-          topbar.hidden = e.isIntersecting;
-        },
-        { threshold: 0, rootMargin: "-1px 0px 0px 0px" },
-      );
-      obs.observe(hero);
-
-      /* Reveal animations on scroll */
-      const reveals = document.querySelectorAll(".lit-reveal");
-      let delay = 0;
-      const revealObs = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              const el = entry.target;
-              if (el instanceof HTMLElement) {
-                el.style.animationDelay = delay + "ms";
-                delay += 60;
-                el.classList.add("lit-revealed");
-              }
-              revealObs.unobserve(el);
-            }
-          }
-        },
-        { threshold: 0.05, rootMargin: "0px 0px -30px 0px" },
-      );
-      for (const el of reveals) revealObs.observe(el);
-    };
-
-    init();
-    document.addEventListener("astro:page-load", () => {
-      const hero = document.getElementById("lit-hero");
-      if (hero) delete hero.dataset.enhanced;
-      init();
-    });
-  })();
-</script>
