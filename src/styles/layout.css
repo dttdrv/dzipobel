@@ -102,10 +102,12 @@
 .float-title--center {
   justify-self: center;
   text-align: center;
-  /* Hard cap so the bubble never grows enough to push the Прочети
-     button — accounts for back btn (~44px) + read btn (~110px) + gaps + insets.
-     Long titles ellipsize INSIDE the bubble (… is inherited from .float-title). */
-  max-width: calc(100vw - 220px);
+  /* Hard cap on bubble width — the bubble can SHRINK to its text content,
+     but it can NEVER grow past this cap. When text would need more space,
+     it ellipsizes INSIDE the bubble (… inherited from .float-title).
+     The calc() guarantees Прочети button is never compressed:
+       back(36) + gap(16) + Прочети(~95) + gap(16) + insets(96) ≈ 260 */
+  max-width: min(420px, calc(100vw - 280px));
   transform: translateY(-6px) scale(0.96);
   transform-origin: center top;
   transition: opacity 180ms ease, transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -123,11 +125,13 @@
 .float-instagram,
 .float-read {
   min-width: 0;
+  flex-shrink: 0;
   gap: 7px;
   padding: 0 12px;
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
   transition: background var(--ease-smooth), opacity var(--ease-smooth), transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -162,7 +166,8 @@
   }
 
   .float-title--center {
-    max-width: calc(100vw - 180px);
+    /* Mobile: insets 32 + back 36 + gap 16 + Прочети ~95 + gap 16 ≈ 195 */
+    max-width: min(280px, calc(100vw - 200px));
   }
 
   .float-instagram span {
