@@ -169,6 +169,12 @@ body[data-page-detail="false"] .float-shell[data-revealed="true"] .float-title {
   }
 }
 
+body[data-page-detail="false"] .float-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 @media (max-width: 720px) {
   .float-shell {
     inset-inline: 16px;
