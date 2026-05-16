@@ -29,6 +29,13 @@
   pointer-events: none;
 }
 
+/* On detail pages the title can be long; switch to a layout where the
+   title takes only the available middle space (so it ellipsizes instead
+   of pushing the Прочети button off-screen). */
+body[data-page-detail="true"] .float-shell {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
 .float-left,
 .float-right {
   display: flex;
@@ -98,7 +105,9 @@
 }
 
 .float-title--center {
-  justify-self: center;
+  justify-self: stretch;
+  max-width: 100%;
+  width: 100%;
   text-align: center;
   transform: translateY(-6px) scale(0.96);
   transform-origin: center top;
