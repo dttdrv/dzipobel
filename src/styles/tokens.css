@@ -55,18 +55,18 @@
   --accent-purple: 139, 92, 246;
 }
 
-/* Dark mode — matches Chrome Windows 11 dark */
+/* Dark mode — neutral dark grey (Apple-style) instead of near-black */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #09090b;
-    --surface: #18181b;
-    --surface-strong: #27272a;
-    --text: #fafafa;
-    --muted: #a1a1aa;
-    --soft: #71717a;
-    --line: #27272a;
-    --line-strong: #3f3f46;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --bg: #1e1e21;
+    --surface: #2a2a2e;
+    --surface-strong: #36363a;
+    --text: #f2f2f5;
+    --muted: #a8a8ad;
+    --soft: #76767b;
+    --line: #38383c;
+    --line-strong: #4a4a4f;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
   }
 }
