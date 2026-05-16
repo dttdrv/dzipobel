@@ -39,6 +39,11 @@
   font-weight: 700;
   color: var(--text);
   flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lit-list-meta {
@@ -62,6 +67,12 @@
   .lit-list-item {
     flex-wrap: wrap;
     gap: 2px 12px;
+  }
+
+  .lit-list-title {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .lit-list-meta {
