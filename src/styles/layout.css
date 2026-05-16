@@ -104,6 +104,18 @@
   transition: opacity 180ms ease, transform 180ms ease;
 }
 
+body[data-page-detail="false"] .float-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  justify-self: auto;
+  transform: translate(-50%, -18px);
+}
+
+body[data-page-detail="false"] .float-shell[data-revealed="true"] .float-title {
+  transform: translate(-50%, 0);
+}
+
 /* The middle grid track is hard-capped by minmax(0, var(--bubble-max));
    the bubble fills its track and centers via justify-self. Long text is
    truncated to ellipsis INSIDE the bubble — Прочети stays put. */
