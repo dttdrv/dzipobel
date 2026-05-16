@@ -23,7 +23,12 @@
   inset: max(12px, env(safe-area-inset-top)) var(--page-padding) auto;
   z-index: 80;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  /* Side columns reserve their max-content (back arrow / Прочети button)
+     first, so the centered bubble in the middle track can never push the
+     Прочети button out of its slot or overlap it. The middle track is
+     hard-capped via minmax so the bubble can never grow past --bubble-max. */
+  --bubble-max: 380px;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, var(--bubble-max)) minmax(max-content, 1fr);
   align-items: start;
   gap: 16px;
   pointer-events: none;
@@ -99,17 +104,14 @@
   transition: opacity 180ms ease, transform 180ms ease;
 }
 
-/* Centered title is taken OUT of grid flow and absolutely positioned
-   in the chrome. This way it is physically incapable of pushing or
-   overlapping the back / Прочети buttons no matter how long the text is.
-   The bubble grows up to its hard cap, then text inside ellipsizes. */
+/* The middle grid track is hard-capped by minmax(0, var(--bubble-max));
+   the bubble fills its track and centers via justify-self. Long text is
+   truncated to ellipsis INSIDE the bubble — Прочети stays put. */
 .float-title--center {
-  position: absolute;
-  top: 0;
-  left: 50%;
+  justify-self: stretch;
+  max-width: 100%;
   text-align: center;
-  max-width: min(380px, calc(100vw - 300px));
-  transform: translateX(-50%) translateY(-6px) scale(0.96);
+  transform: translateY(-6px) scale(0.96);
   transform-origin: center top;
   transition: opacity 180ms ease, transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -120,7 +122,7 @@
 }
 
 .float-shell[data-revealed="true"] .float-title--center {
-  transform: translateX(-50%) translateY(0) scale(1);
+  transform: translateY(0) scale(1);
 }
 
 .float-instagram,
@@ -159,17 +161,14 @@
   .float-shell {
     inset-inline: 16px;
     gap: 8px;
+    /* Tighter cap on mobile so the middle track always leaves room for
+       the back button + Прочети button + gaps + insets. */
+    --bubble-max: min(220px, calc(100vw - 200px));
   }
 
   .float-title {
     max-width: 60vw;
     font-size: 14px;
-  }
-
-  .float-title--center {
-    /* Mobile: bubble is centered absolutely; its half-width can't reach
-       the buttons. Hard cap of 180px and viewport-based safety margin. */
-    max-width: min(180px, calc(100vw - 240px));
   }
 
   .float-instagram span {
