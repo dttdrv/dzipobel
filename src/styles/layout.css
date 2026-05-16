@@ -82,7 +82,7 @@
 .float-title {
   pointer-events: auto;
   justify-self: start;
-  max-width: min(44vw, 340px);
+  max-width: min(64vw, 480px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -151,7 +151,7 @@
   }
 
   .float-title {
-    max-width: 42vw;
+    max-width: 60vw;
     font-size: 14px;
   }
 

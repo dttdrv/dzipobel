@@ -30,6 +30,10 @@ const otherSections = sections.filter(
     s.title !== "Основни образи" &&
     s.title !== "Изразни средства",
 );
+
+/* Short title for the sticky chrome bubble — strip any parenthetical
+   subtitle (e.g. "Паисий (Ода от ...)" → "Паисий"). */
+const shortTitle = entry.data.title.replace(/\s*[(\[«„].*$/u, "").trim() || entry.data.title;
 ---
 
 <BaseLayout
@@ -37,6 +41,7 @@ const otherSections = sections.filter(
   description={entry.data.excerpt}
   isDetail={true}
   detailTitle={entry.data.title}
+  detailTitleShort={shortTitle}
   detailSub={entry.data.author}
   readUrl={entry.data.readUrl}
 >

@@ -3,7 +3,8 @@ import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 import "../styles/global.css";
 
-const { title, description, isDetail = false, detailTitle, backUrl = "/", readUrl } = Astro.props;
+const { title, description, isDetail = false, detailTitle, detailTitleShort, backUrl = "/", readUrl } = Astro.props;
+const stickyTitle = detailTitleShort || detailTitle;
 ---
 
 <!doctype html>
@@ -40,9 +41,9 @@ const { title, description, isDetail = false, detailTitle, backUrl = "/", readUr
           ДЗИ по БЕЛ
         </div>
       )}
-      {isDetail && detailTitle && (
+      {isDetail && stickyTitle && (
         <div class="float-title float-title--center" data-float-title data-float-morph>
-          {detailTitle}
+          {stickyTitle}
         </div>
       )}
 
